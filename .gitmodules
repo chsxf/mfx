@@ -1,0 +1,3 @@
+[submodule "3rd-party/pdo-database-manager"]
+	path = 3rd-party/pdo-database-manager
+	url = https://github.com/cheeseburgames/pdo-database-manager.git
