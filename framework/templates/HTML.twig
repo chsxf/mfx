@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<base href="{{ mfx_root_url }}">
+		{{ mfx_scripts }}
+		{{ mfx_stylesheets }}
+		<!--[if gte IE 9]>
+		  <style type="text/css">
+		    .gradient {
+		       filter: none;
+		    }
+		  </style>
+		<![endif]-->
+		{% block head %}{% endblock %}
+	</head>
+	<body>
+		{% block body %}{% endblock %}
+		
+		{{ mfx_errors_and_notifs }}
+	
+		<!-- --MFX_PROFILING_OUTPUT-- -->
+	</body>
+</html>

@@ -1,0 +1,13 @@
+{% autoescape 'html_attr' -%}
+	<input type="{{ type }}" name="{{ name }}{%- if repeatable %}[{{ repeat_counter }}]{% endif %}"
+		{%- if id is not empty %} id="{{ id }}"{% endif -%}
+		{%- if value is not empty %} value="{{ value }}"{% endif -%}
+		{%- if required is not empty %} required="required"{% endif -%}
+		{%- if readonly is not empty %} readonly="readonly"{% endif -%}
+		{%- if disabled is not empty %} disabled="disabled"{% endif -%}
+		{%- lazy -%}
+			{%- for key, value in extras %}	{{ key|raw }}="{{ value }}"{% endfor -%}
+		{%- endlazy %} />
+		
+	{%- if suffix is not empty %} {{ suffix|raw }}{% endif -%}	
+{%- endautoescape %}

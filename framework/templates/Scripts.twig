@@ -1,0 +1,11 @@
+{% for script in scripts %}
+	{% if script.inline %}
+<script type="{{ script.type }}">
+/* <![CDATA[ */
+{{ script.content }}
+/* ]]> */
+</script>
+	{% else %}
+<script type="{{ script.type }}" src="{{ script.url|e('html_attr') }}"></script>
+	{% endif %}
+{% endfor %}

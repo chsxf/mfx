@@ -1,0 +1,13 @@
+{% autoescape 'html_attr' %}
+	<select name="{{ name }}{%- if repeatable %}[{{ repeat_counter }}]{% endif %}"
+		{%- if id is not empty %} id="{{ id }}"{% endif %}
+		{%- if multiple is not empty %} multiple="multiple"{% endif %}
+		{%- if required is not empty %} required="required"{% endif %}
+		{%- if disabled is not empty %} disabled="disabled"{% endif %}>
+		
+		{% for option in options %}
+			<option value="{{ option.value }}"
+				{%- if (value is not empty) and ((value == option.value) or (value is iterable and option.value in value)) %} selected{% endif %}>{{ option.label }}</option>
+		{% endfor %}
+	</select>
+{% endautoescape %}

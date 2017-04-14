@@ -1,0 +1,45 @@
+<div id="mfx-profiler" class="mfx-hcenter mfx-vcenter">
+<pre>
+Profiling results:
+	- {{ dgettext('mfx', 'PHP version') }}: {{ constant('PHP_VERSION') }}
+	- {{ dgettext('mfx', 'Duration') }}: {{ dgettext('mfx', '%d s')|format(duration) }}
+	- {{ dgettext('mfx', 'Operation count') }}: {{ opCount|number_format(0) }}
+	- {{ dgettext('mfx', 'Memory peak usage') }}: {{ _d('mfx', '%s bytes')|format(memPeakUsage|number_format(0)) }} ({{ dgettext('mfx', '%s%% of allowed memory')|format((memPeakUsageRatio * 100)|number_format(3)) }})
+	- {{ dgettext('mfx', 'Memory real peak usage') }}: {{ _d('mfx', '%s bytes')|format(memRealPeakUsage|number_format(0)) }} ({{ dgettext('mfx', '%s%% of allowed memory')|format((memRealPeakUsageRatio * 100)|number_format(3)) }})
+</pre>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+	google.load('visualization', '1', { packages: [ 'corechart' ] });
+	google.setOnLoadCallback(function() {
+		var data = new google.visualization.DataTable();
+		data.addColumn('number', "{{ dgettext('mfx', 'Milliseconds') }}");
+		data.addColumn('number', "{{ dgettext('mfx', 'Memory usage') }}");
+		data.addColumn({type: 'string', role: 'annotation'});
+		data.addColumn({type: 'string', role: 'annotationText'});
+		data.addColumn('number', "{{ dgettext('mfx', 'Real memory usage') }}");
+		data.addColumn({type: 'string', role: 'annotation'});
+		data.addColumn({type: 'string', role: 'annotationText'});
+
+		data.addRows([
+		{% for row in data %}
+		[ {{ row[0] }}, {{ row[1] }}, {{ row[3]|raw }}, {{ row[4]|raw }}, {{ row[2] }}, {{ row[3]|raw }}, {{ row[4]|raw }} ],
+		{% endfor %}
+		]);
+
+		var options = {
+			title: "{{ dgettext('mfx', 'Profiling timeline (bytes over milliseconds)')|e('js') }}",
+			width: 900,
+			height: 600,
+			backgroundColor: 'transparent'
+		};
+
+		var chart = new google.visualization.LineChart(document.getElementById('mfx_profiler_chart'));
+		chart.draw(data, options);
+	});
+/* ]]> */
+</script>
+<div id="mfx_profiler_chart" style="width: 900px; height: 600px"></div>
+</div>
+
+<div id="mfx-profiler-bar"><a href="#" class="mfx-profiler-toggle" title="{{ dgettext('mfx', 'Show / hide profiler')|e }}" mfx:dialog-title="{{ dgettext('mfx', 'Profiling results')|e }}"><img src="mfx/static/img/icons/profiles.png" /></a></div>

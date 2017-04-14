@@ -1,0 +1,43 @@
+@CHARSET "UTF-8";
+
+html, body {
+	height: 100%;
+}
+
+#mfx-profiler-bar {
+	position: absolute;
+	
+	bottom: 0;
+	left: 0;
+	height: 40px;
+}
+
+#mfx-profiler-bar a {
+	position: absolute;
+	
+	top: 4px;
+	left: 4px;
+}
+
+.ui-dialog #mfx-profiler {
+	background-color: transparent;
+}
+
+#mfx-profiler {
+	display: none;
+
+	background-color: white;
+	padding: 0;
+}
+
+#mfx-profiler pre {
+	margin: 10px;
+}
+
+.mfx-hcenter, .mfx-vcenter {
+	position: absolute;
+}
+
+.mfx-invisible-at-start, .invisible {
+	display: none;
+}

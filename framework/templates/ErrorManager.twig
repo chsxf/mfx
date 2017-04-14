@@ -1,0 +1,34 @@
+<div id="mfx-errors-notifs">
+	{% set div_class = (errors|length > 0) ? '' : 'invisible' %}
+	<div id="mfx-errors" class="{{ div_class }}">
+		<div>
+			<p>{{ dngettext('mfx', '%d error has occured:', '%d errors have occured:', errors|length) }}</p>
+			<ul>
+			{% for error in errors %}
+				<li>
+				{% if debug %}
+					{{ error.errnoconstant }} - [{{ error.errfile }}:{{ error.errline }}]<br />{{ error.errstr }}
+				{% else %}
+					{{ error.errstr }}
+				{% endif %}
+				</li>
+			{% endfor %}
+			</ul>
+		</div>
+		<a href="#" class="mfx-hide-parent-on-click">{{ dgettext('mfx', 'Close') }}</a>
+	</div>
+	
+	{% set div_class = (notifs|length > 0) ? '' : 'invisible' %}
+	<div id="mfx-notifs" class="{{ div_class }}">
+		<div>
+			<ul>
+			{% if notifs|length > 0 %}
+				{% for notif in notifs %}
+				<li>{{ notif }}</li>
+				{% endfor %}
+			{% endif %}
+			</ul>
+		</div>
+		<a href="#" class="mfx-hide-parent-on-click">{{ dgettext('mfx', 'Close') }}</a>
+	</div>
+</div>

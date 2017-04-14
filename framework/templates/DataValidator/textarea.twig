@@ -1,0 +1,7 @@
+{% autoescape 'html_attr' -%}
+	<textarea name="{{ name }}{%- if repeatable %}[{{ repeat_counter }}]{% endif %}"
+		{%- if id is not empty %} id="{{ id }}"{% endif %}
+		{%- if required is not empty %} required="required"{% endif %}
+		{%- if readonly is not empty  %} readonly="readonly"{% endif %}
+		{%- if disabled is not empty %} disabled="disabled"{% endif %}>{% if value is not empty %}{{ value|raw }}{% endif %}</textarea>
+{%- endautoescape %}

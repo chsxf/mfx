@@ -1,0 +1,9 @@
+{% for sheet in sheets %}
+	{% if sheet.inline %}
+<style type="{{ sheet.type }}" media="{{ sheet.media }}">
+{{ sheet.content }}
+</style>
+	{% else %}
+<link rel="stylesheet" type="{{ sheet.type }}" href="{{ sheet.url|e('html_attr') }}" media="{{ sheet.media }}">
+	{% endif %}
+{% endfor %}
