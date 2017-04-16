@@ -40,7 +40,7 @@ unset($__MicroFX_autoload_precedence);
 // Setting autoload built-in functions
 spl_autoload_register(function($class) {
 	// Removing namespace for framework classes
-	$class = preg_replace('/^CheeseBurgames\\\\MFX\\\\', '', $class);
+	$class = preg_replace('/^CheeseBurgames\\\\MFX\\\\/', '', $class);
 	$class = preg_replace('/(_|\\\\)/', '/', $class);
 	$incPath = explode(PATH_SEPARATOR, get_include_path());
 	foreach ($incPath as $p)
