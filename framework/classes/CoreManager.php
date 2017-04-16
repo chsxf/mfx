@@ -18,6 +18,8 @@ namespace CheeseBurgames\MFX;
  */
 final class CoreManager
 {
+	private const ROUTE_REGEXP = '/^[[:alnum:]_]+\.[[:alnum:]_]+?$/';
+	
 	private static $HTTP_STATUS_CODES = array(
 			100 => 'Continue',
 			101 => 'Switching Protocols',
@@ -129,26 +131,28 @@ final class CoreManager
 			}
 			ob_start(array(__CLASS__, 'convertFakeProtocols'));
 			
-			// Adding scripts
-			Scripts::add('mfxjs://jquery.min.js');
-			Scripts::add('mfxjs://layout.js');
-			Scripts::add('mfxjs://ui.js');
-			Scripts::add('mfxjs://mainObserver.js');
-			Scripts::add('mfxjs://string.js');
-			$userScripts = Config::get('scripts', array());
-			if (is_array($userScripts))
-			{
-				foreach ($userScripts as $s)
-					Scripts::add($s);
-			}
-			
-			// Adding stylesheets
-			StyleSheets::add('mfxcss://framework.css');
-			$userSheets = Config::get('stylesheets', array());
-			if (is_array($userSheets))
-			{
-				foreach ($userSheets as $s)
-					StyleSheets::add($s);
+			if (Config::get('response.default_content_type', 'text/html') == 'text/html') {
+				// Adding scripts
+				Scripts::add('mfxjs://jquery.min.js');
+				Scripts::add('mfxjs://layout.js');
+				Scripts::add('mfxjs://ui.js');
+				Scripts::add('mfxjs://mainObserver.js');
+				Scripts::add('mfxjs://string.js');
+				$userScripts = Config::get('scripts', array());
+				if (is_array($userScripts))
+				{
+					foreach ($userScripts as $s)
+						Scripts::add($s);
+				}
+				
+				// Adding stylesheets
+				StyleSheets::add('mfxcss://framework.css');
+				$userSheets = Config::get('stylesheets', array());
+				if (is_array($userSheets))
+				{
+					foreach ($userSheets as $s)
+						StyleSheets::add($s);
+				}
 			}
 		}
 		return self::$_singleInstance;
@@ -195,6 +199,9 @@ final class CoreManager
 		$prefix = preg_replace('#/mfx$#', '/', dirname($_SERVER['PHP_SELF']));
 		if (!preg_match('#/$#', $prefix))
 			$prefix .= '/';
+		$prefix .= Config::get('request.prefix', '');
+		if (!preg_match('#/$#', $prefix))
+			$prefix .= '/';
 		$routePathInfo = substr($_SERVER['REQUEST_URI'], strlen($prefix));
 		$routePathInfo = explode('?', $routePathInfo, 2);
 		$routePathInfo = ltrim($routePathInfo[0], '/');
@@ -203,7 +210,7 @@ final class CoreManager
 		if (empty($routePathInfo))
 		{
 			if ($defaultRoute == 'none')
-				exit();
+				self::dieWithStatusCode(200);
 			
 			$route = $defaultRoute;
 			$routeParams = array();
@@ -213,7 +220,7 @@ final class CoreManager
 			$chunks = explode('/', $routePathInfo, 2);
 			$route = $chunks[0];
 			$firstRouteParam = 1;
-			if (!preg_match('/^\w+\.\w+?$/', $route) && Config::get('allow_default_route_substitution', false)) {
+			if (!preg_match(self::ROUTE_REGEXP, $route) && Config::get('allow_default_route_substitution', false)) {
 				$route = $defaultRoute;
 				$firstRouteParam = 0;
 			}
@@ -221,7 +228,7 @@ final class CoreManager
 		}
 		
 		// Checking route
-		if (!preg_match('/^\w+\.\w+?$/', $route)) {
+		if (!preg_match(self::ROUTE_REGEXP, $route)) {
 			self::_check404file($routeParams);
 			throw new \ErrorException("'{$route}' is not a valid route.");
 		}
@@ -270,7 +277,7 @@ final class CoreManager
 					self::dieWithStatusCode($reqResult->statusCode());
 				
 				CoreProfiler::pushEvent('Building response');
-				self::_setResponseContentType($validSubRouteParameters);
+				self::_setResponseContentType($validSubRouteParameters, Config::get('response.default_content_type', 'text/html'), Config::get('response.default_charset', 'UTF-8'));
 				$template = $reqResult->template(($routeProvidedTemplate === NULL) ? str_replace(array('_', '.'), '/', $route) : $routeProvidedTemplate);
 				
 				$context = array_merge($reqResult->data(), array(
@@ -294,37 +301,13 @@ final class CoreManager
 				break;
 				
 			// Asynchronous requests expecting JSON data
-			case SubRouteType::ASYNC_JSON:
-				self::_setStatusCode($reqResult->statusCode());
-				self::_setResponseContentType($validSubRouteParameters, 'application/json');
-				if ($reqResult->preformatted())
-				{
-					ErrorManager::flush();
-					echo $twig->render($reqResult->data(), array('mfx_current_user' => User::currentUser()));
-				}
-				else
-				{
-					$d = $reqResult->data();
-					ErrorManager::flushToArrayOrObject($d);
-					echo JSONTools::filterAndEncode($d);
-				}
+			case SubRouteType::JSON:
+				self::outputJSON($reqResult, $validSubRouteParameters, $twig);
 				break;
 				
 			// Asynchronous requests expecting XML data
-			case SubRouteType::ASYNC_XML:
-				self::_setStatusCode($reqResult->statusCode());
-				self::_setResponseContentType($validSubRouteParameters, 'application/xml');
-				if ($reqResult->preformatted())
-				{
-					ErrorManager::flush();
-					echo $twig->render($reqResult->data(), array('mfx_current_user' => User::currentUser()));
-				}
-				else
-				{
-					$d = $reqResult->data();
-					ErrorManager::flushToArrayOrObject($d);
-					echo XMLTools::build($reqResult->data());
-				}
+			case SubRouteType::XML:
+				self::outputXML($reqResult, $validSubRouteParameters, $twig);
 				break;
 		}
 		
@@ -332,6 +315,38 @@ final class CoreManager
 		$callback = Config::get('post_route_callback');
 		if (!empty($callback) && is_callable($callback))
 			call_user_func($callback, $validSubRouteParameters, $validRouteProviderParameters);
+	}
+	
+	private static function outputJSON(RequestResult $reqResult, array $subRouteParameters = array(), \Twig_Environment $twig = NULL) {
+		self::_setStatusCode($reqResult->statusCode());
+		self::_setResponseContentType($subRouteParameters, 'application/json', Config::get('response.default_charset', 'UTF-8'));
+		if ($twig != NULL && $reqResult->preformatted())
+		{
+			ErrorManager::flush();
+			echo $twig->render($reqResult->data(), array('mfx_current_user' => User::currentUser()));
+		}
+		else
+		{
+			$d = $reqResult->data();
+			ErrorManager::flushToArrayOrObject($d);
+			echo JSONTools::filterAndEncode($d);
+		}
+	}
+	
+	private static function outputXML(RequestResult $reqResult, array $subRouteParamters = array(), \Twig_Environment $twig = NULL) {
+		self::_setStatusCode($reqResult->statusCode());
+		self::_setResponseContentType($subRouteParamters, 'application/xml', Config::get('response.default_charset', 'UTF-8'));
+		if ($twig != NULL && $reqResult->preformatted())
+		{
+			ErrorManager::flush();
+			echo $twig->render($reqResult->data(), array('mfx_current_user' => User::currentUser()));
+		}
+		else
+		{
+			$d = $reqResult->data();
+			ErrorManager::flushToArrayOrObject($d);
+			echo XMLTools::build($reqResult->data());
+		}
 	}
 	
 	/**
@@ -398,10 +413,36 @@ final class CoreManager
 	 * Terminates the script and emits a HTTP status code
 	 * @param int $code HTTP status code to emit (Defaults to 400 Bad Request)
 	 */
-	public static function dieWithStatusCode($code = 400) {
+	public static function dieWithStatusCode($code = 400, $message = '') {
 		$code = self::_setStatusCode($code);
-		self::_setResponseContentType(array(), 'text/plain');
-		printf("%d %s", $code, self::$HTTP_STATUS_CODES[$code]);
+		
+		$contentType = Config::get('response.default_content_type', 'text/plain');
+		$charset = Config::get('response.default_charset', 'UTF-8');
+		
+		$data = array(
+				'code' => $code,
+				'status' => self::$HTTP_STATUS_CODES[$code]
+		);
+		if (!empty($message))
+			$data['message'] = $message;
+		
+		self::_setResponseContentType(array(), $contentType, $charset);
+		switch ($contentType) {
+			case 'application/json':
+				$reqResult = RequestResult::buildJSONRequestResult($data, false, $code);
+				self::outputJSON($reqResult);
+				break;
+			case 'application/xml':
+				$reqResult = RequestResult::buildXMLRequestResult($data, false, $code);
+				self::outputXML($reqResult);
+				break;
+			default:
+				echo "{$data['code']} {$data['status']}";
+				if (isset($data['message']))
+					echo "\n{$data['message']}";
+				break;
+		}
+		
 		ErrorManager::freeze();
 		exit();
 	}
@@ -410,10 +451,10 @@ final class CoreManager
 	 * Sets the response Content-Type header from the sub-route documentation comment parameters
 	 * 
 	 * @param array $subRouteParameters Documentation comment parameters of the sub-route
-	 * @param string $default Content type to use if not provided by the sub-route (Defaults to text/html).
-	 * @param string $defaultCharset Charset to use if not provided by the sub-route (Defaults to UTF-8).
+	 * @param string $default Content type to use if not provided by the sub-route.
+	 * @param string $defaultCharset Charset to use if not provided by the sub-route.
 	 */
-	private static function _setResponseContentType(array $subRouteParameters, $default = 'text/html', $defaultCharset = 'UTF-8')
+	private static function _setResponseContentType(array $subRouteParameters, $default, $defaultCharset)
 	{
 		$ct = array_key_exists('mfx_content_type', $subRouteParameters) ? $subRouteParameters['mfx_content_type'] : $default;
 		if (!preg_match('/;\s+charset=.+$/', $ct))
@@ -447,4 +488,15 @@ final class CoreManager
 		for ($i = 0; $i < $c; $i++)
 			ob_end_flush();
 	}
+	
+	/**
+	 * Uncaught exception handler
+	 * @param \Throwable $exception Uncaught exception
+	 */
+	public static function exceptionHandler(\Throwable $exception) {
+		$message = sprintf("Uncaught %s: %s\n%s", get_class($exception), $exception->getMessage(), $exception->getTraceAsString());
+		self::dieWithStatusCode(400, $message);
+	}
 }
+
+set_exception_handler(array(__NAMESPACE__ . '\CoreManager', 'exceptionHandler'));

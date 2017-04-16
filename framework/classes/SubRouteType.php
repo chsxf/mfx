@@ -18,6 +18,6 @@ class SubRouteType extends Enum
 	
 	const VIEW = 1;
 	const EDIT = 2;
-	const ASYNC_JSON = 3;
-	const ASYNC_XML = 4;
+	const JSON = 3;
+	const XML = 4;
 }

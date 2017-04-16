@@ -134,20 +134,22 @@ final class RequestResult
 	/**
 	 * Helper function to build RequestResult instances for JSON responses
 	 * @param mixed $data JSON data
-	 * @param string $preformatted If set, $data contains preformatted JSON data.
+	 * @param string $preformatted If set, $data contains preformatted JSON data
+	 * @param int $statusCode HTTP status code of the response
 	 * @return RequestResult
 	 */
-	public static function buildJSONRequestResult($data, $preformatted = false) {
-		return new RequestResult(new SubRouteType(SubRouteType::ASYNC_JSON), $data, NULL, NULL, 200, $preformatted);
+	public static function buildJSONRequestResult($data, $preformatted = false, $statusCode = 200) {
+		return new RequestResult(new SubRouteType(SubRouteType::JSON), $data, NULL, NULL, $statusCode, $preformatted);
 	}
 	
 	/**
 	 * Helper function to build RequestResult instances for XML responses
 	 * @param mixed $data XML data
-	 * @param string $preformatted If set, $data contains preformatted XML data.
+	 * @param string $preformatted If set, $data contains preformatted XML data
+	 * @param int $statusCode HTTP status code of the response
 	 * @return RequestResult
 	 */
-	public static function buildXMLRequestResult($data, $preformatted = false) {
-		return new RequestResult(new SubRouteType(SubRouteType::ASYNC_XML), $data, NULL, NULL, 200, $preformatted);
+	public static function buildXMLRequestResult($data, $preformatted = false, $statusCode = 200) {
+		return new RequestResult(new SubRouteType(SubRouteType::XML), $data, NULL, NULL, $statusCode, $preformatted);
 	}
 }
