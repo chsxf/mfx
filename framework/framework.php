@@ -43,7 +43,7 @@ if (Config::has('timezone') || empty($iniTimezone))
 	date_default_timezone_set(Config::get('timezone', 'UTC'));
 
 // Enabling profiling if requested
-if (Config::get('profiling'))
+if (Config::get('profiling', false))
 	CoreProfiler::init();
 
 // Setting locale
@@ -84,7 +84,7 @@ if (Config::get('doccommentparser_class'))
 	$class = Config::get('doccommentparser_class');
 	CoreManager::setDocCommentParser(new $class());
 }
-CoreManager::handleRequest($twig, Config::get('default_route'));
+CoreManager::handleRequest($twig, Config::get('request.default_route'));
 
 // Freezing error manager
 ErrorManager::freeze();
