@@ -167,7 +167,7 @@ final class CoreManager
 	public static function convertFakeProtocols($str) {
 		$inst = self::_ensureInit();
 		$search = array();
-		foreach ($inst->_fakeProtocols as $k => $v)
+		foreach (array_keys($inst->_fakeProtocols) as $k)
 			$search[] = "{$k}://";
 		return str_replace($search, array_values($inst->_fakeProtocols), $str);
 	}

@@ -72,9 +72,9 @@ final class PaginationManager
 			$reqStart = max(0, $this->_totalItemCount - $this->_pageCount);
 		$this->_currentPageStart = max(0, $reqStart);
 		
-		foreach ($this->_extraParameters as $k => &$v) {
+		foreach (array_keys($this->_extraParameters) as $k) {
 			if (isset($_REQUEST[$k]))
-				$v = $_REQUEST[$k];
+				$this->_extraParameters = $_REQUEST[$k];
 		}
 	}
 	
