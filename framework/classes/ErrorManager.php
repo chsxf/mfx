@@ -181,4 +181,4 @@ class ErrorManager
 	}
 }
 
-ErrorManager::$previousHandler = set_error_handler(array('ErrorManager', 'handleError'));
+ErrorManager::$previousHandler = set_error_handler(array(__NAMESPACE__ . '\ErrorManager', 'handleError'));
