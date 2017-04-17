@@ -20,4 +20,5 @@ class SubRouteType extends Enum
 	const EDIT = 2;
 	const JSON = 3;
 	const XML = 4;
+	const STATUS = 5;
 }

@@ -314,6 +314,11 @@ final class CoreManager
 			case SubRouteType::XML:
 				self::outputXML($reqResult, $validSubRouteParameters, $twig);
 				break;
+				
+			// Status
+			case SubRouteType::STATUS:
+				self::dieWithStatusCode($reqResult->statusCode(), $reqResult->data());
+				break;
 		}
 		
 		// Post-processing callback

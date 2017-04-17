@@ -125,10 +125,11 @@ final class RequestResult
 	/**
 	 * Helper function to build RequestResult instances for erroneous responses, providing the HTTP status code
 	 * @param int $statusCode HTTP status code of the response
+	 * @param string $message Message
 	 * @return RequestResult
 	 */
-	public static function buildStatusRequestResult($statusCode = 400) {
-		return new RequestResult(NULL, NULL, NULL, NULL, $statusCode);
+	public static function buildStatusRequestResult($statusCode = 400, $message = NULL) {
+		return new RequestResult(new SubRouteType(SubRouteType::STATUS), $message, NULL, NULL, $statusCode, true);
 	}
 
 	/**
