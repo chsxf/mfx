@@ -52,9 +52,6 @@ if (Config::get('profiling', false))
 L10nManager::init();
 L10nManager::bindTextDomain('mfx', dirname(__FILE__).'/messages');
 
-// Apply database updates
-\CheeseBurgames\MFX\DatabaseUpdater::update();
-
 // Initializing Twig
 CoreProfiler::pushEvent('Loading Twig');
 $fsLoader = new Twig_Loader_Filesystem(Config::get('templates'));
