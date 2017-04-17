@@ -17,6 +17,11 @@ use \CheeseBurgames\PDO\DatabaseManagerException;
 final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager
 {
 	/**
+	 * @var array Open connections container
+	 */
+	private static $_openConnections = array();
+	
+	/**
 	 * Constructor
 	 * @param string $dsn Data Source Name (ie mysql:host=localhost;dbname=mydb)
 	 * @param string $username Username
@@ -38,8 +43,8 @@ final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager
 	 */
 	public static function open($server = '__default', $forceNew = false)
 	{
-		if (array_key_exists($server, self::$openConnections) && empty($forceNew))
-			return self::$openConnections[$server];
+		if (array_key_exists($server, self::$_openConnections) && empty($forceNew))
+			return self::$_openConnections[$server];
 		
 		if (!Config::has('database.servers'))
 			throw new DatabaseManagerException("No database server configured.");
@@ -58,8 +63,8 @@ final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager
 		}
 		
 		$dbm = new DatabaseManager($dsn, $username, $password);
-		if (!array_key_exists($server, self::$openConnections))
-			self::$openConnections[$server] = $dbm;
+		if (!array_key_exists($server, self::$_openConnections))
+			self::$_openConnections[$server] = $dbm;
 		return $dbm;
 	}
 	
