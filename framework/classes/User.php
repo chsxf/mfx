@@ -135,7 +135,7 @@ class User
 			if ($f['value'] === NULL)
 				$str .= ' IS ';
 			else
-				$str .= ' = ';
+				$str .= empty($f['operator']) ? ' = ' : $f['operator'];
 			if (!empty($f['function']))
 				$str .= "{$f['function']}(?)";
 			else
