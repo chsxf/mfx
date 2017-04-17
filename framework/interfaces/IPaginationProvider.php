@@ -1,28 +1,28 @@
 <?php
-	/**
-	 * Pagination provider interface
-	 * 
-	 * @author Christophe SAUVEUR <christophe@cheeseburgames.com>
-	 * @version 1.0
-	 * @package framework
-	 */
+/**
+ * Pagination provider interface
+ * 
+ * @author Christophe SAUVEUR <christophe@cheeseburgames.com>
+ * @version 1.0
+ * @package framework
+ */
 
-	namespace CheeseBurgames\MFX;
+namespace CheeseBurgames\MFX;
 
+/**
+ * Interface describing objects that provide pagination information
+ */
+interface IPaginationProvider
+{
 	/**
-	 * Interface describing objects that provide pagination information
+	 * Retrieves the total number of items
+	 * @return int
 	 */
-	interface IPaginationProvider
-	{
-		/**
-		 * Retrieves the total number of items
-		 * @return int
-		 */
-		public function totalItemCount();
-		
-		/**
-		 * Retrieves the default number of items to display per page
-		 * @return int
-		 */
-		public function defaultPageCount();
-	}
+	public function totalItemCount();
+	
+	/**
+	 * Retrieves the default number of items to display per page
+	 * @return int
+	 */
+	public function defaultPageCount();
+}
