@@ -1,7 +1,7 @@
 <?php
 namespace CheeseBurgames\MFX;
 
-abstract class DatabaseUpdater {
+abstract class DatabaseUpdater implements IRouteProvider {
 	
 	/**
 	 * Retrieves the key for this updater
@@ -17,16 +17,27 @@ abstract class DatabaseUpdater {
 	
 	private static $_updatersData = NULL;
 	
+	/**
+	 * @mfx_subroute
+	 */
 	public static function update() {
-		$updaters = Config::get('database.updaters', array());
+		$updaters = array_merge(array( __NAMESPACE__."\FrameworkDatabaseUpdater" ), Config::get('database.updaters', array()));
 		if (!is_array($updaters) || empty($updaters))
 			return;
 		
-		// Load versions and file modification times
 		$dbm = DatabaseManager::open('__mfx');
-		$dbm->exec('LOCK TABLES `mfx_database_updaters` WRITE');
+		
+		// Creating updaters table
+		$dbm->exec("CREATE TABLE IF NOT EXISTS `mfx_database_updaters` (
+					`updater_key` varchar(255) COLLATE utf8_bin NOT NULL,
+					`updater_version` smallint(5) unsigned NOT NULL,
+					`updater_file_modified` int(10) unsigned NOT NULL,
+					PRIMARY KEY (`updater_key`)
+		)");
+		
+		// Load versions and file modification times
 		$sql = "SELECT `updater_key`, `updater_version`, UNIX_TIMESTAMP(`updater_file_modified`) AS `updater_filemtime` FROM `mfx_database_updaters`";
-		self::$_updatersData = $dbm->getIndexed($sql, 'updater_key', DBM_OBJECT);
+		self::$_updatersData = $dbm->getIndexed($sql, 'updater_key', \PDO::FETCH_OBJ);
 		
 		foreach ($updaters as $updater) {
 			$rc = new \ReflectionClass($updater);
@@ -36,13 +47,13 @@ abstract class DatabaseUpdater {
 				break;
 		}
 		
-		$dbm->exec('UNLOCK TABLES');
+		return RequestResult::buildStatusRequestResult(200);
 	}
 	
 	private static function ensureUpToDate(DatabaseUpdater $updater, DatabaseManager $dbmMFX) {
 		$key = $updater->key();
 		$pathToSQL = $updater->pathToSQLFile();
-			
+		
 		// Looking for SQL file
 		if (empty($pathToSQL) || !is_string($pathToSQL) || !file_exists($pathToSQL) || !is_file($pathToSQL) || !is_readable($pathToSQL)) {
 			trigger_error(sprintf(dgettext('mfx', "Wrong SQL update file path for DatabaseUpdater '%s'."), $key), E_USER_ERROR);
@@ -75,6 +86,12 @@ abstract class DatabaseUpdater {
 			else {
 				if (array_key_exists($key, self::$_updatersData) && self::$_updatersData[$key]->updater_version >= $version)
 					continue;
+				
+				$chunk = str_replace(
+						array( '__MFX_USER_ID_FIELD_NAME__', '__MFX_USERS_TABLE_NAME__' ),
+						array( Config::get('user_management.key_field', 'user_id'), Config::get('user_management.table', 'mfx_users') ),
+						$chunk
+				);
 				
 				$queries = preg_split('/;$/m', $chunk);
 				$queries = array_map('trim', $queries);
