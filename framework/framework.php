@@ -17,6 +17,8 @@ use \CheeseBurgames\MFX\SessionManager;
 use \CheeseBurgames\MFX\User;
 use \CheeseBurgames\MFX\L10n\L10nManager;
 
+define('MFX_ROOT', dirname(__FILE__));
+
 // Minimal version of PHP
 define('MFX_REQUIRED_PHP_VERSION', '5.4');
 if (version_compare(PHP_VERSION, MFX_REQUIRED_PHP_VERSION) < 0)
