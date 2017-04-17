@@ -236,11 +236,16 @@ final class CoreManager
 		try {
 			$rc = new \ReflectionClass($mainRoute);
 		}
-		catch (ReflectionException $e) {
-			self::_check404file($routeParams);
-			throw $e;
+		catch (\ReflectionException $e) {
+			try {
+				$rc = new \ReflectionClass(__NAMESPACE__."\\{$mainRoute}");
+			}
+			catch (\ReflectionException $e) {
+				self::_check404file($routeParams);
+				throw $e;
+			}
 		}
-		if (!$rc->implementsInterface('IRouteProvider'))
+		if (!$rc->implementsInterface(__NAMESPACE__.'\IRouteProvider'))
 			throw new \ErrorException("'{$mainRoute}' is not a valid route provider.");
 		$validRouteProviderParameters = $inst->_docCommentParser->parse($rc);
 		
