@@ -102,7 +102,7 @@ class CommandLine
 	 * Terminates the script when incorrectedly used and display the usage message
 	 */
 	private static function _dieUsage() {
-		printf("Usage: php -f /path/to/mfx/entrypoint.php [-- [options] [route]]\n\n");
+		printf("Usage: php -f /path/to/php-micro-framework/entrypoint.php [-- [options] [route]]\n\n");
 		
 		printf("\t--config <file>\t\tPath to custom config file\n");
 		
