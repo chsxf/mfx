@@ -112,6 +112,34 @@ class User
 	}
 	
 	/**
+	 * Retrieves users management key field name
+	 * @throws \InvalidArgumentException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
+	 * @return string 
+	 */
+	private function getKeyField() {
+		$keyFieldName = Config::get('user_management.key_field', 'user_id');
+		if (!is_string($keyFieldName))
+			throw new \InvalidArgumentException("Users management key field name is not a string.");
+		if (!preg_match('/^[[:alnum:]_]+$/', $keyFieldName))
+			throw new \InvalidArgumentException("Users management key field name contains invalid characters (only underscores and alphanumeric characters are accepted).");
+		return $keyFieldName;
+	}
+	
+	/**
+	 * Retrieves users management table name
+	 * @throws \InvalidArgumentException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
+	 * @return string
+	 */
+	private function getTableName() {
+		$tableName = Config::get('user_management.table', 'mfx_users');
+		if (!is_string($tableName))
+			throw new \InvalidArgumentException("Users management table name is not a string.");
+		if (!preg_match('/^[[:alnum:]_]+$/', $tableName))
+			throw new \InvalidArgumentException("Users management table name contains invalid characters (only underscores and alphanumeric characters are accepted).");
+		return $tableName;
+	}
+	
+	/**
 	 * Register a user from database fields
 	 * @param array $fields Database fields used to identify the user
 	 * @return boolean true if the user is valid, false either
@@ -120,7 +148,7 @@ class User
 		if (empty($fields))
 			return false;
 		
-		$sql = sprintf("SELECT `%s` FROM `%s` WHERE ", Config::get('user_management.key_field', 'user_id'), Config::get('user_management.table', 'mfx_users'));
+		$sql = sprintf("SELECT `%s` FROM `%s` WHERE ", $this->getKeyField(), $this->getTableName());
 		$validFields = array();
 		$values = array();
 		foreach ($fields as $f)
@@ -167,7 +195,7 @@ class User
 	 */
 	protected function _validateKey($key) {
 		$dbm = DatabaseManager::open("__mfx");
-		$nb = $dbm->getValue(sprintf('SELECT COUNT(`%1$s`) FROM `%2$s` WHERE `%1$s` = ?', Config::get('user_management.key_field', 'user_id'), Config::get('user_management.table', 'mfx_users')), $key);
+		$nb = $dbm->getValue(sprintf('SELECT COUNT(`%1$s`) FROM `%2$s` WHERE `%1$s` = ?', $this->getKeyField(), $this->getTableName()), $key);
 		return !empty($nb);
 	}
 	
@@ -235,7 +263,7 @@ class User
 	 */
 	protected function fetchData() {
 		$dbm = DatabaseManager::open('__mfx');
-		$row = $dbm->getRow(sprintf("SELECT * FROM `%s` WHERE `%s` = ?", Config::get('user_management.table', 'mfx_users'), Config::get('user_management.key_field', 'user_id')), DBM_ASSOC_ARRAY, $this->_key);
+		$row = $dbm->getRow(sprintf("SELECT * FROM `%s` WHERE `%s` = ?", $this->getTableName(), $this->getKeyField()), DBM_ASSOC_ARRAY, $this->_key);
 		$dbm = NULL;
 		return $row;
 	}
