@@ -116,7 +116,7 @@ class User
 	 * @throws \InvalidArgumentException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
 	 * @return string 
 	 */
-	private function getKeyField() {
+	public static function getKeyField() {
 		$keyFieldName = Config::get('user_management.key_field', 'user_id');
 		if (!is_string($keyFieldName))
 			throw new \InvalidArgumentException("Users management key field name is not a string.");
@@ -130,7 +130,7 @@ class User
 	 * @throws \InvalidArgumentException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
 	 * @return string
 	 */
-	private function getTableName() {
+	public static function getTableName() {
 		$tableName = Config::get('user_management.table', 'mfx_users');
 		if (!is_string($tableName))
 			throw new \InvalidArgumentException("Users management table name is not a string.");
@@ -148,7 +148,7 @@ class User
 		if (empty($fields))
 			return false;
 		
-		$sql = sprintf("SELECT `%s` FROM `%s` WHERE ", $this->getKeyField(), $this->getTableName());
+		$sql = sprintf("SELECT `%s` FROM `%s` WHERE ", self::getKeyField(), self::getTableName());
 		$validFields = array();
 		$values = array();
 		foreach ($fields as $f)
@@ -195,7 +195,7 @@ class User
 	 */
 	protected function _validateKey($key) {
 		$dbm = DatabaseManager::open("__mfx");
-		$nb = $dbm->getValue(sprintf('SELECT COUNT(`%1$s`) FROM `%2$s` WHERE `%1$s` = ?', $this->getKeyField(), $this->getTableName()), $key);
+		$nb = $dbm->getValue(sprintf('SELECT COUNT(`%1$s`) FROM `%2$s` WHERE `%1$s` = ?', self::getKeyField(), self::getTableName()), $key);
 		return !empty($nb);
 	}
 	
@@ -263,7 +263,7 @@ class User
 	 */
 	protected function fetchData() {
 		$dbm = DatabaseManager::open('__mfx');
-		$row = $dbm->getRow(sprintf("SELECT * FROM `%s` WHERE `%s` = ?", $this->getTableName(), $this->getKeyField()), DBM_ASSOC_ARRAY, $this->_key);
+		$row = $dbm->getRow(sprintf("SELECT * FROM `%s` WHERE `%s` = ?", self::getTableName(), self::getKeyField()), DBM_ASSOC_ARRAY, $this->_key);
 		$dbm = NULL;
 		return $row;
 	}
