@@ -1,13 +1,13 @@
 <?php
 namespace CheeseBurgames\MFX;
 
-final class FrameworkDatabaseUpdater extends DatabaseUpdater {
+final class FrameworkDatabaseUpdater implements IDatabaseUpdater {
 	
 	/**
 	 * {@inheritDoc}
 	 * @see \CheeseBurgames\MFX\DatabaseUpdater::key()
 	 */
-	protected function key() {
+	public function key() {
 		return 'php-micro-framework';
 	}
 	
@@ -15,7 +15,7 @@ final class FrameworkDatabaseUpdater extends DatabaseUpdater {
 	 * {@inheritDoc}
 	 * @see \CheeseBurgames\MFX\DatabaseUpdater::pathToSQLFile()
 	 */
-	protected function pathToSQLFile() {
+	public function pathToSQLFile() {
 		return MFX_ROOT . '/php-micro-framework.sql';
 	}
 	

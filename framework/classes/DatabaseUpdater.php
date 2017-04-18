@@ -1,19 +1,7 @@
 <?php
 namespace CheeseBurgames\MFX;
 
-abstract class DatabaseUpdater implements IRouteProvider {
-	
-	/**
-	 * Retrieves the key for this updater
-	 * @return string
-	 */
-	abstract protected function key();
-	
-	/**
-	 * Retrieves the path to the SQL update file for this updater
-	 * @return string
-	 */
-	abstract protected function pathToSQLFile();
+final class DatabaseUpdater implements IRouteProvider {
 	
 	private static $_updatersData = NULL;
 	
@@ -41,7 +29,7 @@ abstract class DatabaseUpdater implements IRouteProvider {
 		
 		foreach ($updaters as $updater) {
 			$rc = new \ReflectionClass($updater);
-			if (!$rc->isSubclassOf(__CLASS__))
+			if (!$rc->implementsInterface(__NAMESPACE__.'\IDatabaseUpdater'))
 				continue;
 			if (self::ensureUpToDate($rc->newInstance(), $dbm) === false)
 				break;
@@ -50,7 +38,7 @@ abstract class DatabaseUpdater implements IRouteProvider {
 		return RequestResult::buildStatusRequestResult(200);
 	}
 	
-	private static function ensureUpToDate(DatabaseUpdater $updater, DatabaseManager $dbmMFX) {
+	private static function ensureUpToDate(IDatabaseUpdater $updater, DatabaseManager $dbmMFX) {
 		$key = $updater->key();
 		$pathToSQL = $updater->pathToSQLFile();
 		
