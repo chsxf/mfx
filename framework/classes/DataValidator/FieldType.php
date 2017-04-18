@@ -73,7 +73,7 @@ final class FieldType extends \CheeseBurgames\MFX\Enum
 	 */
 	public static function getClassForType(FieldType $type) {
 		if (!array_key_exists($type->value(), self::$_classForType))
-			return 'DataValidator_Field';
+			return __NAMESPACE__.'\Field';
 		else
 			return self::$_classForType[$type->value()];
 	}
