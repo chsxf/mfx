@@ -18,6 +18,9 @@ class SessionManager
 	 * Starts and sets up the PHP session
 	 */
 	public static function start() {
+		if (empty(Config::get('session.enabled', true)))
+			return;
+		
 		// Setting session parameters
 		session_name(Config::get('session.name', 'MFXSESSION'));
 		if (Config::get('session.use_cookies', true)) {
