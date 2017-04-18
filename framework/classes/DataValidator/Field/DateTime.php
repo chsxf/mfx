@@ -1,5 +1,5 @@
 <?php
-namespace CheeseBurgames\MFX\DataValidator\Fields;
+namespace CheeseBurgames\MFX\DataValidator\Field;
 
 use CheeseBurgames\MFX\DataValidator\Field;
 use CheeseBurgames\MFX\DataValidator\FieldType;
