@@ -47,9 +47,9 @@ final class DataValidator implements \ArrayAccess
 	
 	/**
 	 * Adds a field to the data validator
-	 * @param DataValidator_Field $field
-	 * @throws DataValidator_Exception If a field with the same name already exists
-	 * @return DataValidator_Field The added field
+	 * @param Field $field
+	 * @throws DataValidatorException If a field with the same name already exists
+	 * @return Field The added field
 	 */
 	public function addField(Field $field) {
 		if (array_key_exists($field->getName(), $this->_fields))
@@ -62,12 +62,12 @@ final class DataValidator implements \ArrayAccess
 	/**
 	 * Creates and add a field to the data validator
 	 * @param string $name Field's name
-	 * @param DataValidator_Field_Type $type Field's type
+	 * @param FieldType $type Field's type
 	 * @param mixed $defaultValue Field's default value (Defaults to NULL)
 	 * @param boolean $required If set, the field will be required. (Defaults to true)
-	 * @return DataValidator_Field
+	 * @return Field
 	 * 
-	 * @see DataValidator_Field::addField()
+	 * @see Field::addField()
 	 */
 	public function createField($name, FieldType $type, $defaultValue = NULL, $required = true) {
 		return $this->addField(Field::create($name, $type, $defaultValue, $required));
@@ -78,7 +78,7 @@ final class DataValidator implements \ArrayAccess
 	 * @param string $name Field name
 	 * @param boolean $returnDefaultIfNotSet If set, the default value of the field is returned is none has been provided (Defaults to false)
 	 * @param boolean $makeEmptyStringsNull If set, all empty string values will be set to NULL. (Defaults to false)
-	 * @throws DataValidator_Exception If no field exists with this name
+	 * @throws DataValidatorException If no field exists with this name
 	 */
 	public function getFieldValue($name, $returnDefaultIfNotSet = false, $makeEmptyStringsNull = false)
 	{
@@ -97,7 +97,7 @@ final class DataValidator implements \ArrayAccess
 	 * @param int $index Index of the value to retrieve
 	 * @param boolean $returnDefaultIfNotSet If set, the default value of the field is returned is none has been provided (Defaults to false)
 	 * @param boolean $makeEmptyStringsNull If set, all empty string values will be set to NULL. (Defaults to false)
-	 * @throws DataValidator_Exception If no field exists with this name
+	 * @throws DataValidatorException If no field exists with this name
 	 */
 	public function getIndexedFieldValue($name, $index, $returnDefaultIfNotSet = false, $makeEmptyStringsNull = false) {
 		if (!array_key_exists($name, $this->_fields))
@@ -196,8 +196,8 @@ final class DataValidator implements \ArrayAccess
 	/**
 	 * Generates the HTML representation of a field
 	 * @param string $name Field's name to generate
-	 * @param DataValidator_Field_Type $type_override Type to use to override original field type. If NULL, no override. (Defaults to NULL)
-	 * @throws DataValidator_Exception If no field exists with this name
+	 * @param FieldType $type_override Type to use to override original field type. If NULL, no override. (Defaults to NULL)
+	 * @throws DataValidatorException If no field exists with this name
 	 */
 	public function generate($name, FieldType $type_override = NULL) {
 		if (!array_key_exists($name, $this->_fields))
