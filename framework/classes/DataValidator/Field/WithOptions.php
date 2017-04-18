@@ -15,7 +15,7 @@ use CheeseBurgames\MFX\DataValidator\FieldType;
 /**
  * Descriptor of a field type with multiple options (such as 'select' or 'radio' types)
  */
-class DataValidator_Field_WithOptions extends Field
+class WithOptions extends Field
 {
 	/**
 	 * @var array Options holder

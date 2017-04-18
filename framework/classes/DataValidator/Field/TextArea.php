@@ -15,7 +15,7 @@ use CheeseBurgames\MFX\DataValidator\FieldType;
 /**
  * Descriptor of a text area field type
  */
-class DataValidator_Field_TextArea extends Field
+class TextArea extends Field
 {
 	/**
 	 * (non-PHPdoc)
