@@ -7,7 +7,7 @@
  * @package framework
  */
 
-namespace CheeseBurgames\MFX\DataValidator\Filters;
+namespace CheeseBurgames\MFX\DataValidator\Filter;
 
 use CheeseBurgames\MFX\DataValidator\AbstractFilter;
 use CheeseBurgames\MFX\DatabaseManager;

@@ -11,7 +11,7 @@ namespace CheeseBurgames\MFX\DataValidator\Fields;
 
 use CheeseBurgames\MFX\DataValidator\Field;
 use CheeseBurgames\MFX\DataValidator\FieldType;
-use CheeseBurgames\MFX\DataValidator\Filters\RegExp;
+use CheeseBurgames\MFX\DataValidator\Filter\RegExp;
 
 /**
  * Descriptor of a Word field type

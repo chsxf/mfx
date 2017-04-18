@@ -10,8 +10,8 @@
 namespace CheeseBurgames\MFX;
 
 use CheeseBurgames\MFX\DataValidator\FieldType;
-use CheeseBurgames\MFX\DataValidator\Filters\RegExp;
-use CheeseBurgames\MFX\DataValidator\Filters\ExistsInDB;
+use CheeseBurgames\MFX\DataValidator\Filter\RegExp;
+use CheeseBurgames\MFX\DataValidator\Filter\ExistsInDB;
 
 /**
  * Secured downloads handling class

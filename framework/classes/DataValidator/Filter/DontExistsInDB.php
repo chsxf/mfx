@@ -7,7 +7,7 @@
  * @package framework
  */
 
-namespace CheeseBurgames\MFX\DataValidator\Filters;
+namespace CheeseBurgames\MFX\DataValidator\Filter;
 
 /**
  * Description of a filter validating if the specified value exists in a database table
