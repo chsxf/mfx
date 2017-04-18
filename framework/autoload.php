@@ -12,7 +12,7 @@
  */
 
 // Building autoload directory precedence list
-$__MicroFX_autoload_precedence = \CheeseBurgames\MFX\Config::get('autoload_precedence', array());
+$__MicroFX_autoload_precedence = \CheeseBurgames\MFX\Config::get('autoload.precedence', array());
 array_unshift($__MicroFX_autoload_precedence, 
 		'mfx/framework/interfaces', 
 		'mfx/framework/classes', 
