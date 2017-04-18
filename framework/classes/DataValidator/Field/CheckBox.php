@@ -79,4 +79,4 @@ class CheckBox extends Field
 	}
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::CHECKBOX), __NAMESPACE__ . '\CheckBox');
+FieldType::registerClassForType(new FieldType(FieldType::CHECKBOX), CheckBox::class);

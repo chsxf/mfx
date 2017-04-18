@@ -56,6 +56,6 @@ class Word extends Field
 	}
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::LOWERCASE_WORD), __NAMESPACE__ . '\Word');
-FieldType::registerClassForType(new FieldType(FieldType::UPPERCASE_WORD), __NAMESPACE__ . '\Word');
-FieldType::registerClassForType(new FieldType(FieldType::WORD), __NAMESPACE__ . '\Word');
+FieldType::registerClassForType(new FieldType(FieldType::LOWERCASE_WORD), Word::class);
+FieldType::registerClassForType(new FieldType(FieldType::UPPERCASE_WORD), Word::class);
+FieldType::registerClassForType(new FieldType(FieldType::WORD), Word::class);

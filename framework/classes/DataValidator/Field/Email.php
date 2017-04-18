@@ -50,4 +50,4 @@ class Email extends Field
 	}
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::EMAIL), __NAMESPACE__ . '\Email');
+FieldType::registerClassForType(new FieldType(FieldType::EMAIL), Email::class);

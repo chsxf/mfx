@@ -30,4 +30,4 @@ class TextArea extends Field
 	}
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::TEXTAREA), __NAMESPACE__ . '\TextArea');
+FieldType::registerClassForType(new FieldType(FieldType::TEXTAREA), TextArea::class);

@@ -245,7 +245,7 @@ final class CoreManager
 				throw $e;
 			}
 		}
-		if (!$rc->implementsInterface(__NAMESPACE__.'\IRouteProvider'))
+		if (!$rc->implementsInterface(IRouteProvider::class))
 			throw new \ErrorException("'{$mainRoute}' is not a valid route provider.");
 		$validRouteProviderParameters = $inst->_docCommentParser->parse($rc);
 		
@@ -509,4 +509,4 @@ final class CoreManager
 	}
 }
 
-set_exception_handler(array(__NAMESPACE__ . '\CoreManager', 'exceptionHandler'));
+set_exception_handler(array(CoreManager::class, 'exceptionHandler'));

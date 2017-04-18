@@ -73,5 +73,5 @@ class DateTime extends Field {
 	
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::DATE), __NAMESPACE__ . '\DateTime');
-FieldType::registerClassForType(new FieldType(FieldType::TIME), __NAMESPACE__ . '\DateTime');
+FieldType::registerClassForType(new FieldType(FieldType::DATE), DateTime::class);
+FieldType::registerClassForType(new FieldType(FieldType::TIME), DateTime::class);

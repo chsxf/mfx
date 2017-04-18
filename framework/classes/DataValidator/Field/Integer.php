@@ -166,8 +166,8 @@ class Integer extends Field
 	}
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::INTEGER), __NAMESPACE__ . '\Integer');
-FieldType::registerClassForType(new FieldType(FieldType::POSITIVE_INTEGER), __NAMESPACE__ . '\Integer');
-FieldType::registerClassForType(new FieldType(FieldType::POSITIVEZERO_INTEGER), __NAMESPACE__ . '\Integer');
-FieldType::registerClassForType(new FieldType(FieldType::NEGATIVE_INTEGER), __NAMESPACE__ . '\Integer');
-FieldType::registerClassForType(new FieldType(FieldType::NEGATIVEZERO_INTEGER), __NAMESPACE__ . '\Integer');
+FieldType::registerClassForType(new FieldType(FieldType::INTEGER), Integer::class);
+FieldType::registerClassForType(new FieldType(FieldType::POSITIVE_INTEGER), Integer::class);
+FieldType::registerClassForType(new FieldType(FieldType::POSITIVEZERO_INTEGER), Integer::class);
+FieldType::registerClassForType(new FieldType(FieldType::NEGATIVE_INTEGER), Integer::class);
+FieldType::registerClassForType(new FieldType(FieldType::NEGATIVEZERO_INTEGER), Integer::class);

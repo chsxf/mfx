@@ -186,6 +186,6 @@ class WithOptions extends Field
 	}
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::SELECT), __NAMESPACE__ . '\WithOptions');
-FieldType::registerClassForType(new FieldType(FieldType::MULTI_SELECT), __NAMESPACE__ . '\WithOptions');
-FieldType::registerClassForType(new FieldType(FieldType::RADIO), __NAMESPACE__ . '\WithOptions');
+FieldType::registerClassForType(new FieldType(FieldType::SELECT), WithOptions::class);
+FieldType::registerClassForType(new FieldType(FieldType::MULTI_SELECT), WithOptions::class);
+FieldType::registerClassForType(new FieldType(FieldType::RADIO), WithOptions::class);

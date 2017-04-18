@@ -10,7 +10,7 @@ final class DatabaseUpdater implements IRouteProvider {
 	 * @mfx_subroute
 	 */
 	public static function update() {
-		$updaters = array_merge(array( __NAMESPACE__."\FrameworkDatabaseUpdater" ), Config::get('database.updaters', array()));
+		$updaters = array_merge(array( FrameworkDatabaseUpdater::class ), Config::get('database.updaters', array()));
 		if (!is_array($updaters) || empty($updaters))
 			return;
 		
@@ -42,7 +42,7 @@ final class DatabaseUpdater implements IRouteProvider {
 		
 		foreach ($updaters as $updater) {
 			$rc = new \ReflectionClass($updater);
-			if (!$rc->implementsInterface(__NAMESPACE__.'\IDatabaseUpdater'))
+			if (!$rc->implementsInterface(IDatabaseUpdater::class))
 				continue;
 			if (self::ensureUpToDate($rc->newInstance(), $dbm) === false)
 				break;
