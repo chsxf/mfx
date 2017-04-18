@@ -103,7 +103,7 @@ class Field
 	 * @param boolean $required If set, the field will be required. (Defaults to true)
 	 * @return Field
 	 */
-	public static function create($name, FieldType$type, $defaultValue = NULL, $required = true)
+	public static function create($name, FieldType $type, $defaultValue = NULL, $required = true)
 	{
 		$class = FieldType::getClassForType($type);
 		return new $class($name, $type, $defaultValue, $required);
@@ -130,7 +130,7 @@ class Field
 	 * @param FieldType $type_override Type to use to override original field type. If NULL, no override. (Defaults to NULL)
 	 * @return string
 	 */
-	public function getHTMLType(FieldType$type_override = NULL) {
+	public function getHTMLType(FieldType $type_override = NULL) {
 		if ($type_override !== NULL)
 			return $type_override->value();
 		return $this->_type->value();
