@@ -146,7 +146,9 @@ class XMLTools
 		$writer->setIndent(true);
 		$writer->setIndentString("\t");
 		$writer->startDocument('1.0', $encoding);
+		$writer->startElement('root');
 		self::_build($writer, $var);
+		$writer->endElement();
 		$writer->endDocument();
 		return $writer->outputMemory(false);
 	}
