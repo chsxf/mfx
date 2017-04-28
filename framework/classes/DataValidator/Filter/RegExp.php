@@ -16,11 +16,11 @@ use CheeseBurgames\MFX\DataValidator\AbstractFilter;
  */
 class RegExp extends AbstractFilter
 {
-	const DV_REGEXP_WORD = '/^[a-z0-9_]+$/i';
-	const DV_REGEXP_LCWORD = '/^[a-z0-9_]+$/';
-	const DV_REGEXP_UCWORD = '/^[A-Z0-9_]+$/';
-	const DV_REGEXP_LCALPHANUMERIC = '/^[a-z0-9]+$/';
-	const DV_REGEXP_UCALPHANUMERIC = '/^[A-Z0-9]+$/';
+	public const REGEX_WORD = '/^[a-z0-9_]+$/i';
+	public const REGEX_LCWORD = '/^[a-z0-9_]+$/';
+	public const REGEX_UCWORD = '/^[A-Z0-9_]+$/';
+	public const REGEX_LCALPHANUMERIC = '/^[a-z0-9]+$/';
+	public const REGEX_UCALPHANUMERIC = '/^[A-Z0-9]+$/';
 	
 	/**
 	 * @var string Regular expression holder
@@ -111,7 +111,7 @@ class RegExp extends AbstractFilter
 	 * @return RegExp
 	 */
 	public static function word() {
-		return new RegExp(self::DV_REGEXP_WORD, dgettext('mfx', "The field '%s' does not contain a word."));
+		return new RegExp(self::REGEX_WORD, dgettext('mfx', "The field '%s' does not contain a word."));
 	}
 	
 	/**
@@ -119,7 +119,7 @@ class RegExp extends AbstractFilter
 	 * @return RegExp
 	 */
 	public static function lowerCaseWord() {
-		return new RegExp(self::DV_REGEXP_LCWORD, dgettext('mfx', "The field '%s' does not contain a lower case word."));
+		return new RegExp(self::REGEX_LCWORD, dgettext('mfx', "The field '%s' does not contain a lower case word."));
 	}
 	
 	/**
@@ -127,7 +127,7 @@ class RegExp extends AbstractFilter
 	 * @return RegExp
 	 */
 	public static function upperCaseWord() {
-		return new RegExp(self::DV_REGEXP_UCWORD, dgettext('mfx', "The field '%s' does not contain an upper case word."));
+		return new RegExp(self::REGEX_UCWORD, dgettext('mfx', "The field '%s' does not contain an upper case word."));
 	}
 	
 	/**
