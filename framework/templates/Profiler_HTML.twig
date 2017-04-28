@@ -23,7 +23,7 @@ Profiling results:
 
 		data.addRows([
 		{% for row in data %}
-		[ {{ row[0] }}, {{ row[1] }}, {{ row[3]|raw }}, {{ row[4]|raw }}, {{ row[2] }}, {{ row[3]|raw }}, {{ row[4]|raw }} ],
+		[ {{ row[0] }}, {{ row[1] }}, {{ row[3]|raw }}, {{ row[4]|raw }}, {{ row[2] }}, "{{ row[3]|raw }}", "{{ row[4]|raw }}"],
 		{% endfor %}
 		]);
 

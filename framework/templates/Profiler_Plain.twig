@@ -1,0 +1,11 @@
+Profiling results:
+	- {{ dgettext('mfx', 'PHP version') }}: {{ constant('PHP_VERSION') }}
+	- {{ dgettext('mfx', 'Duration') }}: {{ dgettext('mfx', '%d s')|format(duration) }}
+	- {{ dgettext('mfx', 'Operation count') }}: {{ opCount|number_format(0) }}
+	- {{ dgettext('mfx', 'Memory peak usage') }}: {{ _d('mfx', '%s bytes')|format(memPeakUsage|number_format(0)) }} ({{ dgettext('mfx', '%s%% of allowed memory')|format((memPeakUsageRatio * 100)|number_format(3)) }})
+	- {{ dgettext('mfx', 'Memory real peak usage') }}: {{ _d('mfx', '%s bytes')|format(memRealPeakUsage|number_format(0)) }} ({{ dgettext('mfx', '%s%% of allowed memory')|format((memRealPeakUsageRatio * 100)|number_format(3)) }})
+
+Profiling data:
+{% for row in data %}
+	- [ {{ row[0] }}, {{ row[1] }}, {{ row[3]|raw }}, {{ row[4]|raw }}, {{ row[2] }}, {{ row[3]|raw }}, {{ row[4]|raw }} ]
+{% endfor %}

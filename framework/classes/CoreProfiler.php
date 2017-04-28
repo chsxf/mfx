@@ -59,8 +59,8 @@ class CoreProfiler
 					microtime(true) - $this->_profilingStartTime, 
 					memory_get_usage(), 
 					memory_get_usage(true), 
-					empty($event) ? 'null' : sprintf('"%d"', ++$this->_lastAnnotation), 
-					empty($event) ? 'null' : sprintf('"%s"', $event)
+					empty($event) ? 'null' : sprintf('%d', ++$this->_lastAnnotation), 
+					empty($event) ? 'null' : $event
 			);
 	}
 	
@@ -137,6 +137,16 @@ class CoreProfiler
 					break;
 			}
 		} 
+	
+		$headers = headers_list();
+		$contentType = NULL;
+		$charset = NULL;
+		foreach ($headers as $header) {
+			if (preg_match('/^Content-Type: ([^;]+)/', $header, $contentType)) {
+				$contentType = $contentType[1];
+				break;
+			}
+		}
 		
 		$context = array(
 				'duration' => self::getProfilingDuration(),
@@ -147,9 +157,53 @@ class CoreProfiler
 				'memRealPeakUsageRatio' => $realPeak / $memlimit,
 				'data' => self::$_singleInstance->_profilingData
 		);
-		$str = $GLOBALS['twig']->render('@mfx/Profiler.twig', $context);
 		
-		echo preg_replace('/<!--\s+--MFX_PROFILING_OUTPUT--\s+-->/', $str, $buffer);
+		// HTML
+		if ($contentType == 'text/html') {
+			$str = $GLOBALS['twig']->render('@mfx/Profiler_HTML.twig', $context);
+			echo preg_replace('/<!--\s+--MFX_PROFILING_OUTPUT--\s+-->/', $str, $buffer);
+		}
+		// JSON
+		else if ($contentType == 'application/json') {
+			$decoded = json_decode($buffer);
+			if (is_object($decoded)) {
+				$decoded->mfx_profiler = $context;
+				echo json_encode($decoded);
+			}
+			else
+				echo $buffer;
+		}
+		// XML
+		else if ($contentType == 'application/xml') {
+			$xmlTree = simplexml_load_string($buffer);
+			
+			$profilerRoot = $xmlTree->addChild('mfx_profiler');
+			foreach ($context as $k => $v) {
+				if ($k == 'data') {
+					$dataRoot = $profilerRoot->addChild($k);
+					foreach ($context['data'] as $row) {
+						$dataRow = $dataRoot->addChild('row');
+						$dataRow->addAttribute('timing', $row[0]);
+						$dataRow->addAttribute('memory_usage', $row[1]);
+						$dataRow->addAttribute('memore_real_usage', $row[2]);
+						$dataRow->addAttribute('annotation_index', $row[3]);
+						$dataRow->addChild('event', $row[4]);
+					}
+				}
+				else
+					$profilerRoot->addChild($k, $v);
+			}
+			
+			echo $xmlTree->asXML();
+		}
+		// Text plain
+		else if ($contentType == 'text/plain') {
+			$str = $GLOBALS['twig']->render('@mfx/Profiler_Plain.twig', $context);
+			echo "{$buffer}\n\n{$str}";
+		}
+		// Unsupported content-type
+		else
+			echo $buffer;
 	}
 	
 	/**
