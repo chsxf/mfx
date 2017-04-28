@@ -76,13 +76,16 @@ class ErrorManager
 		{
 			if (($constant = self::_getConstantFromErrorNumber($errno)) !== false)
 			{
-				self::$_errors[] = array(
+				$errdata = array(
 						'errno' => $errno,
 						'errstr' => $errstr,
-						'errfile' => $errfile,
-						'errline' => $errline,
 						'errnoconstant' => $constant
 				);
+				if (Config::get('response.full_errors', false)) {
+					$errdata['errfile'] = $errfile;
+					$errdata['errline'] = $errline;
+				}
+				self::$_errors[] = $errdata;
 				return true;
 			}
 		}
