@@ -263,12 +263,12 @@ final class CoreManager
 		// -- Global
 		$callback = Config::get('request.pre_route_callback');
 		if (!empty($callback) && is_callable($callback))
-			call_user_func($callback, $validSubRouteParameters, $validRouteProviderParameters);
+			call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters);
 		// -- Route
 		if (array_key_exists('mfx_pre_route_callback', $validRouteProviderParameters)) {
 			$callback = $validRouteProviderParameters['mfx_pre_route_callback'];
 			if (!empty($callback) && is_callable($callback))
-				call_user_func($callback, $validSubRouteParameters, $validRouteProviderParameters);
+				call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters);
 		}
 		
 		// Processing route
@@ -324,7 +324,7 @@ final class CoreManager
 		// Post-processing callback
 		$callback = Config::get('request.post_route_callback');
 		if (!empty($callback) && is_callable($callback))
-			call_user_func($callback, $validSubRouteParameters, $validRouteProviderParameters);
+			call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters);
 	}
 	
 	private static function outputJSON(RequestResult $reqResult, array $subRouteParameters = array(), \Twig_Environment $twig = NULL) {
