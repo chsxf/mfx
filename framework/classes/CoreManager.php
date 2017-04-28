@@ -317,7 +317,7 @@ final class CoreManager
 				
 			// Status
 			case SubRouteType::STATUS:
-				self::dieWithStatusCode($reqResult->statusCode(), $reqResult->data());
+				self::_outputStatusCode($reqResult->statusCode(), $reqResult->data());
 				break;
 		}
 		
@@ -420,10 +420,11 @@ final class CoreManager
 	}
 	
 	/**
-	 * Terminates the script and emits a HTTP status code
+	 * Emits a HTTP status code
 	 * @param int $code HTTP status code to emit (Defaults to 400 Bad Request)
+	 * @param string $message Custom message to output with status code
 	 */
-	public static function dieWithStatusCode($code = 400, $message = '') {
+	private static function _outputStatusCode($code = 400, $message = '') {
 		$code = self::_setStatusCode($code);
 		
 		$contentType = Config::get('response.default_content_type', 'text/plain');
@@ -435,7 +436,7 @@ final class CoreManager
 		);
 		if (!empty($message))
 			$data['message'] = $message;
-		
+			
 		self::_setResponseContentType(array(), $contentType, $charset);
 		switch ($contentType) {
 			case 'application/json':
@@ -450,9 +451,17 @@ final class CoreManager
 				echo "{$data['code']} {$data['status']}";
 				if (isset($data['message']))
 					echo "\n{$data['message']}";
-				break;
+					break;
 		}
-		
+	}
+	
+	/**
+	 * Terminates the script and emits a HTTP status code
+	 * @param int $code HTTP status code to emit (Defaults to 400 Bad Request)
+	 * @param string $message Custom message to output with status code
+	 */
+	public static function dieWithStatusCode($code = 400, $message = '') {
+		self::_outputStatusCode($code, $message);
 		ErrorManager::freeze();
 		exit();
 	}
