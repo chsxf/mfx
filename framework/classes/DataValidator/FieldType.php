@@ -55,9 +55,9 @@ final class FieldType extends \CheeseBurgames\MFX\Enum
 	
 	/**
 	 * Registers a class name for a specific field type
-	 * @param DataValidator_Field_Type $type Field type
+	 * @param FieldType $type Field type
 	 * @param string $className Class name
-	 * @throws DataValidator_Exception If a class is already registered for this type
+	 * @throws DataValidatorException If a class is already registered for this type
 	 */
 	public static function registerClassForType(FieldType $type, $className) {
 		if (array_key_exists($type->value(), self::$_classForType))
@@ -67,8 +67,8 @@ final class FieldType extends \CheeseBurgames\MFX\Enum
 	}
 	
 	/**
-	 * Gets the class name registered for a specific type, of the default DataValidator_Field if none is provided
-	 * @param DataValidator_Field_Type $type Field type
+	 * Gets the class name registered for a specific type, of the default Field if none is provided
+	 * @param FieldType $type Field type
 	 * @return string
 	 */
 	public static function getClassForType(FieldType $type) {

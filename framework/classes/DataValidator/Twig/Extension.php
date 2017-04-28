@@ -264,7 +264,7 @@ class DataValidator_FieldNode extends \Twig_Node
 	public function compile(\Twig_Compiler $compiler)
 	{
 		if ($this->getAttribute('typeOverride') !== NULL)
-			$code1 = sprintf("\$fieldResult = \$context['%s']->generate('%s', new DataValidator_Field_Type('%s'))",
+			$code1 = sprintf("\$fieldResult = \$context['%s']->generate('%s', new \\CheeseBurgames\\MFX\\DataValidator\\FieldType('%s'))",
 					$this->getAttribute('validatorName'),
 					$this->getAttribute('fieldName'),
 					$this->getAttribute('typeOverride'));

@@ -51,7 +51,7 @@ class CheckBox extends Field
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see DataValidator_Field::getValue()
+	 * @see Field::getValue()
 	 * 
 	 * @param bool $returnDefaultIfNotSet
 	 */
@@ -61,7 +61,7 @@ class CheckBox extends Field
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see DataValidator_Field::getIndexedValue()
+	 * @see Field::getIndexedValue()
 	 * 
 	 * @param int $index
 	 * @param bool $returnDefaultIfNotSet
@@ -72,7 +72,7 @@ class CheckBox extends Field
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see DataValidator_Field::revertToDefaultIfNotPopulated()
+	 * @see Field::revertToDefaultIfNotPopulated()
 	 */
 	public function revertToDefaultIfNotPopulated() {
 		return $this->isEnabled();

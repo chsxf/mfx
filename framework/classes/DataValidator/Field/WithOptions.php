@@ -56,7 +56,7 @@ class WithOptions extends Field
 
 	/**
 	 * (non-PHPdoc)
-	 * @see DataValidator_Field::validate()
+	 * @see Field::validate()
 	 */
 	public function validate() {
 		if ($this->isEnabled() == false)

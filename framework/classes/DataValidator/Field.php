@@ -19,7 +19,7 @@ class Field
 	 */
 	private $_name;
 	/**
-	 * @var DataValidator_Field_Type Field's type
+	 * @var FieldType Field's type
 	 */
 	private $_type;
 	
@@ -119,7 +119,7 @@ class Field
 	
 	/**
 	 * Gets the type of this field
-	 * @return DataValidator_Field_Type
+	 * @return FieldType
 	 */
 	public function getType() {
 		return $this->_type;
@@ -227,7 +227,7 @@ class Field
 	
 	/**
 	 * Adds a validation filter to this field
-	 * @param DataValidator_AbstractFilter $filter
+	 * @param AbstractFilter $filter
 	 */
 	public final function addFilter(AbstractFilter $filter) {
 		if ($this->_filters === NULL)
@@ -237,7 +237,7 @@ class Field
 	
 	/**
 	 * Removes a validation filter from this field
-	 * @param DataValidator_AbstractFilter $filter
+	 * @param AbstractFilter $filter
 	 */
 	public final function removeFilter(AbstractFilter $filter) {
 		if (!empty($this->_filters))

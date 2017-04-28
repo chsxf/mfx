@@ -11,6 +11,7 @@ namespace CheeseBurgames\MFX\DataValidator\Filter;
 
 use CheeseBurgames\MFX\DataValidator\AbstractOtherFieldFilter;
 use CheeseBurgames\MFX\StringTools;
+use CheeseBurgames\MFX\DataValidator\Field\CheckBox;
 
 /**
  * Description of a filter validating when provided along with other fields.
@@ -60,7 +61,7 @@ class RequiredIfNotEmpty extends AbstractOtherFieldFilter
 		foreach ($otherFields as $f)
 		{
 			$matchingValue = ($atIndex === NULL) ? $f->getValue() : $f->getIndexedValue($atIndex);
-			if ($matchingValue === NULL || $matchingValue === '' || ($f instanceof DataValidator_Field_CheckBox && $matchingValue === 0))
+			if ($matchingValue === NULL || $matchingValue === '' || ($f instanceof CheckBox && $matchingValue === 0))
 				return true;
 		}
 		

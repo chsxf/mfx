@@ -21,21 +21,21 @@ abstract class AbstractOtherFieldFilter extends AbstractFilter
 
 	/**
 	 * Constructor
-	 * @param DataValidator_Field|array $otherFields One or more references to the matching fields
+	 * @param Field|array $otherFields One or more references to the matching fields
 	 * @param string $message Error message
 	 */
 	public function __construct($otherFields, $message = NULL)
 	{
 		parent::__construct($message);
 		
-		if ($otherFields instanceof DataValidator_Field === false)
+		if ($otherFields instanceof Field === false)
 		{
 			$valid = true;
 			if (is_array($otherFields))
 			{
 				foreach ($otherFields as $v)
 				{
-					if ($v instanceof DataValidator_Field === false)
+					if ($v instanceof Field === false)
 					{
 						$valid = false;
 						break;
@@ -45,7 +45,7 @@ abstract class AbstractOtherFieldFilter extends AbstractFilter
 			else
 				$valid = false;
 			if (!$valid)
-				throw new DataValidatorException(dgettext('mfx', "References to other fields must be provided as a DataValidator_Field instance or an array containing only instances of this class."));
+				throw new DataValidatorException(dgettext('mfx', "References to other fields must be provided as a Field instance or an array containing only instances of this class."));
 		}
 		
 		$this->_otherFields = is_array($otherFields) ? $otherFields : array($otherFields);
