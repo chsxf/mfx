@@ -261,7 +261,7 @@ final class CoreManager
 		
 		// Pre-processing callbacks
 		// -- Global
-		$callback = Config::get('pre_route_callback');
+		$callback = Config::get('request.pre_route_callback');
 		if (!empty($callback) && is_callable($callback))
 			call_user_func($callback, $validSubRouteParameters, $validRouteProviderParameters);
 		// -- Route
@@ -322,7 +322,7 @@ final class CoreManager
 		}
 		
 		// Post-processing callback
-		$callback = Config::get('post_route_callback');
+		$callback = Config::get('request.post_route_callback');
 		if (!empty($callback) && is_callable($callback))
 			call_user_func($callback, $validSubRouteParameters, $validRouteProviderParameters);
 	}
