@@ -57,14 +57,16 @@ class LogicOr extends AbstractFilter implements IMessageDispatcher {
 	 * (non-PHPdoc)
 	 * @see AbstractFilter::validate()
 	 */
-	public function validate($fieldName, $value, $atIndex = NULL) {
+	public function validate($fieldName, $value, $atIndex = NULL, $silent = false) {
 		foreach ($this->_filters as $filter) {
-			if ($filter->validate($fieldName, $value, $atIndex))
+			if ($filter->validate($fieldName, $value, $atIndex, $silent))
 				return true;
 		}
 		
-		$message = implode(sprintf('<br />%d<br />', dgettext('mfx', ' or ')), $this->_messages);
-		$this->emitMessage($message, $this->_messageLevel);
+		if (empty($silent)) {
+			$message = implode(sprintf('<br />%d<br />', dgettext('mfx', ' or ')), $this->_messages);
+			$this->emitMessage($message, $this->_messageLevel);
+		}
 		return false;
 	}
 	

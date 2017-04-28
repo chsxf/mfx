@@ -344,9 +344,10 @@ class Field
 	
 	/**
 	 * Validates the field's value based on the required flag and the provided filters
+	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * @return boolean
 	 */
-	public function validate() {
+	public function validate($silent = false) {
 		if ($this->isEnabled() == false)
 			return true;
 		
@@ -355,10 +356,11 @@ class Field
 			$maxIndex = $this->getMaxRepeatIndex();
 			if ($this->_required && ($maxIndex < 0 || $this->_populatedValue === NULL || !is_array($this->_populatedValue)))
 			{
-				trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
+				if (empty($silent))
+					trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
 				return false;
 			}
-			if (!$this->applyFiltersOnField())
+			if (!$this->applyFiltersOnField($silent))
 				return false;
 			if ($this->_populatedValue !== NULL && is_array($this->_populatedValue))
 			{
@@ -368,13 +370,14 @@ class Field
 					{
 						if ($this->_required && ($this->_populatedValue[$i] === NULL || $this->_populatedValue[$i] === ''))
 						{
-							trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is required."), $this->getName(), $i));
+							if (empty($silent))
+								trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is required."), $this->getName(), $i));
 							return false;
 						}
 					}
 					
 					$value = $this->getIndexedValue($i);
-					if (!$this->applyFilterOnValue($value, $i))
+					if (!$this->applyFilterOnValue($value, $i, $silent))
 						return false;
 				}
 			}
@@ -384,33 +387,35 @@ class Field
 		{
 			if ($this->_required && ($this->_populatedValue === NULL || $this->_populatedValue === ''))
 			{
-				trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
+				if (empty($silent))
+					trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
 				return false;
 			}
 			
-			if (!$this->applyFiltersOnField())
+			if (!$this->applyFiltersOnField($silent))
 				return false;
 			
 			// Filters
 			$value = $this->getValue(true);
-			return $this->applyFilterOnValue($value);
+			return $this->applyFilterOnValue($value, NULL, $silent);
 		}
 	}
 	
 	/**
 	 * Applies applicable field's filters to itself
+	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * @return boolean true if the field qualifies for all filters, false either.
 	 * 
 	 * Note:
 	 * This function should be called after having checked to required aspect of the field
 	 * as it potentially uses the default value of the field
 	 */
-	protected function applyFiltersOnField() {
+	protected function applyFiltersOnField($silent = false) {
 		if (!empty($this->_filters))
 		{
 			foreach ($this->_filters as $f)
 			{
-				if ($f->appliesToField() && !$f->validate($this->getName(), $this->getValue(true)))
+				if ($f->appliesToField() && !$f->validate($this->getName(), $this->getValue(true), NULL, $silent))
 					return false;
 			}
 		}
@@ -421,9 +426,10 @@ class Field
 	 * Applies field's filters to the specified value 
 	 * @param mixed $value Value to validate
 	 * @param int $atIndex Index for repeatable fields. If NULL, no index is provided. (Defaults to NULL)
+	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * @return boolean true if the value qualifies for all filters, false either.
 	 */
-	protected function applyFilterOnValue($value, $atIndex = NULL) {
+	protected function applyFilterOnValue($value, $atIndex = NULL, $silent = false) {
 		$canSkipFilters = (!$this->_required && $value !== NULL);
 		if (!empty($this->_filters))
 		{
@@ -431,7 +437,7 @@ class Field
 			{
 				if ($f->appliesToField() || ($canSkipFilters && $f->mayBeSkipped($atIndex)))
 					continue;
-				if (!$f->validate($this->getName(), $value, $atIndex))
+				if (!$f->validate($this->getName(), $value, $atIndex, $silent))
 					return false;
 			}
 		}

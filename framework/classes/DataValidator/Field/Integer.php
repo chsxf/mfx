@@ -22,8 +22,8 @@ class Integer extends Field
 	 * (non-PHPdoc)
 	 * @see Field::validate()
 	 */
-	public function validate() {
-		if (!parent::validate())
+	public function validate($silent = false) {
+		if (!parent::validate($silent))
 			return false;
 		
 		if ($this->isRepeatable())
@@ -39,7 +39,8 @@ class Integer extends Field
 						case FieldType::INTEGER:
 							if (!StringTools::isInteger($val))
 							{
-								trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not an integer."), $this->getName(), $i));
+								if (empty($silent))
+									trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not an integer."), $this->getName(), $i));
 								return false;
 							}
 							break;
@@ -47,7 +48,8 @@ class Integer extends Field
 						case FieldType::POSITIVE_INTEGER:
 							if (!StringTools::isPositiveInteger($val))
 							{
-								trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not a stricly positive integer."), $this->getName(), $i));
+								if (empty($silent))
+									trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not a stricly positive integer."), $this->getName(), $i));
 								return false;
 							}
 							break;
@@ -55,7 +57,8 @@ class Integer extends Field
 						case FieldType::POSITIVEZERO_INTEGER:
 							if (!StringTools::isPositiveInteger($val, true))
 							{
-								trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not a positive or zero integer."), $this->getName(), $i));
+								if (empty($silent))
+									trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not a positive or zero integer."), $this->getName(), $i));
 								return false;
 							}
 							break;
@@ -63,7 +66,8 @@ class Integer extends Field
 						case FieldType::NEGATIVE_INTEGER:
 							if (!StringTools::isNegativeInteger($val))
 							{
-								trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not a stricly negative integer."), $this->getName(), $i));
+								if (empty($silent))
+									trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not a stricly negative integer."), $this->getName(), $i));
 								return false;
 							}
 							break;
@@ -71,7 +75,8 @@ class Integer extends Field
 						case FieldType::NEGATIVEZERO_INTEGER:
 							if (!StringTools::isNegativeInteger($val, true))
 							{
-								trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not a negative or zero integer."), $this->getName(), $i));
+								if (empty($silent))
+									trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not a negative or zero integer."), $this->getName(), $i));
 								return false;
 							}
 							break;
@@ -89,7 +94,8 @@ class Integer extends Field
 					case FieldType::INTEGER:
 						if (!StringTools::isInteger($val))
 						{
-							trigger_error(sprintf(dgettext('mfx', "The field '%s' is not an integer."), $this->getName()));
+							if (empty($silent))
+								trigger_error(sprintf(dgettext('mfx', "The field '%s' is not an integer."), $this->getName()));
 							return false;
 						}
 						break;
@@ -97,7 +103,8 @@ class Integer extends Field
 					case FieldType::POSITIVE_INTEGER:
 						if (!StringTools::isPositiveInteger($val))
 						{
-							trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a stricly positive integer."), $this->getName()));
+							if (empty($silent))
+								trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a stricly positive integer."), $this->getName()));
 							return false;
 						}
 						break;
@@ -105,7 +112,8 @@ class Integer extends Field
 					case FieldType::POSITIVEZERO_INTEGER:
 						if (!StringTools::isPositiveInteger($val, true))
 						{
-							trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a positive or zero integer."), $this->getName()));
+							if (empty($silent))
+								trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a positive or zero integer."), $this->getName()));
 							return false;
 						}
 						break;
@@ -113,7 +121,8 @@ class Integer extends Field
 					case FieldType::NEGATIVE_INTEGER:
 						if (!StringTools::isNegativeInteger($val))
 						{
-							trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a stricly negative integer."), $this->getName()));
+							if (empty($silent))
+								trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a stricly negative integer."), $this->getName()));
 							return false;
 						}
 						break;
@@ -121,7 +130,8 @@ class Integer extends Field
 					case FieldType::NEGATIVEZERO_INTEGER:
 						if (!StringTools::isNegativeInteger($val, true))
 						{
-							trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a negative or zero integer."), $this->getName()));
+							if (empty($silent))
+								trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a negative or zero integer."), $this->getName()));
 							return false;
 						}
 						break;

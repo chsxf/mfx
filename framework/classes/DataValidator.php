@@ -168,9 +168,10 @@ final class DataValidator implements \ArrayAccess
 	/**
 	 * Validates data based on field descriptors
 	 * @param array|Traversable $data Data to validate
+	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * @return boolean true if data is valid, false either
 	 */
-	public function validate($data) {
+	public function validate($data, $silent = false) {
 		// Populate data
 		foreach ($data as $k => $v)
 		{
@@ -187,7 +188,7 @@ final class DataValidator implements \ArrayAccess
 		// Validation
 		foreach ($this->_fields as $f)
 		{
-			if (!$f->validate())
+			if (!$f->validate($silent))
 				return false;
 		}
 		return true;

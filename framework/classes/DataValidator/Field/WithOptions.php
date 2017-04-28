@@ -58,7 +58,7 @@ class WithOptions extends Field
 	 * (non-PHPdoc)
 	 * @see Field::validate()
 	 */
-	public function validate() {
+	public function validate($silent = false) {
 		if ($this->isEnabled() == false)
 			return true;
 		
@@ -67,7 +67,8 @@ class WithOptions extends Field
 		// Checks value against required status
 		if ($this->isRequired() && empty($value))
 		{
-			trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
+			if (empty($silent))
+				trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
 			return false;
 		}
 		
@@ -76,12 +77,13 @@ class WithOptions extends Field
 			// Checks value against required status
 			if (!is_array($value))
 			{
-				trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
+				if (empty($silent))
+					trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
 				return false;
 			}
 			
 			// Validates through filters
-			if (!$this->applyFiltersOnField())
+			if (!$this->applyFiltersOnField($silent))
 				return false;
 		
 			$maxIndex = $this->getMaxRepeatIndex();
@@ -92,7 +94,8 @@ class WithOptions extends Field
 				// Checks value against required status
 				if ($this->isRequired() && empty($val))
 				{
-					trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is required."), $this->getName(), $i));
+					if (empty($silent))
+						trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is required."), $this->getName(), $i));
 					return false;
 				}
 				
@@ -104,11 +107,12 @@ class WithOptions extends Field
 				{
 					if (!$this->_isValidOption($v))
 					{
-						trigger_error(sprintf(dgettext('mfx', "'%s' is not a valid value for the '%s' field at index %d."), $v, $this->getName(), $i));
+						if (empty($silent))
+							trigger_error(sprintf(dgettext('mfx', "'%s' is not a valid value for the '%s' field at index %d."), $v, $this->getName(), $i));
 						return false;
 					}
 						
-					if (!$this->applyFilterOnValue($v, $i))
+					if (!$this->applyFilterOnValue($v, $i, $silent))
 						return false;
 				}
 			}
@@ -116,7 +120,7 @@ class WithOptions extends Field
 		else
 		{
 			// Validates through filters
-			if (!$this->applyFiltersOnField())
+			if (!$this->applyFiltersOnField($silent))
 				return false;
 		
 			if (!is_array($value))
@@ -127,11 +131,12 @@ class WithOptions extends Field
 			{
 				if (!$this->_isValidOption($v))
 				{
-					trigger_error(sprintf(dgettext('mfx', "'%s' is not a valid value for the '%s' field."), $v, $this->getName()));
+					if (empty($silent))
+						trigger_error(sprintf(dgettext('mfx', "'%s' is not a valid value for the '%s' field."), $v, $this->getName()));
 					return false;
 				}
 				
-				if (!$this->applyFilterOnValue($v))
+				if (!$this->applyFilterOnValue($v, NULL, $silent))
 					return false;
 			}
 		}

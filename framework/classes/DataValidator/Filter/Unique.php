@@ -42,11 +42,12 @@ class Unique extends AbstractFilter
 	 * @param string $fieldName Field name
 	 * @param mixed $value Value to validate
 	 * @param int $atIndex Index for repeatable fields. If NULL, no index is provided. (Defaults to NULL)
+	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * 
 	 * Note:
 	 * The $atIndex parameter is ignored for filters returning true in appliesToField().
 	 */
-	public function validate($fieldName, $value, $atIndex = NULL) {
+	public function validate($fieldName, $value, $atIndex = NULL, $silent = false) {
 		if (!is_array($value))
 			return true;
 		
@@ -58,7 +59,8 @@ class Unique extends AbstractFilter
 		$cv = array_count_values($value);
 		if (max($cv) != 1)
 		{
-			$this->emitMessage($fieldName);
+			if (empty($silent))
+				$this->emitMessage($fieldName);
 			return false;
 		}
 		else

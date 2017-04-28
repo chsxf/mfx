@@ -22,8 +22,8 @@ class Email extends Field
 	 * (non-PHPdoc)
 	 * @see Field::validate()
 	 */
-	public function validate() {
-		if (!parent::validate())
+	public function validate($silent = false) {
+		if (!parent::validate($silent))
 			return false;
 		
 		if ($this->isRepeatable())
@@ -33,7 +33,8 @@ class Email extends Field
 			{
 				if (!StringTools::isValidEmailAddress($this->getIndexedValue($i, true)))
 				{
-					trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not a valid email address."), $this->getName(), $i));
+					if (empty($silent))
+						trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not a valid email address."), $this->getName(), $i));
 					return false;
 				}
 			}
@@ -42,7 +43,8 @@ class Email extends Field
 		{
 			if (!StringTools::isValidEmailAddress($this->getValue(true)))
 			{
-				trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a valid email address."), $this->getName()));
+				if (empty($silent))
+					trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a valid email address."), $this->getName()));
 				return false;
 			}
 		}

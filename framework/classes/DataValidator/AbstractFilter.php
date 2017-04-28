@@ -101,7 +101,8 @@ abstract class AbstractFilter
 	 * @param string $fieldName Field name
 	 * @param mixed $value Value to validate
 	 * @param int $atIndex Index for repeatable fields. If NULL, no index is provided. (Defaults to NULL)
+	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * @return bool true if the filter validates, false either
 	 */
-	abstract public function validate($fieldName, $value, $atIndex = NULL);
+	abstract public function validate($fieldName, $value, $atIndex = NULL, $silent = false);
 }

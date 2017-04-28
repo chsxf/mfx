@@ -10,8 +10,8 @@ class DateTime extends Field {
 	 * (non-PHPdoc)
 	 * @see Field::validate()
 	 */
-	public function validate() {
-		if (!parent::validate())
+	public function validate($silent = false) {
+		if (!parent::validate($silent))
 			return false;
 		
 		$re = sprintf('#^%s$#', $this->__pattern());
@@ -33,7 +33,8 @@ class DateTime extends Field {
 			{
 				if (!preg_match($re, $this->getIndexedValue($i, true)))
 				{
-					trigger_error(sprintf($errorRepeatable, $this->getName(), $i));
+					if (empty($silent))
+						trigger_error(sprintf($errorRepeatable, $this->getName(), $i));
 					return false;
 				}
 			}
@@ -42,7 +43,8 @@ class DateTime extends Field {
 		{
 			if (!preg_match($re, $this->getValue(true)))
 			{
-				trigger_error(sprintf($error, $this->getName()));
+				if (empty($silent))
+					trigger_error(sprintf($error, $this->getName()));
 				return false;
 			}
 		}

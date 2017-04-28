@@ -54,8 +54,9 @@ class RequiredIfNotEmpty extends AbstractOtherFieldFilter
 	 * @param string $fieldName Field's name
 	 * @param mixed $value Field's value
 	 * @param int $atIndex Index for repeatable fields. If NULL, no index is provided. (Defaults to NULL)
+	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 */
-	public function validate($fieldName, $value, $atIndex = NULL)
+	public function validate($fieldName, $value, $atIndex = NULL, $silent = false)
 	{
 		$otherFields = $this->getOtherFields();
 		foreach ($otherFields as $f)
@@ -69,7 +70,8 @@ class RequiredIfNotEmpty extends AbstractOtherFieldFilter
 			return true;
 		else
 		{
-			$this->emitMessage($fieldName);
+			if (empty($silent))
+				$this->emitMessage($fieldName);
 			return false;
 		}
 	}

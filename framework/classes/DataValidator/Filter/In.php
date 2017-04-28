@@ -38,9 +38,10 @@ class In extends AbstractFilter
 	 * {@inheritDoc}
 	 * @see AbstractFilter::validate()
 	 */
-	public function validate($fieldName, $value, $atIndex = NULL) {
+	public function validate($fieldName, $value, $atIndex = NULL, $silent = false) {
 		if (!in_array($value, $this->_options)) {
-			$this->emitMessage($fieldName);
+			if (empty($silent))
+				$this->emitMessage($fieldName);
 			return false;
 		}
 		else
