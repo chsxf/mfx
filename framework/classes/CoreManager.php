@@ -188,6 +188,23 @@ final class CoreManager
 	}
 	
 	/**
+	 * Checks if a specific method is a valid sub-route
+	 * @param \ReflectionMethod $method Method to inspect
+	 * @return boolean|array An array containing the valid sub-route parameters or false in case of an error
+	 */
+	public static function isMethodValidSubRoute(\ReflectionMethod $method) {
+		// Checking method
+		$params = $method->getParameters();
+		if (!$method->isStatic() || !$method->isPublic() || (count($params) >= 1 && !$params[0]->isArray()))
+			return false;	
+		// Building parameters from doc comment
+		$validSubRouteParameters = self::_ensureInit()->_docCommentParser->parse($method);
+		if (!isset($validSubRouteParameters['mfx_subroute']))
+			return false;
+		return $validSubRouteParameters;
+	}
+	
+	/**
 	 * Handles the request sent to the server
 	 * 
 	 * @param string $defaultRoute Route to use if none can be guessed from request
@@ -251,12 +268,8 @@ final class CoreManager
 		
 		// Checking subroute
 		$rm = $rc->getMethod($subRoute);
-		$params = $rm->getParameters();
-		if (count($params) >= 1 && !$params[0]->isArray())
-			throw new \ErrorException("'{$subRoute}' is not a valid subroute of the '{$mainRoute}' route.");
-		// -- From doc comment parameters
-		$validSubRouteParameters = $inst->_docCommentParser->parse($rm);
-		if (!isset($validSubRouteParameters['mfx_subroute']) || $validSubRouteParameters['mfx_subroute'] === 'internal-only')
+		$validSubRouteParameters = self::isMethodValidSubRoute($rm);
+		if (false === $validSubRouteParameters)
 			throw new \ErrorException("'{$subRoute}' is not a valid subroute of the '{$mainRoute}' route.");
 		
 		// Pre-processing callbacks
