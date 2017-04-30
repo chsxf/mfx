@@ -38,10 +38,6 @@ class ErrorManager
 	private static $_notifs = array();
 	
 	/**
-	 * @var boolean Debug flag. If set, error reporting will be more detailed
-	 */
-	public static $DEBUG = true;
-	/**
 	 * @var callable Reference to the previous error handler, or NULL if none exists
 	 */
 	public static $previousHandler = NULL;
@@ -136,7 +132,7 @@ class ErrorManager
 	 */
 	public static function flush(\Twig_Environment $twig = NULL) {
 		if ($twig !== NULL)
-			$str = $twig->render('@mfx/ErrorManager.twig', array('errors' => self::$_errors, 'notifs' => self::$_notifs, 'debug' => !empty(self::$DEBUG)));
+			$str = $twig->render('@mfx/ErrorManager.twig', array('errors' => self::$_errors, 'notifs' => self::$_notifs, 'debug' => Config::get('response.full_errors', false)));
 		else
 			$str = '';
 		self::$_errors = array();
