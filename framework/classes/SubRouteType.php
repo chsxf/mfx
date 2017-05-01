@@ -17,7 +17,7 @@ class SubRouteType extends Enum
 	const __default = self::VIEW;
 	
 	const VIEW = 1;
-	const EDIT = 2;
+	const REDIRECT = 2;
 	const JSON = 3;
 	const XML = 4;
 	const STATUS = 5;

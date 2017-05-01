@@ -311,7 +311,7 @@ final class CoreManager
 				break;
 			
 			// Edit requests - Mostly requests with POST data
-			case SubRouteType::EDIT:
+			case SubRouteType::REDIRECT:
 				$redirectionURI = $reqResult->redirectURI();
 				if (empty($redirectionURI) && !empty($validSubRouteParameters['mfx_redirect_uri']))
 					$redirectionURI = $validSubRouteParameters['mfx_redirect_uri'];

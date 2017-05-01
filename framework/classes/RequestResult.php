@@ -114,12 +114,12 @@ final class RequestResult
 	}
 	
 	/**
-	 * Helper function to build RequestResult instances for EDIT sub-routes
+	 * Helper function to build RequestResult instances for REDIRECT sub-routes
 	 * @param string $redirectURI Target URI to which redirect the user (Defaults to NULL)
 	 * @return RequestResult
 	 */
-	public static function buildEditRequestResult($redirectURI = NULL) {
-		return new RequestResult(new SubRouteType(SubRouteType::EDIT), NULL, NULL, $redirectURI);
+	public static function buildRedirectRequestResult($redirectURI = NULL) {
+		return new RequestResult(new SubRouteType(SubRouteType::REDIRECT), NULL, NULL, $redirectURI);
 	}
 	
 	/**
