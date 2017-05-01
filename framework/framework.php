@@ -54,7 +54,7 @@ L10nManager::bindTextDomain('mfx', dirname(__FILE__).'/messages');
 
 // Initializing Twig
 CoreProfiler::pushEvent('Loading Twig');
-$fsLoader = new Twig_Loader_Filesystem(Config::get('templates'));
+$fsLoader = new Twig_Loader_Filesystem(Config::get('twig.templates', array()));
 $fsLoader->addPath(dirname(__FILE__) . '/templates', 'mfx');
 $loader = new Twig_Loader_Chain(array($fsLoader, new Twig_Loader_String()));
 $twig = new Twig_Environment($loader, array(
