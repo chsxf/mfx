@@ -267,7 +267,7 @@ class User
 	 */
 	protected function fetchData() {
 		$dbm = DatabaseManager::open('__mfx');
-		$row = $dbm->getRow(sprintf("SELECT * FROM `%s` WHERE `%s` = ?", self::getTableName(), self::getKeyField()), DBM_ASSOC_ARRAY, $this->_key);
+		$row = $dbm->getRow(sprintf("SELECT * FROM `%s` WHERE `%s` = ?", self::getTableName(), self::getKeyField()), \PDO::FETCH_ASSOC, $this->_key);
 		$dbm = NULL;
 		return $row;
 	}
