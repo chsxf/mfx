@@ -15,6 +15,11 @@ namespace CheeseBurgames\MFX;
 final class RequestResult
 {
 	/**
+	 * @var array Global data to be passed with all VIEW request results
+	 */
+	private static $_viewGlobalData = array();
+	
+	/**
 	 * @var SubRouteType Sub-route response type
 	 */
 	private $_type;
@@ -111,6 +116,31 @@ final class RequestResult
 	 */
 	public function preformatted() {
 		return $this->_preformatted;
+	}
+	
+	/**
+	 * Add a VIEW global value
+	 * @param string $name Name of the global value
+	 * @param mixed $value Value
+	 */
+	public static function addViewGlobal($name, $value) {
+		self::$_viewGlobalData[$name] = $value;
+	}
+	
+	/**
+	 * Remove a VIEW global value
+	 * @param string $name Name of the global to remove
+	 */
+	public static function removeViewGlobal($name) {
+		unset(self::$_viewGlobalData[$name]);
+	}
+	
+	/**
+	 * Gets all VIEW global values
+	 * @return array
+	 */
+	public static function getViewGlobals() {
+		return self::$_viewGlobalData;
 	}
 	
 	/**

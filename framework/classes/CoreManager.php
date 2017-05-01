@@ -298,7 +298,7 @@ final class CoreManager
 				self::_setResponseContentType($validSubRouteParameters, Config::get('response.default_content_type', 'text/html'), Config::get('response.default_charset', 'UTF-8'));
 				$template = $reqResult->template(($routeProvidedTemplate === NULL) ? str_replace(array('_', '.'), '/', $route) : $routeProvidedTemplate);
 				
-				$context = array_merge($reqResult->data(), array(
+				$context = array_merge(RequestResult::getViewGlobals(), $reqResult->data(), array(
 						'mfx_scripts' => Scripts::export($twig),
 						'mfx_stylesheets' => StyleSheets::export($twig),
 						'mfx_root_url' => Config::get('base_href', self::_buildRootURI()),
