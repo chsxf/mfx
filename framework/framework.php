@@ -34,6 +34,7 @@ require_once(defined('MFX_CONFIG_FILE_PATH') ? MFX_CONFIG_FILE_PATH : 'applicati
 
 // Initializing class auto-loading
 require_once 'autoload.php';
+require_once 'error_functions.php';
 
 // Starting session and unfreezing error manager
 SessionManager::start();
