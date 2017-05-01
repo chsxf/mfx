@@ -19,6 +19,32 @@ use CheeseBurgames\MFX\StringTools;
 class Integer extends Field
 {
 	/**
+	 * Constructor
+	 * @param string $name Field's name
+	 * @param FieldType $type Field's type
+	 * @param mixed $defaultValue Field's default value
+	 * @param boolean $required If set, this field will become required in the validation process.
+	 */
+	protected function __construct($name, FieldType $type, $defaultValue, $required) {
+		parent::__construct($name, $type, empty($defaultValue) ? 0 : $defaultValue, $required);
+		
+		switch ($this->getType()->value()) {
+			case FieldType::POSITIVE_INTEGER:
+				$this->addExtra('min', 1);
+				break;
+			case FieldType::POSITIVEZERO_INTEGER:
+				$this->addExtra('min', 0);
+				break;
+			case FieldType::NEGATIVE_INTEGER:
+				$this->addExtra('max', -1);
+				break;
+			case FieldType::NEGATIVEZERO_INTEGER:
+				$this->addExtra('max', 0);
+				break;
+		}
+	}
+	
+	/**
 	 * (non-PHPdoc)
 	 * @see Field::validate()
 	 */
@@ -150,30 +176,6 @@ class Integer extends Field
 		return parent::getHTMLType(($type_override === NULL) ? new FieldType(FieldType::NUMBER) : $type_override);
 	}
 	
-	/**
-	 * (non-PHPdoc)
-	 * @see Field::generate()
-	 * @param array $containingGroups
-	 * @param FieldType $type_override
-	 */
-	public function generate(array $containingGroups = array(), FieldType $type_override = NULL) {
-		$result = parent::generate($containingGroups, $type_override);
-		switch ($this->getType()->value()) {
-			case FieldType::POSITIVE_INTEGER:
-				$result[1]['extras'] = array('min' => 1);
-				break;
-			case FieldType::POSITIVEZERO_INTEGER:
-				$result[1]['extras'] = array('min' => 0);
-				break;
-			case FieldType::NEGATIVE_INTEGER:
-				$result[1]['extras'] = array('max' => -1);
-				break;
-			case FieldType::NEGATIVEZERO_INTEGER:
-				$result[1]['extras'] = array('max' => 0);
-				break;
-		}
-		return $result;
-	}
 }
 
 FieldType::registerClassForType(new FieldType(FieldType::INTEGER), Integer::class);

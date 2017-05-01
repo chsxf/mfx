@@ -64,6 +64,11 @@ class Field
 	private $_disabled;
 	
 	/**
+	 * @var array Extra options for field generation
+	 */
+	private $_extras;
+	
+	/**
 	 * Constructor
 	 * @param String $name Field's name
 	 * @param FieldType $type Field's type
@@ -93,6 +98,8 @@ class Field
 		
 		$this->_readOnly = false;
 		$this->_disabled = false;
+		
+		$this->_extras = array();
 	}
 	
 	/**
@@ -335,6 +342,24 @@ class Field
 	}
 	
 	/**
+	 * Adds extra option to field
+	 * @param string $name Option name
+	 * @param string $value Option value
+	 */
+	public final function addExtra($key, $value) {
+		$this->_extras[$key] = $value;
+	}
+	
+	/**
+	 * Adds extra options to field
+	 * @param array $extras Associative array whose keys are option names and values are option values
+	 */
+	public final function addExtras(array $extras) {
+		foreach ($extras as $k => $v)
+			$this->addExtra($k, $v);
+	}
+	
+	/**
 	 * Tells if the field should be reverted to its default value if it is not populated during validation
 	 * @return boolean
 	 */
@@ -467,7 +492,8 @@ class Field
 				'value' => $this->getIndexedValue($this->_repeatCounter, true),
 				'repeatable' => $this->isRepeatable(),
 				'repeat_counter' => $this->_repeatCounter++,
-				'suffix' => NULL
+				'suffix' => NULL,
+				'extras' => $this->_extras
 		));
 	}
 }

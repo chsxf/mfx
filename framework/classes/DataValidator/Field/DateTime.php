@@ -5,6 +5,19 @@ use CheeseBurgames\MFX\DataValidator\Field;
 use CheeseBurgames\MFX\DataValidator\FieldType;
 
 class DateTime extends Field {
+
+	/**
+	 * Constructor
+	 * @param string $name Field's name
+	 * @param FieldType $type Field's type
+	 * @param mixed $defaultValue Field's default value
+	 * @param boolean $required If set, this field will become required in the validation process.
+	 */
+	protected function __construct($name, FieldType $type, $defaultValue, $required) {
+		parent::__construct($name, $type, empty($defaultValue) ? 0 : $defaultValue, $required);
+		
+		$this->addExtra('pattern', $this->getType()->equals(FieldType::DATE) ? '\d{4}/(0\d|1[0-2])/([0-2]\d|3[01])' : '([01]\d|2[0-3]):[0-5]\d');
+	}
 	
 	/**
 	 * (non-PHPdoc)
@@ -60,17 +73,8 @@ class DateTime extends Field {
 	 */
 	public function generate(array $containingGroups = array(), FieldType $type_override = NULL) {
 		$result = parent::generate($containingGroups, $type_override);
-		$result[1] = array_merge($result[1], array(
-				'suffix' => $this->getType()->equals(FieldType::DATE) ? dgettext('mfx', 'yyyy/mm/dd') : dgettext('mfx', 'hh:mm'),
-				'extras' => array_merge(empty($result[1]['extras']) ? array() : $result[1]['extras'], array(
-						'pattern' => $this->__pattern()
-				))
-		));
+		$result[1]['suffix'] = $this->getType()->equals(FieldType::DATE) ? dgettext('mfx', 'yyyy/mm/dd') : dgettext('mfx', 'hh:mm');
 		return $result;
-	}
-	
-	private function __pattern() {
-		return $this->getType()->equals(FieldType::DATE) ? '\d{4}/(0\d|1[0-2])/([0-2]\d|3[01])' : '([01]\d|2[0-3]):[0-5]\d';
 	}
 	
 }

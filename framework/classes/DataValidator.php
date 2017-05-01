@@ -65,12 +65,15 @@ final class DataValidator implements \ArrayAccess
 	 * @param FieldType $type Field's type
 	 * @param mixed $defaultValue Field's default value (Defaults to NULL)
 	 * @param boolean $required If set, the field will be required. (Defaults to true)
+	 * @param array $extras Extra options
 	 * @return Field
 	 * 
 	 * @see Field::addField()
 	 */
-	public function createField($name, FieldType $type, $defaultValue = NULL, $required = true) {
-		return $this->addField(Field::create($name, $type, $defaultValue, $required));
+	public function createField($name, FieldType $type, $defaultValue = NULL, $required = true, array $extras = array()) {
+		$f = $this->addField(Field::create($name, $type, $defaultValue, $required));
+		$f->addExtras($extras);
+		return $f;
 	}
 	
 	/**
