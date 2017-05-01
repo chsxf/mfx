@@ -155,17 +155,21 @@ class User
 		{
 			if (!isset($f['value'])
 					|| !preg_match('/^\w+$/', $f['name'])
-					|| (!empty($f['function']) && !preg_match('/^\w+$/', $f['function']))
+					|| (!empty($f['function']) && !preg_match("/^[a-zA-Z0-9_\-?(),'` ]+$/", $f['function']))
 					|| (!empty($f['operator']) && !in_array($f['operator'], array('=', '!=', '<>', '<=', '>=', 'IS', 'IS NOT'))))
 				return false;
-	
+
 			$str = "`{$f['name']}`";
 			if ($f['value'] === NULL)
 				$str .= ' IS ';
 			else
 				$str .= empty($f['operator']) ? ' = ' : $f['operator'];
-			if (!empty($f['function']))
-				$str .= "{$f['function']}(?)";
+			if (!empty($f['function'])) {
+				if (strpos($f['function'], '(') < 0)
+					$str .= "{$f['function']}(?)";
+				else
+					$str .= $f['function'];
+			}
 			else
 				$str .= '?';
 			$validFields[] = $str;
