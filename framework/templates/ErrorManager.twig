@@ -2,7 +2,7 @@
 	{% set div_class = (errors|length > 0) ? '' : 'invisible' %}
 	<div id="mfx-errors" class="{{ div_class }}">
 		<div>
-			<p>{{ dngettext('mfx', '%d error has occured:', '%d errors have occured:', errors|length) }}</p>
+			<p>{{ dngettext('mfx', '%d error has occured:', '%d errors have occured:', errors|length)|format(errors|length) }}</p>
 			<ul>
 			{% for error in errors %}
 				<li>
