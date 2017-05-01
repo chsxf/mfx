@@ -450,7 +450,7 @@ class Field
 	 * @param FieldType $type_override Type to use to override original field type. If NULL, no override. (Defaults to NULL)
 	 * @return array
 	 */
-	public function generate(array $containingGroups = array(), FieldType$type_override = NULL) {
+	public function generate(array $containingGroups = array(), FieldType $type_override = NULL) {
 		if ($this->_repeatableUpTo !== NULL && $this->_repeatCounter + 1 > $this->_repeatableUpTo)
 			throw new DataValidatorException(sprintf(dgettext('mfx', "The field '%s' cannot be repeated more than %d times."), $this->getName(), $this->_repeatableUpTo));
 		
