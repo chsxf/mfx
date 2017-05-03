@@ -28,7 +28,7 @@ class In extends AbstractFilter
 	 */
 	public function __construct(array $options, $message = NULL) {
 		if ($message === NULL)
-			$message = sprintf(dgettext('mfx', "The value of the '%%s' field must be one of the following values : %s"), implode(', ', $options));
+			$message = sprintf(dgettext('mfx', "The value of the '%%s' field must be one of the following values: %s"), implode(', ', $options));
 		parent::__construct($message);
 		
 		$this->_options = $options;

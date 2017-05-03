@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PHP-MicroFX\n"
-"POT-Creation-Date: 2017-05-01 15:56+0200\n"
-"PO-Revision-Date: 2017-05-01 15:56+0200\n"
+"POT-Creation-Date: 2017-05-03 14:34+0200\n"
+"PO-Revision-Date: 2017-05-03 14:34+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -99,33 +99,33 @@ msgstr ""
 "instance de Field ou à un tableau ne contenant que des instances de cette "
 "classe."
 
-#: classes/DataValidator/Field.php:82
+#: classes/DataValidator/Field.php:86
 msgid "Field name cannot be empty."
 msgstr "Le nom du champ ne doit pas être vide."
 
-#: classes/DataValidator/Field.php:84
+#: classes/DataValidator/Field.php:88
 msgid "Expected string as the field name."
 msgstr "Le nom du champ doit être une chaîne de caractères."
 
-#: classes/DataValidator/Field.php:178
+#: classes/DataValidator/Field.php:183
 #, php-format
 msgid "Value for repeatable field '%s' must be an array."
 msgstr "La valeur du champ répétable '%s' doit être un tableau."
 
-#: classes/DataValidator/Field.php:385 classes/DataValidator/Field.php:416
+#: classes/DataValidator/Field.php:406 classes/DataValidator/Field.php:437
 #: classes/DataValidator/Field/WithOptions.php:71
 #: classes/DataValidator/Field/WithOptions.php:81
 #, php-format
 msgid "The field '%s' is required."
 msgstr "Le champ '%s' est requis."
 
-#: classes/DataValidator/Field.php:399
+#: classes/DataValidator/Field.php:420
 #: classes/DataValidator/Field/WithOptions.php:98
 #, php-format
 msgid "The field '%s' at index %d is required."
 msgstr "Le champ '%s' à l'index %d est requis."
 
-#: classes/DataValidator/Field.php:480
+#: classes/DataValidator/Field.php:501
 #, php-format
 msgid "The field '%s' cannot be repeated more than %d times."
 msgstr "Le champ '%s' ne peut être répété plus de %d fois."
@@ -232,7 +232,7 @@ msgstr "'%s' n'est pas une valeur valide pour le champ '%s' à l'index %d."
 msgid "'%s' is not a valid value for the '%s' field."
 msgstr "'%s' n'est pas une valeur valide pour le champ '%s'."
 
-#: classes/DataValidator/FieldType.php:64
+#: classes/DataValidator/FieldType.php:65
 msgid "A class is already registered for the field type."
 msgstr "Une classe est déjà enregistrée pour ce type de champ."
 
@@ -256,13 +256,14 @@ msgstr ""
 
 #: classes/DataValidator/Filter/In.php:31
 #, php-format
-msgid "The value of the '%%s' field must be one of the following values : %s"
+msgid "The value of the '%%s' field must be one of the following values: %s"
 msgstr ""
+"La valeur du champ ‘%%s’ doit correspondre à une des valeurs suivantes : %s"
 
 #: classes/DataValidator/Filter/IsOfType.php:36
 #, php-format
 msgid "The '%%s' field value must be of type '%s'."
-msgstr ""
+msgstr "La valeur du champ ‘%%s’ doit être du type ‘%s’."
 
 #: classes/DataValidator/Filter/LogicOr.php:67
 msgid " or "
