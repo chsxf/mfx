@@ -301,7 +301,7 @@ final class CoreManager
 				$context = array_merge(RequestResult::getViewGlobals(), $reqResult->data(), array(
 						'mfx_scripts' => Scripts::export($twig),
 						'mfx_stylesheets' => StyleSheets::export($twig),
-						'mfx_root_url' => Config::get('base_href', self::_buildRootURI()),
+						'mfx_root_url' => self::getRootURI(),
 						'mfx_errors_and_notifs' => ErrorManager::flush($twig),
 						'mfx_current_user' => User::currentUser()
 				));
@@ -385,14 +385,17 @@ final class CoreManager
 	 * Builds the root URI from server information (protocol, host and PHP_SELF)
 	 * @return string
 	 */
-	private static function _buildRootURI() {
+	public static function getRootURI() {
 		$inst = self::_ensureInit();
-		if ($inst->_rootURI === NULL)
+		if (NULL === $inst->_rootURI)
 		{
-			$protocol = (empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS'] == 'off')) ? 'http' : 'https';
-			$inst->_rootURI = "{$protocol}://{$_SERVER['HTTP_HOST']}".preg_replace('#/mfx$#', '/', dirname($_SERVER['PHP_SELF']));
-			if (!preg_match('#/$#', $inst->_rootURI))
-				$inst->_rootURI .= '/';
+			$inst->_rootURI = Config::get('base_href', false);
+			if (false === $inst->_rootURI) {
+				$protocol = (empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off') ? 'http' : 'https';
+				$inst->_rootURI = "{$protocol}://{$_SERVER['HTTP_HOST']}".preg_replace('#/mfx$#', '/', dirname($_SERVER['PHP_SELF']));
+				if (!preg_match('#/$#', $inst->_rootURI))
+					$inst->_rootURI .= '/';
+			}
 		}
 		return $inst->_rootURI;
 	}
@@ -409,7 +412,7 @@ final class CoreManager
 		if (empty($redirectURI) || !preg_match('#^https?://#', $redirectURI))
 		{
 			// Building URI
-			$r = self::_buildRootURI();
+			$r = self::getRootURI();
 			if (!empty($redirectURI))
 				$r .= ltrim($redirectURI, '/');
 		}
