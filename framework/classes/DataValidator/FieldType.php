@@ -35,6 +35,7 @@ final class FieldType extends \CheeseBurgames\MFX\Enum
 	const TIME = 'time';
 	const URL = 'url';
 	const WEEK = 'week';
+	const PASSWORD = 'password';
 	
 	// Custom type
 	const INTEGER = 'integer';

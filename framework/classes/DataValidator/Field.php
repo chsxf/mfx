@@ -526,3 +526,4 @@ require_once('DataValidator/Field/WithOptions.php');
 require_once('DataValidator/Field/TextArea.php');
 require_once('DataValidator/Field/CheckBox.php');
 require_once('DataValidator/Field/DateTime.php');
+require_once('DataValidator/Field/Password.php');
