@@ -36,7 +36,7 @@ class CheckBox extends Field
 	 */
 	public function generate(array $containingGroups = array(), FieldType $type_override = NULL) {
 		$result = parent::generate($containingGroups, $type_override);
-		if (!empty($result[1]['value']))
+		if (!empty($result[1]['value']) && $this->shouldGenerateWithValue())
 			$result[1]['extras']['checked'] = 'checked';
 		$result[1]['value'] = 1;
 		return $result;

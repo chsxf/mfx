@@ -64,6 +64,10 @@ class Field
 	private $_disabled;
 	
 	/**
+	 * @var boolean If set, the field is populated with the current or default value when generated
+	 */
+	private $_generateWithValue;
+	/**
 	 * @var array Extra options for field generation
 	 */
 	private $_extras;
@@ -99,6 +103,7 @@ class Field
 		$this->_readOnly = false;
 		$this->_disabled = false;
 		
+		$this->_generateWithValue = true;
 		$this->_extras = array();
 	}
 	
@@ -342,6 +347,22 @@ class Field
 	}
 	
 	/**
+	 * Enables of disables value population during field generation
+	 * @param boolean $enabled
+	 */
+	public final function setGenerationWithValue($enabled) {
+		$this->_generateWithValue = !empty($enabled);
+	}
+	
+	/**
+	 * Tells if the field should be populated with its value when generated
+	 * @return boolean
+	 */
+	public final function shouldGenerateWithValue() {
+		return $this->_generateWithValue;
+	}
+	
+	/**
 	 * Adds extra option to field
 	 * @param string $name Option name
 	 * @param string $value Option value
@@ -489,7 +510,7 @@ class Field
 				'required' => $this->isRequired(),
 				'readonly' => $this->isReadOnly(),
 				'disabled' => !$this->isEnabled(), 
-				'value' => $this->getIndexedValue($this->_repeatCounter, true),
+				'value' => $this->shouldGenerateWithValue() ? $this->getIndexedValue($this->_repeatCounter, true) : NULL,
 				'repeatable' => $this->isRepeatable(),
 				'repeat_counter' => $this->_repeatCounter++,
 				'suffix' => NULL,
