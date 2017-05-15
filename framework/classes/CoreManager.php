@@ -18,7 +18,7 @@ namespace CheeseBurgames\MFX;
  */
 final class CoreManager
 {
-	private const ROUTE_REGEXP = '/^[[:alnum:]_]+\.[[:alnum:]_]+?$/';
+	const ROUTE_REGEXP = '/^[[:alnum:]_]+\.[[:alnum:]_]+?$/';
 	
 	private static $HTTP_STATUS_CODES = array(
 			100 => 'Continue',
