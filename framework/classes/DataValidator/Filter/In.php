@@ -24,7 +24,7 @@ class In extends AbstractFilter
 	/**
 	 * Constructor
 	 * @param array $options List of options
-	 * @param unknown $message Error message
+	 * @param string $message Error message
 	 */
 	public function __construct(array $options, $message = NULL) {
 		if ($message === NULL)

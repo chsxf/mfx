@@ -127,7 +127,7 @@ class ErrorManager
 	
 	/**
 	 * Flushes error and notification messages for template display
-	 * @param Twig_Environment $twig Twig environment. If NULL, the function flushes containers only and returns an empty string
+	 * @param \Twig_Environment $twig Twig environment. If NULL, the function flushes containers only and returns an empty string
 	 * @return string
 	 */
 	public static function flush(\Twig_Environment $twig = NULL) {

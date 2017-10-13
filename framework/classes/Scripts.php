@@ -64,7 +64,7 @@ class Scripts
 	
 	/**
 	 * Exports the HTML output for inclusion is the response <head> tag
-	 * @param Twig_Environment $twig Twig environnement used for rendering HTML
+	 * @param \Twig_Environment $twig Twig environnement used for rendering HTML
 	 * @return string
 	 */
 	public static function export(\Twig_Environment $twig) {

@@ -9,6 +9,9 @@
 
 namespace CheeseBurgames\MFX\DataValidator\Filter;
 
+use CheeseBurgames\MFX\DataValidator\AbstractFilter;
+use CheeseBurgames\MFX\DatabaseManager;
+
 /**
  * Description of a filter validating if the specified value exists in a database table
  */

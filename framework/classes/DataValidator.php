@@ -170,7 +170,7 @@ final class DataValidator implements \ArrayAccess
 	
 	/**
 	 * Validates data based on field descriptors
-	 * @param array|Traversable $data Data to validate
+	 * @param array|\Traversable $data Data to validate
 	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * @return boolean true if data is valid, false either
 	 */
@@ -229,7 +229,7 @@ final class DataValidator implements \ArrayAccess
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see ArrayAccess::offsetExists()
+	 * @see \ArrayAccess::offsetExists()
 	 * @param mixed $offset
 	 */
 	public function offsetExists($offset) {
@@ -238,7 +238,7 @@ final class DataValidator implements \ArrayAccess
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see ArrayAccess::offsetGet()
+	 * @see \ArrayAccess::offsetGet()
 	 * @param mixed $offset
 	 */
 	public function offsetGet($offset) {
@@ -247,7 +247,7 @@ final class DataValidator implements \ArrayAccess
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see ArrayAccess::offsetSet()
+	 * @see \ArrayAccess::offsetSet()
 	 * @param mixed $offset
 	 * @param mixed $value
 	 */
@@ -257,7 +257,7 @@ final class DataValidator implements \ArrayAccess
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see ArrayAccess::offsetUnset()
+	 * @see \ArrayAccess::offsetUnset()
 	 * @param mixed $offset
 	 */
 	public function offsetUnset($offset) {

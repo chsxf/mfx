@@ -81,7 +81,7 @@ final class PaginationManager
 	/**
 	 * Sets a registered extra parameter's value
 	 * @param string $key Extra parameter's key
-	 * @param scalar $value
+	 * @param mixed $value A scalar value
 	 */
 	public function setExtraParameter($key, $value) {
 		if (array_key_exists($key, $this->_extraParameters))

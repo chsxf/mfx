@@ -27,7 +27,7 @@ final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager
 	 * @param string $username Username
 	 * @param string $password Password
 	 * 
-	 * @see PDO::__construct()
+	 * @see \PDO::__construct()
 	 */
 	public function __construct($dsn, $username, $password)
 	{

@@ -116,7 +116,7 @@ class XMLTools
 			
 			$ro = new \ReflectionObject($var);
 			$writer->startElement('object');
-			if ($var instanceof stdClass == false)
+			if ($var instanceof \stdClass == false)
 				$writer->writeAttribute('class', $ro->name);
 			$props = $ro->getProperties(\ReflectionProperty::IS_PUBLIC);
 			foreach ($props as $v)

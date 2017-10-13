@@ -11,6 +11,8 @@ namespace CheeseBurgames\MFX\DataValidator\Filter;
 
 use CheeseBurgames\MFX\DataValidator\AbstractOtherFieldFilter;
 use CheeseBurgames\MFX\StringTools;
+use CheeseBurgames\MFX\DataValidator\Field;
+use CheeseBurgames\MFX\DataValidator\AbstractFilter;
 
 /**
  * Description of a filter validating when the field's matched another field's one

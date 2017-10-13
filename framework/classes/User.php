@@ -275,7 +275,7 @@ class User
 	/**
 	 * PHP magic method
 	 * @param string $name Variable name
-	 * @return NULL|Ambigous <NULL, multitype:>
+	 * @return mixed
 	 * 
 	 * @link http://www.php.net/manual/en/language.oop5.magic.php
 	 */

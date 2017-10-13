@@ -45,7 +45,7 @@ class DocCommentParserException extends \ErrorException
 	 * @param string $message Message
 	 * @param int $code Code
 	 * @param string $filename Name of the file where the exception was thrown
-	 * @param ini $lineno Line number where the exception was thrown
+	 * @param int $lineno Line number where the exception was thrown
 	 */
 	public function __construct($message, $code, $filename, $lineno) {
 		parent::__construct($message, 0, 0, $filename, $lineno);
@@ -99,7 +99,7 @@ class DocCommentParser
 	 * will result in
 	 * <code>$returned_array['valid_parameter_name'] = true;</code>
 	 * 
-	 * @param Reflector $reflector Reflector object identifying the langage element to use as a reference
+	 * @param \Reflector $reflector Reflector object identifying the langage element to use as a reference
 	 * @return array An associative array listing all valid parameters
 	 */
 	public final function parse(\Reflector $reflector) {

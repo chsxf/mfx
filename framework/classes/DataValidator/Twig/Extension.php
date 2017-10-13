@@ -18,7 +18,7 @@ class Extension extends \Twig_Extension
 {
 	/**
 	 * (non-PHPdoc)
-	 * @see Twig_ExtensionInterface::getName()
+	 * @see \Twig_ExtensionInterface::getName()
 	 */
 	public function getName() {
 		return __CLASS__;
@@ -26,7 +26,7 @@ class Extension extends \Twig_Extension
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see Twig_Extension::getFunctions()
+	 * @see \Twig_Extension::getFunctions()
 	 */
 	public function getFunctions() {
 		return array(
@@ -37,7 +37,7 @@ class Extension extends \Twig_Extension
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see Twig_Extension::getTokenParsers()
+	 * @see \Twig_Extension::getTokenParsers()
 	 */
 	public function getTokenParsers() {
 		return array(
@@ -76,7 +76,7 @@ class DataValidator_ResetCountersTokenParser extends \Twig_TokenParser
 {
 	/**
 	 * (non-PHPdoc)
-	 * @see Twig_TokenParserInterface::parse()
+	 * @see \Twig_TokenParserInterface::parse()
 	 */
 	public function parse(\Twig_Token $token) {
 		$stream = $this->parser->getStream();
@@ -89,7 +89,7 @@ class DataValidator_ResetCountersTokenParser extends \Twig_TokenParser
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see Twig_TokenParserInterface::getTag()
+	 * @see \Twig_TokenParserInterface::getTag()
 	 */
 	public function getTag() {
 		return 'dv_reset_counters';
@@ -113,7 +113,7 @@ class DataValidator_ResetCountersToken extends \Twig_Node
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see Twig_Node::compile()
+	 * @see \Twig_Node::compile()
 	 */
 	public function compile(\Twig_Compiler $compiler) {
 		$code = sprintf("\$context['%s']->resetRepeatCounters()", $this->getAttribute('validatorName'));
@@ -132,9 +132,9 @@ class DataValidator_FieldTokenParser extends \Twig_TokenParser
 {
 	/**
 	 * (non-PHPdoc)
-	 * @see Twig_TokenParserInterface::parse()
+	 * @see \Twig_TokenParserInterface::parse()
 	 * 
-	 * @param Twig_Token $token
+	 * @param \Twig_Token $token
 	 */
 	public function parse(\Twig_Token $token) {
 		$stream = $this->parser->getStream();
@@ -169,7 +169,7 @@ class DataValidator_FieldTokenParser extends \Twig_TokenParser
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see Twig_TokenParserInterface::getTag()
+	 * @see \Twig_TokenParserInterface::getTag()
 	 */
 	public function getTag() {
 		return 'dv_field';
@@ -183,8 +183,8 @@ class DataValidator_FieldGroupTokenParser extends \Twig_TokenParser
 {
 	/**
 	 * (non-PHPdoc)
-	 * @see Twig_TokenParserInterface::parse()
-	 * @param Twig_Token $token
+	 * @see \Twig_TokenParserInterface::parse()
+	 * @param \Twig_Token $token
 	 */
 	public function parse(\Twig_Token $token) {
 		$stream = $this->parser->getStream();
@@ -215,7 +215,7 @@ class DataValidator_FieldGroupTokenParser extends \Twig_TokenParser
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see Twig_TokenParserInterface::getTag()
+	 * @see \Twig_TokenParserInterface::getTag()
 	 */
 	public function getTag() {
 		return 'dv_field_group';
@@ -223,7 +223,7 @@ class DataValidator_FieldGroupTokenParser extends \Twig_TokenParser
 	
 	/**
 	 * Tells if the current token is 
-	 * @param Twig_Token $token
+	 * @param \Twig_Token $token
 	 * @return boolean
 	 */
 	public function decideGroupEnd(\Twig_Token $token) {
@@ -259,7 +259,7 @@ class DataValidator_FieldNode extends \Twig_Node
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see Twig_Node::compile()
+	 * @see \Twig_Node::compile()
 	 */
 	public function compile(\Twig_Compiler $compiler)
 	{
@@ -307,7 +307,7 @@ class DataValidator_FieldGroupNode extends \Twig_Node
 	 * @param string $validatorName Validator's name in Twig context
 	 * @param string $groupName Group's name
 	 * @param bool $nameIsString If set, the group name is stored as a raw string
-	 * @param Twig_Node $body Body node
+	 * @param \Twig_Node $body Body node
 	 * @param int $line Line number of this node
 	 * @param string $tag Tag for this node
 	 */
@@ -322,7 +322,7 @@ class DataValidator_FieldGroupNode extends \Twig_Node
 
 	/**
 	 * (non-PHPdoc)
-	 * @see Twig_Node::compile()
+	 * @see \Twig_Node::compile()
 	 */
 	public function compile(\Twig_Compiler $compiler)
 	{
