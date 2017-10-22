@@ -21,6 +21,7 @@ class RegExp extends AbstractFilter
 	public const REGEX_UCWORD = '/^[A-Z0-9_]+$/';
 	public const REGEX_LCALPHANUMERIC = '/^[a-z0-9]+$/';
 	public const REGEX_UCALPHANUMERIC = '/^[A-Z0-9]+$/';
+	public const REGEX_SQL_DATETIME = '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/';
 	
 	/**
 	 * @var string Regular expression holder
