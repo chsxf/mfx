@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PHP-MicroFX\n"
-"POT-Creation-Date: 2017-05-03 14:34+0200\n"
-"PO-Revision-Date: 2017-05-03 14:34+0200\n"
+"POT-Creation-Date: 2017-11-07 06:44+0100\n"
+"PO-Revision-Date: 2017-11-07 06:45+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.4\n"
 "X-Poedit-Basepath: ../../..\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -150,13 +150,37 @@ msgstr "Le champ '%s' ne contient pas une heure valide."
 msgid "The field '%s' at index %d does not contain a valid time."
 msgstr "Le champ '%s' à l'index %d ne contient pas une heure valide."
 
-#: classes/DataValidator/Field/DateTime.php:76
-msgid "yyyy/mm/dd"
-msgstr "dd/mm/aaaa"
+#: classes/DataValidator/Field/DateTime.php:86
+msgid "m/d/Y"
+msgstr "d/m/Y"
 
-#: classes/DataValidator/Field/DateTime.php:76
+#: classes/DataValidator/Field/DateTime.php:86
+msgid "H:i"
+msgstr "H:i"
+
+#: classes/DataValidator/Field/DateTime.php:95
+msgid "mm/dd/yyyy"
+msgstr "dd/mm/yyyy"
+
+#: classes/DataValidator/Field/DateTime.php:95
 msgid "hh:mm"
 msgstr "hh:mm"
+
+#: classes/DataValidator/Field/DateTime.php:106
+msgid "(0\\d|1[0-2])/([0-2]\\d|3[01])/\\d{4}"
+msgstr "([0-2]\\d|3[01])/(0\\d|1[0-2])/\\d{4}"
+
+#: classes/DataValidator/Field/DateTime.php:106
+msgid "([01]\\d|2[0-3]):[0-5]\\d"
+msgstr "([01]\\d|2[0-3]):[0-5]\\d"
+
+#: classes/DataValidator/Field/DateTime.php:108
+msgid "(?<month>0\\d|1[0-2])/(?<day>[0-2]\\d|3[01])/(?<year>\\d{4})"
+msgstr "(?<day>[0-2]\\d|3[01])/(?<month>0\\d|1[0-2])/(?<year>\\d{4})"
+
+#: classes/DataValidator/Field/DateTime.php:108
+msgid "(?<hour>[01]\\d|2[0-3]):(?<minute>[0-5]\\d)"
+msgstr "(?<hour>[01]\\d|2[0-3]):(?<minute>[0-5]\\d)"
 
 #: classes/DataValidator/Field/Email.php:37
 #, php-format
@@ -236,7 +260,7 @@ msgstr "'%s' n'est pas une valeur valide pour le champ '%s'."
 msgid "A class is already registered for the field type."
 msgstr "Une classe est déjà enregistrée pour ce type de champ."
 
-#: classes/DataValidator/Filter/DontExistsInDB.php:27
+#: classes/DataValidator/Filter/DontExistsInDB.php:30
 #, php-format
 msgid ""
 "The '%%s' field must reprensent a non-existing entry in the '%s' table "
@@ -269,22 +293,22 @@ msgstr "La valeur du champ ‘%%s’ doit être du type ‘%s’."
 msgid " or "
 msgstr " ou "
 
-#: classes/DataValidator/Filter/Match.php:33
+#: classes/DataValidator/Filter/Match.php:35
 #, php-format
 msgid "The field '%%s' must match the value of the field '%s'."
 msgstr "Le champ '%%s' doit correspondre à la valeur du champ '%s'."
 
-#: classes/DataValidator/Filter/Match.php:42
-#: classes/DataValidator/Filter/RequiredIfNotEmpty.php:43
+#: classes/DataValidator/Filter/Match.php:44
+#: classes/DataValidator/Filter/RequiredIfNotEmpty.php:45
 msgid ", "
 msgstr ", "
 
-#: classes/DataValidator/Filter/Match.php:42
-#: classes/DataValidator/Filter/RequiredIfNotEmpty.php:43
+#: classes/DataValidator/Filter/Match.php:44
+#: classes/DataValidator/Filter/RequiredIfNotEmpty.php:45
 msgid " and "
 msgstr " et "
 
-#: classes/DataValidator/Filter/Match.php:43
+#: classes/DataValidator/Filter/Match.php:45
 #, php-format
 msgid "The field '%%s' must match the value of the fields %s."
 msgstr "Le champ '%%s' doit correspondre à la valeur des champs %s."
@@ -294,17 +318,17 @@ msgstr "Le champ '%%s' doit correspondre à la valeur des champs %s."
 msgid "The '%s' field does not contain an existing path."
 msgstr "Le champ '%s' ne contient pas un chemin existant."
 
-#: classes/DataValidator/Filter/RegExp.php:39
+#: classes/DataValidator/Filter/RegExp.php:40
 #, php-format
 msgid "The '%s' field does not match the specified regular expression."
 msgstr "Le champ '%s' ne correspond pas l'expression régulière spécifiée."
 
-#: classes/DataValidator/Filter/RegExp.php:87
+#: classes/DataValidator/Filter/RegExp.php:88
 #, php-format
 msgid "The string in field '%%s' must contain exactly %d characters."
 msgstr "Le chaîne dans le champ '%%s' doit contenir exactement %d caractères."
 
-#: classes/DataValidator/Filter/RegExp.php:92
+#: classes/DataValidator/Filter/RegExp.php:93
 #, php-format
 msgid ""
 "The string in field '%%s' must contain between %d and %d characters "
@@ -313,42 +337,42 @@ msgstr ""
 "Le chaîne dans le champ '%%s' doit contenir entre %d et %d caractères "
 "(inclus)."
 
-#: classes/DataValidator/Filter/RegExp.php:97
+#: classes/DataValidator/Filter/RegExp.php:98
 #, php-format
 msgid "The string in field '%%s' must contain at least %d characters."
 msgstr "Le chaîne dans le champ '%%s' doit contenir au moins %d caractères."
 
-#: classes/DataValidator/Filter/RegExp.php:102
+#: classes/DataValidator/Filter/RegExp.php:103
 #, php-format
 msgid "The string in field '%%s' must contain at most %d characters."
 msgstr "Le chaîne dans le champ '%%s' doit contenir au plus %d caractères."
 
-#: classes/DataValidator/Filter/RegExp.php:114
+#: classes/DataValidator/Filter/RegExp.php:115
 #, php-format
 msgid "The field '%s' does not contain a word."
 msgstr "Le champ '%s' ne contient pas un mot."
 
-#: classes/DataValidator/Filter/RegExp.php:122
+#: classes/DataValidator/Filter/RegExp.php:123
 #, php-format
 msgid "The field '%s' does not contain a lower case word."
 msgstr "Le champ '%s' ne contient pas un mot en minuscules."
 
-#: classes/DataValidator/Filter/RegExp.php:130
+#: classes/DataValidator/Filter/RegExp.php:131
 #, php-format
 msgid "The field '%s' does not contain an upper case word."
 msgstr "Le champ '%s' ne contient pas un mot en majuscules."
 
-#: classes/DataValidator/Filter/RegExp.php:140
+#: classes/DataValidator/Filter/RegExp.php:141
 #, php-format
 msgid "The field '%%s' does not equal the value '%s'."
 msgstr "Le champ '%%s' ne correspond pas à la valeur '%s'."
 
-#: classes/DataValidator/Filter/RequiredIfNotEmpty.php:34
+#: classes/DataValidator/Filter/RequiredIfNotEmpty.php:36
 #, php-format
 msgid "The field '%%s' is required when the field '%s' is provided."
 msgstr "Le champ '%%s' est requis quand le champ '%s' est fourni."
 
-#: classes/DataValidator/Filter/RequiredIfNotEmpty.php:44
+#: classes/DataValidator/Filter/RequiredIfNotEmpty.php:46
 #, php-format
 msgid "The field '%%s' is required when the fields %s are provided."
 msgstr "Le champ '%%s' est requis quand les champs %s sont fournis."
@@ -377,6 +401,9 @@ msgstr ""
 #, php-format
 msgid "An error has occured while processing DatabaseUpdater '%s'."
 msgstr "Une erreur est survenue pendant l’exécution du DatabaseUpdater ‘%s’."
+
+#~ msgid "yyyy/mm/dd"
+#~ msgstr "dd/mm/aaaa"
 
 #~ msgid ""
 #~ "This is how the story goes.\n"

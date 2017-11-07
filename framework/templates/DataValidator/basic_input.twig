@@ -8,6 +8,10 @@
 		{%- lazy -%}
 			{%- for key, value in extras %}	{{ key|raw }}="{{ value }}"{% endfor -%}
 		{%- endlazy %} />
-		
-	{%- if suffix is not empty %} {{ suffix|raw }}{% endif -%}	
+	
+    {%- if suffix is not empty %}
+        {%- if extras['suffix_format'] is defined %} {{ extras['suffix_format']|format(suffix)|raw }}
+	    {%- else %} {{ suffix|raw }}
+	    {%- endif -%}
+	{%- endif -%}
 {%- endautoescape %}
