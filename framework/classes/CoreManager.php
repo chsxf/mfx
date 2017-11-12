@@ -213,7 +213,7 @@ final class CoreManager
 		$inst = self::_ensureInit();
 
 		// Finding route from REQUEST_URI
-		$prefix = preg_replace('#/mfx$#', '/', dirname($_SERVER['PHP_SELF']));
+		$prefix = preg_replace('#/mfx$#', '/', dirname($_SERVER['SCRIPT_NAME']));
 		if (!preg_match('#/$#', $prefix))
 			$prefix .= '/';
 		$prefix .= Config::get('request.prefix', '');
