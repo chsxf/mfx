@@ -153,7 +153,7 @@ class User
 		$values = array();
 		foreach ($fields as $f)
 		{
-			if (!isset($f['value'])
+			if (!array_key_exists('value', $f)
 					|| !preg_match('/^\w+$/', $f['name'])
 					|| (!empty($f['function']) && !preg_match("/^[a-zA-Z0-9_\-?(),'` ]+$/", $f['function']))
 					|| (!empty($f['operator']) && !in_array($f['operator'], array('=', '!=', '<>', '<=', '>=', 'IS', 'IS NOT'))))
