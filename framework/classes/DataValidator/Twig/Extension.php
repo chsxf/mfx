@@ -163,6 +163,10 @@ class DataValidator_FieldTokenParser extends \Twig_TokenParser
 		}
 
 		$stream->expect(\Twig_Token::BLOCK_END_TYPE);
+		
+		if ($id === NULL) {
+			$id = $fieldName;
+		}
 					
 		return new DataValidator_FieldNode($validatorName, $fieldName, $id, $idIsString, $typeOverride, $token->getLine(), $this->getTag());
 	}
