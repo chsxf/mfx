@@ -11,6 +11,8 @@
 
 namespace CheeseBurgames\MFX;
 
+use CheeseBurgames\MFX\L10n\L10nManager;
+
 /**
  * Core manager singleton class
  * 
@@ -303,7 +305,9 @@ final class CoreManager
 						'mfx_stylesheets' => StyleSheets::export($twig),
 						'mfx_root_url' => self::getRootURI(),
 						'mfx_errors_and_notifs' => ErrorManager::flush($twig),
-						'mfx_current_user' => User::currentUser()
+						'mfx_current_user' => User::currentUser(),
+						'mfx_locale' => L10nManager::getLocale(),
+						'mfx_language' => L10nManager::getLanguage()
 				));
 				
 				$twig->display($template, $context);
