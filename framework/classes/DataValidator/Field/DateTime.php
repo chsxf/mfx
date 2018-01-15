@@ -15,10 +15,8 @@ class DateTime extends Field {
 	 */
 	protected function __construct($name, FieldType $type, $defaultValue, $required) {
 		parent::__construct($name, $type, empty($defaultValue) ? 0 : $defaultValue, $required);
-		
-		$this->addExtra('pattern', self::regexPattern($this->getType()));
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see Field::validate()
@@ -26,7 +24,7 @@ class DateTime extends Field {
 	public function validate($silent = false) {
 		if (!parent::validate($silent))
 			return false;
-		
+
 		$re = sprintf('#^%s$#', self::regexPattern($this->getType()));
 		switch ($this->getType()->value()) {
 			case FieldType::DATE:
@@ -38,7 +36,7 @@ class DateTime extends Field {
 				$errorRepeatable = dgettext('mfx', "The field '%s' at index %d does not contain a valid time.");
 				break;
 		}
-		
+
 		if ($this->isRepeatable())
 		{
 			$maxIndex = $this->getMaxRepeatIndex();
@@ -61,10 +59,10 @@ class DateTime extends Field {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see Field::generate()
@@ -76,16 +74,16 @@ class DateTime extends Field {
 		$result[1]['suffix'] = self::humanlyReadablePattern($this->getType());
 		return $result;
 	}
-	
+
 	/**
 	 * Gets the pattern to use with the date() function
 	 * @param FieldType $type Type of the field
 	 * @return string
 	 */
 	public static function dateFunctionPattern(FieldType $type) {
-		return $type->equals(FieldType::DATE) ? dgettext('mfx', 'm/d/Y') : dgettext('mfx', 'H:i');
+		return $type->equals(FieldType::DATE) ? 'Y-m-d' : 'H:i';
 	}
-	
+
 	/**
 	 * Gets the pattern as humanly readable
 	 * @param FieldType $type Type of the field
@@ -94,7 +92,7 @@ class DateTime extends Field {
 	public static function humanlyReadablePattern(FieldType $type) {
 		return $type->equals(FieldType::DATE) ? dgettext('mfx', 'mm/dd/yyyy') : dgettext('mfx', 'hh:mm');
 	}
-	
+
 	/**
 	 * Gets the pattern as a regular expression
 	 * @param FieldType $type Type of the field
@@ -103,9 +101,9 @@ class DateTime extends Field {
 	 */
 	public static function regexPattern(FieldType $type, $withBackReferences = false) {
 		if (empty($withBackReferences))
-			return $type->equals(FieldType::DATE) ? dgettext('mfx', '(0\d|1[0-2])/([0-2]\d|3[01])/\d{4}') : dgettext('mfx', '([01]\d|2[0-3]):[0-5]\d');
+			return $type->equals(FieldType::DATE) ? '\d{4}-(0\d|1[0-2])-([0-2]\d|3[01])' : '([01]\d|2[0-3]):[0-5]\d';
 		else
-			return $type->equals(FieldType::DATE) ? dgettext('mfx', '(?<month>0\d|1[0-2])/(?<day>[0-2]\d|3[01])/(?<year>\d{4})') : dgettext('mfx', '(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d)');
+			return $type->equals(FieldType::DATE) ? '(?<year>\d{4})-(?<month>0\d|1[0-2])-(?<day>[0-2]\d|3[01])' : '(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d)';
 	}
 }
 
