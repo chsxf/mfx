@@ -1,11 +1,11 @@
 <?php
 /**
  * Core manager
- * 
+ *
  * @author Christophe SAUVEUR <christophe@cheeseburgames.com>
  * @version 1.0
  * @package framework
- * 
+ *
  * @license GPL, version 2
  */
 
@@ -15,13 +15,13 @@ use CheeseBurgames\MFX\L10n\L10nManager;
 
 /**
  * Core manager singleton class
- * 
+ *
  * Handles all requests and responses.
  */
 final class CoreManager
 {
 	const ROUTE_REGEXP = '/^[[:alnum:]_]+\.[[:alnum:]_]+?$/';
-	
+
 	private static $HTTP_STATUS_CODES = array(
 			100 => 'Continue',
 			101 => 'Switching Protocols',
@@ -75,27 +75,27 @@ final class CoreManager
 			511 => 'Network authentication required',
 			520 => 'Web server is returning an unknown error'
 	);
-	
+
 	/**
 	 * @var CoreManager Single instance of the class
 	 */
 	private static $_singleInstance = NULL;
-	
+
 	/**
 	 * @var DocCommentParser Current documentation comment parser
 	 */
 	private $_docCommentParser;
-	
+
 	/**
 	 * @var array Fake protocols list (keys are protocols names and values replacement strings)
 	 */
 	private $_fakeProtocols = array();
-	
+
 	/**
 	 * @var string Root URI container (as built from server information)
 	 */
 	private $_rootURI = NULL;
-	
+
 	/**
 	 * Ensures the singleton class instance has been correctly initialized only once
 	 * @return CoreManager the singleton class instance
@@ -105,7 +105,7 @@ final class CoreManager
 		{
 			self::$_singleInstance = new CoreManager();
 			self::setDocCommentParser(new DocCommentParser());
-			
+
 			// Fake protocols
 			$mfxRelativeBaseHREF = Config::get('mfx_relative_base_href', 'mfx');
 			if ('/' !== $mfxRelativeBaseHREF)
@@ -123,16 +123,16 @@ final class CoreManager
 				{
 					if (in_array($k, $definedWrappers) || array_key_exists($k, self::$_singleInstance->_fakeProtocols) || !preg_match('/^\w+$/', $k))
 						continue;
-			
+
 					// Trailing with a back slash
 					if (!preg_match('#/$#', $v) && $v != '')
 						$v .= '/';
-			
+
 					self::$_singleInstance->_fakeProtocols[$k] = $v;
 				}
 			}
 			ob_start(array(__CLASS__, 'convertFakeProtocols'));
-			
+
 			if (Config::get('response.default_content_type', 'text/html') == 'text/html') {
 				// Adding scripts
 				Scripts::add('mfxjs://jquery.min.js');
@@ -146,7 +146,7 @@ final class CoreManager
 					foreach ($userScripts as $s)
 						Scripts::add($s);
 				}
-				
+
 				// Adding stylesheets
 				StyleSheets::add('mfxcss://framework.css');
 				$userSheets = Config::get('stylesheets', array());
@@ -159,11 +159,11 @@ final class CoreManager
 		}
 		return self::$_singleInstance;
 	}
-	
+
 	/**
 	 * Converts the fake protocols in the input strings
 	 * @param string $str Input string
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function convertFakeProtocols($str) {
@@ -173,22 +173,22 @@ final class CoreManager
 			$search[] = "{$k}://";
 		return str_replace($search, array_values($inst->_fakeProtocols), $str);
 	}
-	
+
 	/**
 	 * Sets the current documentation comment parser
-	 * 
+	 *
 	 * @param DocCommentParser $parser New documentation comment parser. If empty, the current parser remains active.
-	 * @return DocCommentParser the previous parser 
+	 * @return DocCommentParser the previous parser
 	 */
 	public static function setDocCommentParser(DocCommentParser $parser) {
 		$inst = self::_ensureInit();
-		
+
 		$currentParser = $inst->_docCommentParser;
 		if (!empty($parser))
 			$inst->_docCommentParser = $parser;
 		return $currentParser;
 	}
-	
+
 	/**
 	 * Checks if a specific method is a valid sub-route
 	 * @param \ReflectionMethod $method Method to inspect
@@ -198,17 +198,17 @@ final class CoreManager
 		// Checking method
 		$params = $method->getParameters();
 		if (!$method->isStatic() || !$method->isPublic() || (count($params) >= 1 && !$params[0]->isArray()))
-			return false;	
+			return false;
 		// Building parameters from doc comment
 		$validSubRouteParameters = self::_ensureInit()->_docCommentParser->parse($method);
 		if (!isset($validSubRouteParameters['mfx_subroute']))
 			return false;
 		return $validSubRouteParameters;
 	}
-	
+
 	/**
 	 * Handles the request sent to the server
-	 * 
+	 *
 	 * @param string $defaultRoute Route to use if none can be guessed from request
 	 */
 	public static function handleRequest(\Twig_Environment $twig, $defaultRoute) {
@@ -224,13 +224,13 @@ final class CoreManager
 		$routePathInfo = substr($_SERVER['REQUEST_URI'], strlen($prefix));
 		$routePathInfo = explode('?', $routePathInfo, 2);
 		$routePathInfo = ltrim($routePathInfo[0], '/');
-		
+
 		// Guessing route from path info
 		if (empty($routePathInfo))
 		{
 			if ($defaultRoute == 'none')
 				self::dieWithStatusCode(200);
-			
+
 			$route = $defaultRoute;
 			$routeParams = array();
 		}
@@ -245,7 +245,7 @@ final class CoreManager
 			}
 			$routeParams = (empty($chunks[$firstRouteParam]) && (!isset($chunks[$firstRouteParam]) || $chunks[$firstRouteParam] !== '0')) ? array() : explode('/', $chunks[$firstRouteParam]);
 		}
-		
+
 		// Checking route
 		if (!preg_match(self::ROUTE_REGEXP, $route)) {
 			self::_check404file($routeParams);
@@ -267,13 +267,13 @@ final class CoreManager
 		if (!$rc->implementsInterface(IRouteProvider::class))
 			throw new \ErrorException("'{$mainRoute}' is not a valid route provider.");
 		$validRouteProviderParameters = $inst->_docCommentParser->parse($rc);
-		
+
 		// Checking subroute
 		$rm = $rc->getMethod($subRoute);
 		$validSubRouteParameters = self::isMethodValidSubRoute($rm);
 		if (false === $validSubRouteParameters)
 			throw new \ErrorException("'{$subRoute}' is not a valid subroute of the '{$mainRoute}' route.");
-		
+
 		// Pre-processing callbacks
 		// -- Global
 		$callback = Config::get('request.pre_route_callback');
@@ -285,7 +285,7 @@ final class CoreManager
 			if (!empty($callback) && is_callable($callback))
 				call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters);
 		}
-		
+
 		// Processing route
 		$reqResult = $rm->invoke(NULL, $routeParams);
 		$routeProvidedTemplate = array_key_exists('mfx_template', $validSubRouteParameters) ? $validSubRouteParameters['mfx_template'] : NULL;
@@ -295,11 +295,11 @@ final class CoreManager
 			case SubRouteType::VIEW:
 				if ($reqResult->statusCode() != 200)
 					self::dieWithStatusCode($reqResult->statusCode());
-				
+
 				CoreProfiler::pushEvent('Building response');
 				self::_setResponseContentType($validSubRouteParameters, Config::get('response.default_content_type', 'text/html'), Config::get('response.default_charset', 'UTF-8'));
 				$template = $reqResult->template(($routeProvidedTemplate === NULL) ? str_replace(array('_', '.'), '/', $route) : $routeProvidedTemplate);
-				
+
 				$context = array_merge(RequestResult::getViewGlobals(), $reqResult->data(), array(
 						'mfx_scripts' => Scripts::export($twig),
 						'mfx_stylesheets' => StyleSheets::export($twig),
@@ -309,11 +309,11 @@ final class CoreManager
 						'mfx_locale' => L10nManager::getLocale(),
 						'mfx_language' => L10nManager::getLanguage()
 				));
-				
+
 				$twig->display($template, $context);
 				CoreProfiler::pushEvent('Response built');
 				break;
-			
+
 			// Edit requests - Mostly requests with POST data
 			case SubRouteType::REDIRECT:
 				$redirectionURI = $reqResult->redirectURI();
@@ -321,29 +321,29 @@ final class CoreManager
 					$redirectionURI = $validSubRouteParameters['mfx_redirect_uri'];
 				self::redirect($redirectionURI);
 				break;
-				
+
 			// Asynchronous requests expecting JSON data
 			case SubRouteType::JSON:
 				self::outputJSON($reqResult, $validSubRouteParameters, $twig);
 				break;
-				
+
 			// Asynchronous requests expecting XML data
 			case SubRouteType::XML:
 				self::outputXML($reqResult, $validSubRouteParameters, $twig);
 				break;
-				
+
 			// Status
 			case SubRouteType::STATUS:
 				self::outputStatusCode($reqResult->statusCode(), $reqResult->data());
 				break;
 		}
-		
+
 		// Post-processing callback
 		$callback = Config::get('request.post_route_callback');
 		if (!empty($callback) && is_callable($callback))
 			call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters);
 	}
-	
+
 	private static function outputJSON(RequestResult $reqResult, array $subRouteParameters = array(), \Twig_Environment $twig = NULL) {
 		self::_setStatusCode($reqResult->statusCode());
 		self::_setResponseContentType($subRouteParameters, 'application/json', Config::get('response.default_charset', 'UTF-8'));
@@ -359,7 +359,7 @@ final class CoreManager
 			echo JSONTools::filterAndEncode($d);
 		}
 	}
-	
+
 	private static function outputXML(RequestResult $reqResult, array $subRouteParamters = array(), \Twig_Environment $twig = NULL) {
 		self::_setStatusCode($reqResult->statusCode());
 		self::_setResponseContentType($subRouteParamters, 'application/xml', Config::get('response.default_charset', 'UTF-8'));
@@ -375,7 +375,7 @@ final class CoreManager
 			echo XMLTools::build($reqResult->data());
 		}
 	}
-	
+
 	/**
 	 * Checks if the request could be referring to a missing file and replies a 404 HTTP error code
 	 * @param array $routeParams Request route parameters
@@ -384,7 +384,7 @@ final class CoreManager
 		if (!empty($routeParams) && preg_match('/\.[a-z0-9]+$/i', $routeParams[count($routeParams) - 1]))
 			self::dieWithStatusCode(404);
 	}
-	
+
 	/**
 	 * Builds the root URI from server information (protocol, host and PHP_SELF)
 	 * @return string
@@ -395,7 +395,12 @@ final class CoreManager
 		{
 			$inst->_rootURI = Config::get('base_href', false);
 			if (false === $inst->_rootURI) {
-				$protocol = (empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off') ? 'http' : 'https';
+				if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+					$protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
+				}
+				else {
+					$protocol = (empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off') ? 'http' : 'https';
+				}
 				$inst->_rootURI = "{$protocol}://{$_SERVER['HTTP_HOST']}".preg_replace('#/mfx$#', '/', dirname($_SERVER['PHP_SELF']));
 				if (!preg_match('#/$#', $inst->_rootURI))
 					$inst->_rootURI .= '/';
@@ -403,7 +408,7 @@ final class CoreManager
 		}
 		return $inst->_rootURI;
 	}
-	
+
 	/**
 	 * Redirects the user the specified URI, the HTTP referer if defined and same host or the website root
 	 * @param string $redirectURI Target redirection URI (Defaults to NULL)
@@ -412,7 +417,7 @@ final class CoreManager
 	{
 		if (empty($redirectURI) && !empty($_SERVER['HTTP_REFERER']) && preg_match("#https?://{$_SERVER['HTTP_HOST']}#", $_SERVER['HTTP_REFERER']))
 			$redirectURI = $_SERVER['HTTP_REFERER'];
-		
+
 		if (empty($redirectURI) || !preg_match('#^https?://#', $redirectURI))
 		{
 			// Building URI
@@ -426,7 +431,7 @@ final class CoreManager
 		ErrorManager::freeze();
 		exit();
 	}
-	
+
 	/**
 	 * Sets the HTTP status code
 	 * @param number $code HTTP status code to emit (Defaults to 200 OK)
@@ -438,7 +443,7 @@ final class CoreManager
 		header(sprintf("HTTP/1.1 %d %s", $code, self::$HTTP_STATUS_CODES[$code]));
 		return $code;
 	}
-	
+
 	/**
 	 * Emits a HTTP status code
 	 * @param int $code HTTP status code to emit (Defaults to 400 Bad Request)
@@ -446,17 +451,17 @@ final class CoreManager
 	 */
 	public static function outputStatusCode($code = 400, $message = '') {
 		$code = self::_setStatusCode($code);
-		
+
 		$contentType = Config::get('response.default_content_type', 'text/plain');
 		$charset = Config::get('response.default_charset', 'UTF-8');
-		
+
 		$data = array(
 				'code' => $code,
 				'status' => self::$HTTP_STATUS_CODES[$code]
 		);
 		if (!empty($message))
 			$data['message'] = $message;
-			
+
 		self::_setResponseContentType(array(), $contentType, $charset);
 		switch ($contentType) {
 			case 'application/json':
@@ -474,7 +479,7 @@ final class CoreManager
 				break;
 		}
 	}
-	
+
 	/**
 	 * Terminates the script and emits a HTTP status code
 	 * @param int $code HTTP status code to emit (Defaults to 400 Bad Request)
@@ -485,10 +490,10 @@ final class CoreManager
 		ErrorManager::freeze();
 		exit();
 	}
-	
+
 	/**
 	 * Sets the response Content-Type header from the sub-route documentation comment parameters
-	 * 
+	 *
 	 * @param array $subRouteParameters Documentation comment parameters of the sub-route
 	 * @param string $default Content type to use if not provided by the sub-route.
 	 * @param string $defaultCharset Charset to use if not provided by the sub-route.
@@ -500,7 +505,7 @@ final class CoreManager
 			$ct .= "; charset={$defaultCharset}";
 		header("Content-Type: {$ct}");
 	}
-	
+
 	/**
 	 * Sets attachment headers for file downloads
 	 * @param string $filename Downlaoded file name
@@ -513,12 +518,12 @@ final class CoreManager
 		{
 			if ($charset !== NULL && is_string($charset))
 				header("Content-Type: {$mimeType}; charset={$charset}");
-			else 
+			else
 				header("Content-Type: {$mimeType}");
 		}
 		header("Content-Disposition: attachment; filename=\"{$filename}\"");
 	}
-	
+
 	/**
 	 * Flushes all output buffers
 	 */
@@ -527,7 +532,7 @@ final class CoreManager
 		for ($i = 0; $i < $c; $i++)
 			ob_end_flush();
 	}
-	
+
 	/**
 	 * Uncaught exception handler
 	 * @param \Throwable $exception Uncaught exception
