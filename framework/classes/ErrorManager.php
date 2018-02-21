@@ -1,7 +1,7 @@
 <?php
 /**
  * Global error manager
- * 
+ *
  * @author Christophe SAUVEUR <christophe@cheeseburgames.com>
  * @version 1.0
  * @package framework
@@ -27,7 +27,7 @@ class ErrorManager
 			'E_STRICT' => E_STRICT,
 			'E_DEPRECATED' => E_DEPRECATED
 	);
-	
+
 	/**
 	 * @var array Errors container
 	 */
@@ -36,12 +36,12 @@ class ErrorManager
 	 * @var array Notifications container
 	 */
 	private static $_notifs = array();
-	
+
 	/**
 	 * @var callable Reference to the previous error handler, or NULL if none exists
 	 */
 	public static $previousHandler = NULL;
-	
+
 	/**
 	 * Gets the constant name string from the error number
 	 * @param int $errno Error number
@@ -55,7 +55,23 @@ class ErrorManager
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Tells if the manager holds at least one error.
+	 * @return boolean
+	 */
+	public static function hasError() {
+		return !empty(self::$_errors);
+	}
+
+	/**
+	 * Tells if the manager holds at least one notification.
+	 * @return boolean
+	 */
+	public static function hasNotif() {
+		return !empty(self::$_notifs);
+	}
+
 	/**
 	 * Handles errors
 	 * @param int $errno Error number/level
@@ -63,7 +79,7 @@ class ErrorManager
 	 * @param string $errfile Filename from which the error was raised
 	 * @param int $errline Line number from which the error was raised
 	 * @return boolean
-	 * 
+	 *
 	 * @link http://php.net/manual/en/function.set-error-handler.php
 	 */
 	public static function handleError($errno, $errstr, $errfile, $errline)
@@ -85,20 +101,20 @@ class ErrorManager
 				return true;
 			}
 		}
-		
+
 		return empty(self::$previousHandler) ? true : call_user_func(self::$previousHandler, $errno, $errstr, $errfile, $errline);
 	}
-	
+
 	/**
 	 * Handle notifications
 	 * @param string $message Notification message
-	 * 
+	 *
 	 * @used-by trigger_notif()
 	 */
 	public static function handleNotif($message) {
 		self::$_notifs[] = $message;
 	}
-	
+
 	/**
 	 * Freezes the error manager state into session data
 	 * @param bool $flush If set, flushes error containers. (Defaults to false)
@@ -108,7 +124,7 @@ class ErrorManager
 		if (!empty($flush))
 			ErrorManager::flush();
 	}
-	
+
 	/**
 	 * Unfreezes the error manager state from session data if applying
 	 */
@@ -124,7 +140,7 @@ class ErrorManager
 			unset($_SESSION[__CLASS__]);
 		}
 	}
-	
+
 	/**
 	 * Flushes error and notification messages for template display
 	 * @param \Twig_Environment $twig Twig environment. If NULL, the function flushes containers only and returns an empty string
@@ -139,7 +155,7 @@ class ErrorManager
 		self::$_notifs = array();
 		return $str;
 	}
-	
+
 	/**
 	 * Flushes error and notification messages to an array or an object
 	 * @param array|object $arrOrObject Array or object to modify. If $arrOrObject is neither an array nor an object, the function flushes containers only.
@@ -152,7 +168,7 @@ class ErrorManager
 		else
 			ErrorManager::flush();
 	}
-	
+
 	/**
 	 * Flushes error and notification messages to an array
 	 * @param array $arr
@@ -162,10 +178,10 @@ class ErrorManager
 			$arr['errors'] = self::$_errors;
 		if (!empty(self::$_notifs))
 			$arr['notifs'] = self::$_notifs;
-		
+
 		ErrorManager::flush();
 	}
-	
+
 	/**
 	 * Flushes error and notification messages to an object
 	 * @param object $object
@@ -175,7 +191,7 @@ class ErrorManager
 			$object->errors = self::$_errors;
 		if (!empty(self::$_notifs))
 			$object->notifs = self::$_notifs;
-		
+
 		ErrorManager::flush();
 	}
 }
