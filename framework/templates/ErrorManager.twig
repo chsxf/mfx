@@ -4,9 +4,9 @@
 		{% if errors|length == 1 %}
 			{% set error = errors[0] %}
             {% if debug %}
-				{{ error.errnoconstant }} - [{{ error.errfile }}:{{ error.errline }}]<br />{{ error.errstr }}
+				{{ error.errnoconstant }} - [{{ error.errfile }}:{{ error.errline }}]<br />{{ error.errstr|nl2br }}
 			{% else %}
-				{{ error.errstr }}
+				{{ error.errstr|nl2br }}
 			{% endif %}
 		{% else %}
 		<div>
@@ -15,9 +15,9 @@
 			{% for error in errors %}
 				<li>
 				{% if debug %}
-					{{ error.errnoconstant }} - [{{ error.errfile }}:{{ error.errline }}]<br />{{ error.errstr }}
+					{{ error.errnoconstant }} - [{{ error.errfile }}:{{ error.errline }}]<br />{{ error.errstr|nl2br }}
 				{% else %}
-					{{ error.errstr }}
+					{{ error.errstr|nl2br }}
 				{% endif %}
 				</li>
 			{% endfor %}
@@ -30,13 +30,13 @@
 	{% set div_class = (notifs|length > 0) ? '' : 'invisible' %}
 	<div id="mfx-notifs" class="{{ div_class }}">
 		{% if notifs|length == 1 %}
-		{{ notifs[0] }}
+		{{ notifs[0]|nl2br }}
 		{% else %}
 		<div>
 			<ul>
 			{% if notifs|length > 0 %}
 				{% for notif in notifs %}
-				<li>{{ notif }}</li>
+				<li>{{ notif|nl2br }}</li>
 				{% endfor %}
 			{% endif %}
 			</ul>
