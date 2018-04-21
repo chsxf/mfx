@@ -58,7 +58,7 @@ class Integer extends Field
 			for ($i = 0; $i <= $maxIndex; $i++)
 			{
 				$val = $this->getIndexedValue($i, true);
-				if (!empty($val))
+				if ($val !== NULL)
 				{
 					switch ($this->getType()->value())
 					{
@@ -113,7 +113,7 @@ class Integer extends Field
 		else
 		{
 			$val = $this->getValue(true);
-			if (!empty($val))
+			if ($val !== NULL)
 			{
 				switch ($this->getType()->value())
 				{
