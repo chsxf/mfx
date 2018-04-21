@@ -278,12 +278,12 @@ final class CoreManager
 		// -- Global
 		$callback = Config::get('request.pre_route_callback');
 		if (!empty($callback) && is_callable($callback))
-			call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters);
+			call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters, $routeParams);
 		// -- Route
 		if (array_key_exists('mfx_pre_route_callback', $validRouteProviderParameters)) {
 			$callback = $validRouteProviderParameters['mfx_pre_route_callback'];
 			if (!empty($callback) && is_callable($callback))
-				call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters);
+				call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters, $routeParams);
 		}
 
 		// Processing route
