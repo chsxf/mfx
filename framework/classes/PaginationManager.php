@@ -74,7 +74,7 @@ final class PaginationManager
 		
 		foreach (array_keys($this->_extraParameters) as $k) {
 			if (isset($_REQUEST[$k]))
-				$this->_extraParameters = $_REQUEST[$k];
+				$this->_extraParameters[$k] = $_REQUEST[$k];
 		}
 	}
 	
