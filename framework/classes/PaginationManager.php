@@ -121,6 +121,22 @@ final class PaginationManager
 	}
 	
 	/**
+	 * Tells the total count of items
+	 * @return int
+	 */
+	public function getTotalItemCount() {
+		return $this->_totalItemCount;
+	}
+
+	/**
+	 * Tells the start index for the current page
+	 * @return int
+	 */
+	public function getCurrentPageStart() {
+		return $this->_currentPageStart;
+	}
+
+	/**
 	 * Gets the URL parameters for the current page
 	 * @param boolean $includeExtraParameters If set, includes the extra parameters in the URL params
 	 * @return string
