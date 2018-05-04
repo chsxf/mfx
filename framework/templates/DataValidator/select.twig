@@ -3,7 +3,10 @@
 		{%- if id is not empty %} id="{{ id }}"{% endif %}
 		{%- if multiple is not empty %} multiple="multiple"{% endif %}
 		{%- if required is not empty %} required="required"{% endif %}
-		{%- if disabled is not empty %} disabled="disabled"{% endif %}>
+		{%- if disabled is not empty %} disabled="disabled"{% endif %}
+		{%- lazy -%}
+			{%- for key, value in extras %}	{{ key|raw }}="{{ value }}"{% endfor -%}
+		{%- endlazy %}>
 		
 		{% for option in options %}
 			<option value="{{ option.value }}"
