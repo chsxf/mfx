@@ -8,6 +8,7 @@ final class DatabaseUpdater implements IRouteProvider {
 	
 	/**
 	 * @mfx_subroute
+	 * @mfx_anonymous
 	 */
 	public static function update() {
 		$updaters = array_merge(array( FrameworkDatabaseUpdater::class ), Config::get('database.updaters.classes', array()));
