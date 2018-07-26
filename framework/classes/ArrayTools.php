@@ -76,4 +76,15 @@ class ArrayTools
 
 		return $result;
 	}
+	
+	/**
+	 * Shuffles the content of an array
+	 * 
+	 * @param array $arr
+	 */
+	public static function shuffle(array &$arr) {
+		uasort($arr, function($a, $b) {
+			return mt_rand(-1, 1);
+		});
+	}
 }
