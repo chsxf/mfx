@@ -1,7 +1,7 @@
 <?php
 /**
  * Class and helper functions for string management
- * 
+ *
  * @author Christophe SAUVEUR <christophe@cheeseburgames.com>
  * @version 1.0
  * @package framework
@@ -23,22 +23,22 @@ class StringTools
 	const CHARSET_ALPHANUMERIC_LC = 'abcdefghijklmnopqrstuvwxyz0123456789';
 	const CHARSET_ALPHANUMERIC_UC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 	const CHARSET_ALPHANUMERIC_CI = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-	
+
 	/**
 	 * Checks if the specified address is a valid email address
-	 * @param string $address The email address string to check 
+	 * @param string $address The email address string to check
 	 * @return boolean true if the address is valid, false either
 	 */
 	public static function isValidEmailAddress($address)
 	{
 		return (bool) preg_match("/^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+$/", $address);
 	}
-	
+
 	/**
 	 * Checks if the specified string contains a positive integer, optionnaly equals to zero
-	 * @param string $str String to evaluate 
+	 * @param string $str String to evaluate
 	 * @param boolean $canBeZero If set, the string can be evaluated to zero. If not, the integer must be positive. (Defaults to false)
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public static function isPositiveInteger($str, $canBeZero = false) {
 		if ($canBeZero)
@@ -47,12 +47,12 @@ class StringTools
 			$res = preg_match('/^[1-9]\d*$/', $str);
 		return !empty($res);
 	}
-	
+
 	/**
 	 * Checks if the specified string contains a negative integer, optionnaly equals to zero
-	 * @param string $str String to evaluate 
+	 * @param string $str String to evaluate
 	 * @param boolean $canBeZero If set, the string can be evaluated to zero. If not, the integer must be negative. (Defaults to false)
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public static function isNegativeInteger($str, $canBeZero = false) {
 		if ($canBeZero)
@@ -61,19 +61,19 @@ class StringTools
 			$res = preg_match('/^\-[1-9]\d*$/', $str);
 		return !empty($res);
 	}
-	
+
 	/**
 	 * Checks if the specified string contains an integer
-	 * @param string $str String to evaluate 
-	 * @return boolean 
+	 * @param string $str String to evaluate
+	 * @return boolean
 	 */
 	public static function isInteger($str) {
 		$res = preg_match('/^\-?(0|[1-9]\d*)$/', $str);
 		return !empty($res);
 	}
-	
+
 	/**
-	 * Generates a random string based on the specified character set 
+	 * Generates a random string based on the specified character set
 	 * @param int $length Length of the resulting string
 	 * @param string $charset Character set (Defaults to alphanumeric lower case characters)
 	 * @return boolean|string Returns false if length is zero or negative or charset is not a non-empty string. Returns the generated string either.
@@ -82,14 +82,14 @@ class StringTools
 		$length = intval($length);
 		if (empty($charset) || !is_string($charset) || $length <= 0)
 			return false;
-		
+
 		$charset_max_index = strlen($charset) - 1;
 		$str = '';
 		for ($i = 0; $i < $length; $i++)
 			$str .= $charset[mt_rand(0, $charset_max_index)];
 		return $str;
 	}
-	
+
 	/**
 	 * Joins array elements with a separator string, eventually replacing the first and last separators with specific ones.
 	 * @param string $separator Separator string
@@ -97,7 +97,7 @@ class StringTools
 	 * @param string $lastSeparator Separator to use between the two last elements. If NULL, the general separator is used. (Defaults to NULL)
 	 * @param string $firstSeparator Separator to use between the two first elements. If NULL, the general separator is used. (Defaults to NULL)
 	 * @return string
-	 * 
+	 *
 	 * Note :
 	 * If $elements contains only two elements and that both $lastSeperator and $firstSeparator are defined, $lastSeparator is used.
 	 */
@@ -122,15 +122,33 @@ class StringTools
 			return $str;
 		}
 	}
-	
+
+	/**
+	 * Converts a string in snake case to the same string in camel case
+	 * @param string $_str Input string
+	 * @return string Resulting string in camel case
+	 */
+	public static function snakeToCamelCase(string $_str) {
+		return lcfirst(self::snakeToPascalCase($_str));
+	}
+
+	/**
+	 * Converts a string in snake case to the same string in Pascal case
+	 * @param string $_str Input string
+	 * @return string Resulting string in Pascal case
+	 */
+	public static function snakeToPascalCase(string $_str) {
+		return str_replace('_', '', ucwords($_str, '_'));
+	}
+
 	/**
 	 * Sanitizes a string by removing accents, then transforming to lower case,
 	 * then replacing non-alphabetic and non-numeric characters by a place holder,
 	 * then removing consecutive multiple place holders.
-	 * 
+	 *
 	 * Note:
 	 * Result string may start or end with the place holder.
-	 * 
+	 *
 	 * @param string $string Source string
 	 * @param string $placeholder Placeholder text (Defaults to '-')
 	 * @return string
@@ -138,14 +156,14 @@ class StringTools
 	public static function sanitize($string, $placeholder = '-') {
 		$string = self::removeAccents($string);
 		$string = strtolower($string);
-		
+
 		$string = preg_replace('/[^a-z0-9]/', $placeholder, $string);
 		$regex = preg_quote($placeholder, '/');
 		$string = preg_replace("/({$regex}){2,}/", $placeholder, $string);
-		
+
 		return $string;
 	}
-	
+
 	/**
 	 * Removes accents from accented characters
 	 * @param string $string Source string
@@ -154,7 +172,7 @@ class StringTools
 	public static function removeAccents($string) {
 		if ( !preg_match('/[\x80-\xff]/', $string) )
 			return $string;
-		
+
 		$chars = array(
 				// Decompositions for Latin-1 Supplement
 				chr(194).chr(170) => 'a', chr(194).chr(186) => 'o',
@@ -330,7 +348,7 @@ class StringTools
 				// grave accent
 				chr(199).chr(155) => 'U', chr(199).chr(156) => 'u',
 		);
-		
+
 		// Used for locale-specific rules
 		$locale = L10nManager::getLocale();
 
