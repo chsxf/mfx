@@ -286,6 +286,20 @@ final class CoreManager
 				call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters, $routeParams);
 		}
 
+		// Checking pre-conditions
+		// -- Request method
+		if (array_key_exists('mfx_requires_request_method', $validSubRouteParameters)) {
+			if ($_SERVER['REQUEST_METHOD'] !== strtoupper($validSubRouteParameters['mfx_requires_request_method'])) {
+				self::dieWithStatusCode(405);
+			}
+		}
+		// -- Content-Type
+		if (array_key_exists('mfx_requires_content_type', $validSubRouteParameters)) {
+			if ($_SERVER['CONTENT_TYPE'] !== $validSubRouteParameters['mfx_requires_content_type']) {
+				self::dieWithStatusCode(415);
+			}
+		}
+
 		// Processing route
 		$reqResult = $rm->invoke(NULL, $routeParams);
 		$routeProvidedTemplate = array_key_exists('mfx_template', $validSubRouteParameters) ? $validSubRouteParameters['mfx_template'] : NULL;
