@@ -33,6 +33,7 @@ class User
 	 * @var array User data fetched from the database
 	 */
 	private $_data;
+	
 	/**
 	 * @var boolean If set, user data has been fetched.
 	 */
@@ -273,6 +274,14 @@ class User
 	}
 
 	/**
+	 * Tells if data has been fetched and is ready to use
+	 * @return boolean true if data is ready to use, false either.
+	 */
+	protected final function isDataReady() {
+		return $this->isValid() && ($this->_dataFetched || $this->fetch()); 
+	}
+	
+	/**
 	 * PHP magic method
 	 * @param string $name Variable name
 	 * @return mixed
@@ -280,8 +289,9 @@ class User
 	 * @link http://www.php.net/manual/en/language.oop5.magic.php
 	 */
 	public function __get($name) {
-		if (!$this->isValid() || (!$this->_dataFetched && !$this->fetch()))
+		if (!$this->isDataReady()) {
 			return NULL;
+		}
 		return array_key_exists($name, $this->_data) ? $this->_data[$name] : NULL;
 	}
 
@@ -293,8 +303,9 @@ class User
 	 * @link http://www.php.net/manual/en/language.oop5.magic.php
 	 */
 	public function __isset($name) {
-		if (!$this->isValid() || (!$this->_dataFetched && !$this->fetch()))
+		if (!$this->isDataReady()) {
 			return false;
+		}
 		return isset($this->_data[$name]);
 	}
 }
