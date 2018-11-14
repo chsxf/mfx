@@ -33,7 +33,7 @@ class User
 	 * @var array User data fetched from the database
 	 */
 	private $_data;
-	
+
 	/**
 	 * @var boolean If set, user data has been fetched.
 	 */
@@ -187,7 +187,7 @@ class User
 			return false;
 
 		$this->_key = $key;
-		$this->_valid = true;
+		$this->_valid = $this->validateUser();
 		return true;
 	}
 
@@ -198,10 +198,18 @@ class User
 	 *
 	 * @used-by User::registerFromKey()
 	 */
-	protected function _validateKey($key) {
+	protected function validateKey($key) {
 		$dbm = DatabaseManager::open("__mfx");
 		$nb = $dbm->getValue(sprintf('SELECT COUNT(`%1$s`) FROM `%2$s` WHERE `%1$s` = ?', self::getKeyField(), self::getTableName()), $key);
 		return !empty($nb);
+	}
+
+	/**
+	 * Validates the user
+	 * @return boolean true if the user is valid, false either
+	 */
+	protected function validateUser() {
+		return $this->_key !== NULL;
 	}
 
 	/**
@@ -212,10 +220,10 @@ class User
 	 * @uses User::_validateKey()
 	 */
 	public function registerFromKey($key) {
-		if ($this->_validateKey($key))
+		if ($this->validateKey($key))
 		{
 			$this->_key = $key;
-			$this->_valid = true;
+			$this->_valid = $this->validateUser();
 			return true;
 		}
 		else
@@ -278,9 +286,9 @@ class User
 	 * @return boolean true if data is ready to use, false either.
 	 */
 	protected final function isDataReady() {
-		return $this->isValid() && ($this->_dataFetched || $this->fetch()); 
+		return $this->isValid() && ($this->_dataFetched || $this->fetch());
 	}
-	
+
 	/**
 	 * PHP magic method
 	 * @param string $name Variable name
