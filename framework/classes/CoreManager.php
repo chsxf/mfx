@@ -97,6 +97,11 @@ final class CoreManager
 	private $_rootURI = NULL;
 
 	/**
+	 * @var \Twig_Environment Twig environment for the current request
+	 */
+	private $_currentTwigEnvironment = NULL;
+
+	/**
 	 * Ensures the singleton class instance has been correctly initialized only once
 	 * @return CoreManager the singleton class instance
 	 */
@@ -207,12 +212,22 @@ final class CoreManager
 	}
 
 	/**
+	 * Gets the Twig environment for the current request
+	 * @return \Twig_Environment
+	 */
+	public static function getTwig() {
+		return self::_ensureInit()->_currentTwigEnvironment;
+	}
+
+	/**
 	 * Handles the request sent to the server
 	 *
 	 * @param string $defaultRoute Route to use if none can be guessed from request
 	 */
 	public static function handleRequest(\Twig_Environment $twig, $defaultRoute) {
 		$inst = self::_ensureInit();
+
+		$inst->_currentTwigEnvironment = $twig;
 
 		// Finding route from REQUEST_URI
 		$prefix = preg_replace('#/mfx$#', '/', dirname($_SERVER['SCRIPT_NAME']));
