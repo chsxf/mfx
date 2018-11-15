@@ -8,9 +8,21 @@
 			{%- for key, value in extras %}	{{ key|raw }}="{{ value }}"{% endfor -%}
 		{%- endlazy %}>
 		
+		{%- set inOptGroup = false %}
 		{% for option in options %}
+			{%- if option.optgroup is defined %}
+    			{%- if inOptGroup %}
+    			</optgroup>
+    			{% endif %}
+    			{% set inOptGroup = true %}
+			<optgroup label="{{ option.optgroup|e('html_attr') }}">
+			{% else %}
 			<option value="{{ option.value }}"
 				{%- if (value is not empty) and ((value == option.value) or (value is iterable and option.value in value)) %} selected{% endif %}>{{ option.label }}</option>
+			{% endif %}
 		{% endfor %}
+		{% if inOptGroup %}
+			</optgroup>
+		{% endif %}
 	</select>
 {% endautoescape %}
