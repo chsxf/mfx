@@ -1,11 +1,11 @@
 <?php
 /**
  * Documentation comment parser
- * 
+ *
  * @version 1.0
  * @author Christophe SAUVEUR <christophe@cheeseburgames.com>
  * @package framework
- * 
+ *
  * @license GPL version 2
  */
 
@@ -34,14 +34,14 @@ define('DCPE_UNKNOWN_CLASS_METHOD_CODE', 4);
 
 /**
  * Exception class for exceptions thrown by the DocCommentParser class
- * 
+ *
  * @link DocCommentParser
  */
 class DocCommentParserException extends \ErrorException
 {
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param string $message Message
 	 * @param int $code Code
 	 * @param string $filename Name of the file where the exception was thrown
@@ -61,18 +61,23 @@ class DocCommentParser
 	 * @var array List of regular expressions used to filter valid parameters from comment
 	 */
 	private $_validParametersRegularExpressions = NULL;
-	
+
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
 		$this->_validParametersRegularExpressions = array();
 		$this->addValidParametersRegularExpression('/^mfx_/');
+
+		$additionalPrefixes = Config::get('doccommentparser.prefixes', array());
+		foreach ($additionalPrefixes as $prefix) {
+			$this->addValidParametersRegularExpression("/^{$prefix}/");
+		}
 	}
-	
+
 	/**
 	 * Add a regular expression to the list of valid parameter filters
-	 * 
+	 *
 	 * @param string $regexp Regular expression. Syntax follows preg_match's ones.
 	 * @see preg_match()
 	 */
@@ -80,25 +85,25 @@ class DocCommentParser
 		if (is_array($this->_validParametersRegularExpressions) && !empty($regexp))
 			$this->_validParametersRegularExpressions[] = $regexp;
 	}
-	
+
 	/**
 	 * Parse valid parameters from documentation comment
-	 * 
+	 *
 	 * Valid parameters are returned in an associative array,
 	 * whose keys are parameter name and values contains an arbitrary string.
-	 * 
+	 *
 	 * At this time, all parameter values are stored as string as-is.
-	 * 
+	 *
 	 * Example with a parameter value:
 	 * <code>@valid_parameter_name parameter_value</code>
 	 * will result in
 	 * <code>$returned_array['valid_parameter_name'] = 'parameter_value';</code>
-	 * 
+	 *
 	 * Example without value:
 	 * <code>@valid_parameter_name</code>
 	 * will result in
 	 * <code>$returned_array['valid_parameter_name'] = true;</code>
-	 * 
+	 *
 	 * @param \Reflector $reflector Reflector object identifying the langage element to use as a reference
 	 * @return array An associative array listing all valid parameters
 	 */
@@ -106,9 +111,9 @@ class DocCommentParser
 		if ($reflector instanceof \ReflectionFunctionAbstract == false && $reflector instanceof \ReflectionClass == false)
 			throw new DocCommentParserException("The provided Reflector is not an instance of ReflectionFunction, ReflectionMethod or ReflectionClass",
 												DCPE_WRONG_REFLECTOR_CODE, __FILE__, __LINE__);
-		
+
 		$docComment = $reflector->getDocComment();
-		
+
 		$lines = preg_split("/\r|\n/", $docComment);
 		$valid_parameters = array();
 		foreach ($lines as $line)
@@ -120,7 +125,7 @@ class DocCommentParser
 			if (empty($line) || !preg_match('/^@/', $line))
 				continue;
 			$line = ltrim($line, '@');
-			
+
 			foreach ($this->_validParametersRegularExpressions as $regexp)
 			{
 				if (preg_match($regexp, $line))
@@ -136,14 +141,14 @@ class DocCommentParser
 		}
 		return $valid_parameters;
 	}
-	
+
 	/**
 	 * Convenience function to parse valid parameters from a function's documentation comment from its name
-	 * 
+	 *
 	 * @param string $function_name Name of the function
 	 * @throws DocCommentParserException if the function is unknown
 	 * @return array An associative array listing all valid parameters
-	 * 
+	 *
 	 * @see DocCommentParser::parse()
 	 */
 	public final function parseFromFunction($function_name) {
@@ -155,14 +160,14 @@ class DocCommentParser
 												DCPE_UNKNOWN_FUNCTION_CODE, __FILE__, __LINE__);
 		}
 	}
-	
+
 	/**
 	 * Convenience function to parse valid parameters from a class's documentation comment from its name
-	 * 
+	 *
 	 * @param string $class_name Name of the class
 	 * @throws DocCommentParserException if the class is unknown
 	 * @return array An associative array listing all valid parameters
-	 * 
+	 *
 	 * @see DocCommentParser::parse()
 	 */
 	public final function parseFromClass($class_name) {
@@ -174,15 +179,15 @@ class DocCommentParser
 												DCPE_UNKNOWN_CLASS_CODE, __FILE__, __LINE__);
 		}
 	}
-	
+
 	/**
 	 * Convenience function to parse valid parameters from a class method's documentation comment from its name
-	 * 
+	 *
 	 * @param string $class_name Name of the class
 	 * @param string $method_name Name of the method
 	 * @throws DocCommentParserException if the class method is unknown
 	 * @return array An associative array listing all valid parameters
-	 * 
+	 *
 	 * @see DocCommentParser::parse()
 	 */
 	public final function parseFromClassMethod($class_name, $method_name) {

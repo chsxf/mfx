@@ -79,9 +79,9 @@ User::validate();
 
 // Processing request
 CoreProfiler::pushEvent('Processing request');
-if (Config::get('doccommentparser_class'))
+if (Config::get('doccommentparser.class'))
 {
-	$class = Config::get('doccommentparser_class');
+	$class = Config::get('doccommentparser.class');
 	CoreManager::setDocCommentParser(new $class());
 }
 CoreManager::handleRequest($twig, Config::get('request.default_route'));
