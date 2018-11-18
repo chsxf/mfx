@@ -21,17 +21,22 @@ final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager
 	 */
 	private static $_openConnections = array();
 
+	private $_serverConfigurationKey;
+	
 	/**
 	 * Constructor
 	 * @param string $dsn Data Source Name (ie mysql:host=localhost;dbname=mydb)
 	 * @param string $username Username
 	 * @param string $password Password
+	 * @param string $server Server configuration key
 	 *
 	 * @see \PDO::__construct()
 	 */
-	public function __construct($dsn, $username, $password)
+	public function __construct($dsn, $username, $password, $server = '__default')
 	{
 		parent::__construct($dsn, $username, $password, Config::get('database.error_logging', false));
+		
+		$this->_serverConfigurationKey = $server;
 	}
 
 	/**
@@ -55,6 +60,9 @@ final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager
 		if (empty($serverConfig) || !is_array($serverConfig))
 			throw new DatabaseManagerException("No server can be found for the '{$server}' key.");
 
+		$dsn = NULL;
+		$username = NULL;
+		$password = NULL;
 		foreach (array('dsn', 'username', 'password') as $p)
 		{
 			if (empty($serverConfig[$p]))
@@ -62,10 +70,15 @@ final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager
 			$$p = $serverConfig[$p];
 		}
 
-		$dbm = new DatabaseManager($dsn, $username, $password);
+		$dbm = new DatabaseManager($dsn, $username, $password, $server);
 		if (!array_key_exists($server, self::$_openConnections))
 			self::$_openConnections[$server] = $dbm;
 		return $dbm;
 	}
-
+	
+	public static function close(DatabaseManager &$_manager) {
+		unset(self::$_openConnections[$_manager->_serverConfigurationKey]);
+		$_manager = NULL;
+	}
+	
 }
