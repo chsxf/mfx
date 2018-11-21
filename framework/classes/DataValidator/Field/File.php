@@ -15,7 +15,7 @@ use CheeseBurgames\MFX\DataValidator\FieldType;
  * Descriptor of a checkbox field type
  */
 class File extends Field {
-	private static $_requiredKeys = array(
+	private static $_requiredKeys = array( 
 			'name',
 			'type',
 			'tmp_name',
@@ -89,6 +89,26 @@ class File extends Field {
 			}
 		}
 		return $isValid;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 * @see \CheeseBurgames\MFX\DataValidator\Field::setValue()
+	 */
+	public function setValue($value) {
+		if ($this->isRepeatable()) {
+			if (is_array($value)) {
+				$value = array_filter($value, function ($item) {
+					return isset($item['error']) && $item['error'] != UPLOAD_ERR_NO_FILE;
+				});
+			}
+			parent::setValue($value);
+		}
+		else {
+			if (isset($value['error']) && $value['error'] != UPLOAD_ERR_NO_FILE) {
+				parent::setValue($value);
+			}
+		}
 	}
 
 	/**
