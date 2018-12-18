@@ -310,7 +310,9 @@ final class CoreManager
 		}
 		// -- Content-Type
 		if (array_key_exists('mfx_requires_content_type', $validSubRouteParameters)) {
-			if ($_SERVER['CONTENT_TYPE'] !== $validSubRouteParameters['mfx_requires_content_type']) {
+			$regs = array();
+			preg_match('/^([^;]+);?/', $_SERVER['CONTENT_TYPE'], $regs);
+			if ($regs[1] !== $validSubRouteParameters['mfx_requires_content_type']) {
 				self::dieWithStatusCode(415);
 			}
 		}
