@@ -12,10 +12,12 @@ namespace CheeseBurgames\MFX\DataValidator;
  * Descriptor of a data validator field
  */
 class Field {
+
 	/**
 	 * @var string Field's name
 	 */
 	private $_name;
+
 	/**
 	 * @var FieldType Field's type
 	 */
@@ -25,10 +27,12 @@ class Field {
 	 * @var boolean If set, this field is required.
 	 */
 	private $_required;
+
 	/**
 	 * @var mixed Field's default value
 	 */
 	private $_defaultValue;
+
 	/**
 	 * @var mixed Field's populated value
 	 */
@@ -43,10 +47,12 @@ class Field {
 	 * @var bool If set, this field is repeatable.
 	 */
 	private $_isRepeatable;
+
 	/**
 	 * @var int Maximum number of iteration for this field. If NULL, no limit.
 	 */
 	private $_repeatableUpTo;
+
 	/**
 	 * @var int Current repeat counter for the generator.
 	 */
@@ -56,6 +62,7 @@ class Field {
 	 * @var bool Read only flag
 	 */
 	private $_readOnly;
+
 	/**
 	 * @var bool Disabled flag
 	 */
@@ -65,6 +72,7 @@ class Field {
 	 * @var boolean If set, the field is populated with the current or default value when generated
 	 */
 	private $_generateWithValue;
+
 	/**
 	 * @var array Extra options for field generation
 	 */
@@ -466,8 +474,10 @@ class Field {
 	protected function applyFiltersOnField($silent = false) {
 		if (!empty($this->_filters)) {
 			foreach ($this->_filters as $f) {
-				if ($f->appliesToField() && !$f->validate($this->getName(), $this->getValue(true), NULL, $silent))
+				$fieldValue = $this->getValue(true);
+				if ($f->appliesToField() && ($f->isRequired() || $fieldValue !== NULL) && !$f->validate($this->getName(), $fieldValue, NULL, $silent)) {
 					return false;
+				}
 			}
 		}
 		return true;
@@ -482,7 +492,7 @@ class Field {
 	 * @return boolean true if the value qualifies for all filters, false either.
 	 */
 	protected function applyFilterOnValue($value, $atIndex = NULL, $silent = false) {
-		$canSkipFilters = (!$this->_required && $value !== NULL);
+		$canSkipFilters = (!$this->_required && $value === NULL);
 		if (!empty($this->_filters)) {
 			foreach ($this->_filters as $f) {
 				if ($f->appliesToField() || ($canSkipFilters && $f->mayBeSkipped($atIndex)))
@@ -509,9 +519,9 @@ class Field {
 		if (!empty($containingGroups))
 			$name = sprintf('%s[%s%s', implode('[', $containingGroups), $name, str_pad('', count($containingGroups), ']'));
 
-		return array( 
+		return array(
 				'@mfx/DataValidator/basic_input.twig',
-				array( 
+				array(
 						'type' => $this->getHTMLType($type_override),
 						'name' => $name,
 						'required' => $this->isRequired(),

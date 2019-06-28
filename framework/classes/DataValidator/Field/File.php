@@ -15,25 +15,14 @@ use CheeseBurgames\MFX\DataValidator\FieldType;
  * Descriptor of a checkbox field type
  */
 class File extends Field {
-	private static $_requiredKeys = array( 
+
+	private static $_requiredKeys = array(
 			'name',
 			'type',
 			'tmp_name',
 			'error',
 			'size'
 	);
-
-	/**
-	 * Constructor
-	 *
-	 * @param string $name Field's name
-	 * @param FieldType $type Field's type
-	 * @param mixed $defaultValue Field's default value
-	 * @param boolean $required If set, this field will become required in the validation process.
-	 */
-	protected function __construct($name, FieldType $type, $defaultValue, $required) {
-		parent::__construct($name, $type, empty($defaultValue) ? 0 : $defaultValue, $required);
-	}
 
 	/**
 	 * (non-PHPdoc)
