@@ -140,7 +140,7 @@ class RegExp extends AbstractFilter {
 		$hexLength = $bytes * 2;
 
 		$chars = $_lowerCase ? 'a-z' : 'A-Z';
-		$regexp = "/^[{$chars}0-9]{$hexLength}$/";
+		$regexp = "/^[{$chars}0-9]{{$hexLength}}$/";
 		if ($_ignoreCase) {
 			$regexp .= 'i';
 			$message = dgettext('mfx', "The field '%%s' does not contain a %d bits hexadecimal key.");
