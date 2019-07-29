@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PHP-MicroFX\n"
-"POT-Creation-Date: 2019-07-03 14:20+0200\n"
-"PO-Revision-Date: 2019-07-03 14:23+0200\n"
+"POT-Creation-Date: 2019-07-29 10:47+0200\n"
+"PO-Revision-Date: 2019-07-29 10:48+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -269,6 +269,32 @@ msgstr ""
 msgid "The value of the '%%s' field must be one of the following values: %s"
 msgstr ""
 "La valeur du champ ‘%%s’ doit correspondre à une des valeurs suivantes : %s"
+
+#: classes/DataValidator/Filter/InFloatRange.php:39
+#: classes/DataValidator/Filter/InIntRange.php:39
+msgid "inclusive"
+msgstr "inclusif"
+
+#: classes/DataValidator/Filter/InFloatRange.php:39
+#: classes/DataValidator/Filter/InIntRange.php:39
+msgid "exclusive"
+msgstr "exclusif"
+
+#: classes/DataValidator/Filter/InFloatRange.php:40
+#, php-format
+msgid ""
+"The value of the '%%s' field must fall in the range between %f and %f (%s)"
+msgstr ""
+"La valeur du champ ‘%%s’ doit être comprise dans l’intervalle entre %f et %f "
+"(%s)"
+
+#: classes/DataValidator/Filter/InIntRange.php:40
+#, php-format
+msgid ""
+"The value of the '%%s' field must fall in the range between %d and %d (%s)"
+msgstr ""
+"La valeur du champ ‘%%s’ doit être comprise dans l’intervalle entre %d et %d "
+"(%s)"
 
 #: classes/DataValidator/Filter/IsOfType.php:36
 #, php-format
