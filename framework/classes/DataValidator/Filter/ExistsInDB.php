@@ -62,7 +62,7 @@ class ExistsInDB extends AbstractFilter {
 	public function validate($fieldName, $value, $atIndex = NULL, $silent = false) {
 		$dbm = $this->getConnection();
 		$nb = $dbm->getValue($this->getSQLQuery(), $this->getSQLValues($value));
-		if (intval($nb) != 1) {
+		if (intval($nb) === 0) {
 			if (empty($silent))
 				$this->emitMessage($fieldName);
 			return false;
@@ -117,7 +117,7 @@ class ExistsInDB extends AbstractFilter {
 	 * @return array
 	 */
 	protected function getSQLValues($_value) {
-		return array( 
+		return array(
 				$_value
 		);
 	}
