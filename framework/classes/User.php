@@ -6,14 +6,13 @@
  * @version 1.0
  * @package framework
  */
-
 namespace CheeseBurgames\MFX;
 
 /**
  * User description class
  */
-class User
-{
+class User {
+
 	/**
 	 * @var User Current registered user reference
 	 */
@@ -48,9 +47,8 @@ class User
 		self::$_currentUser = $rc->newInstance();
 
 		// Validating
-		if (!empty($_SESSION['logged_user']))
-		{
-			list($key, $ip) = explode('|', $_SESSION['logged_user'], 2);
+		if (!empty($_SESSION['logged_user'])) {
+			list ($key, $ip) = explode('|', $_SESSION['logged_user'], 2);
 
 			if ($ip != $_SERVER['REMOTE_ADDR'] || !self::$_currentUser->registerFromKey($key))
 				unset($_SESSION['logged_user']);
@@ -59,12 +57,12 @@ class User
 
 	/**
 	 * Validates a user session using database fields
+	 *
 	 * @param array $fields Key-value pairs for database validation
 	 * @return boolean true if the session has been validated, false either
 	 */
 	public static function validateWithFields(array $fields) {
-		if (!self::$_currentUser->isValid() && self::$_currentUser->registerWithFields($fields))
-		{
+		if (!self::$_currentUser->isValid() && self::$_currentUser->registerWithFields($fields)) {
 			self::setSessionWithUserKey(self::$_currentUser->getKey());
 			return true;
 		}
@@ -74,6 +72,7 @@ class User
 
 	/**
 	 * Sets in session the current user's key if not already set
+	 *
 	 * @param string $key Current user's key
 	 */
 	protected static function setSessionWithUserKey($key) {
@@ -82,7 +81,8 @@ class User
 	}
 
 	/**
-	 * Invalidates user session. Logs out the current valid user if existing
+	 * Invalidates user session.
+	 * Logs out the current valid user if existing
 	 */
 	public static function invalidate() {
 		unset($_SESSION['logged_user']);
@@ -90,6 +90,7 @@ class User
 
 	/**
 	 * Gets the current user reference
+	 *
 	 * @return User
 	 */
 	public static function currentUser() {
@@ -114,6 +115,7 @@ class User
 
 	/**
 	 * Retrieves users management key field name
+	 *
 	 * @throws \InvalidArgumentException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
 	 * @return string
 	 */
@@ -128,6 +130,7 @@ class User
 
 	/**
 	 * Retrieves users management table name
+	 *
 	 * @throws \InvalidArgumentException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
 	 * @return string
 	 */
@@ -142,6 +145,7 @@ class User
 
 	/**
 	 * Register a user from database fields
+	 *
 	 * @param array $fields Database fields used to identify the user
 	 * @return boolean true if the user is valid, false either
 	 */
@@ -152,12 +156,16 @@ class User
 		$sql = sprintf("SELECT `%s` FROM `%s` WHERE ", self::getKeyField(), self::getTableName());
 		$validFields = array();
 		$values = array();
-		foreach ($fields as $f)
-		{
-			if (!array_key_exists('value', $f)
-					|| !preg_match('/^\w+$/', $f['name'])
-					|| (!empty($f['function']) && !preg_match("/^[a-zA-Z0-9_\-?(),'` ]+$/", $f['function']))
-					|| (!empty($f['operator']) && !in_array($f['operator'], array('=', '!=', '<>', '<=', '>=', 'IS', 'IS NOT'))))
+		foreach ($fields as $f) {
+			if (!array_key_exists('value', $f) || !preg_match('/^\w+$/', $f['name']) || (!empty($f['function']) && !preg_match("/^[a-zA-Z0-9_\-?(),'` ]+$/", $f['function'])) || (!empty($f['operator']) && !in_array($f['operator'], array(
+					'=',
+					'!=',
+					'<>',
+					'<=',
+					'>=',
+					'IS',
+					'IS NOT'
+			))))
 				return false;
 
 			$str = "`{$f['name']}`";
@@ -181,7 +189,10 @@ class User
 		array_unshift($values, $sql);
 
 		$dbm = DatabaseManager::open("__mfx");
-		$key = call_user_func_array(array(&$dbm, 'getValue'), $values);
+		$key = call_user_func_array(array(
+				&$dbm,
+				'getValue'
+		), $values);
 		$dbm = NULL;
 		if ($key === false)
 			return false;
@@ -193,9 +204,9 @@ class User
 
 	/**
 	 * Validates the user key
+	 *
 	 * @param string $key User key to validate
 	 * @return boolean true if the user key is valid, false either
-	 *
 	 * @used-by User::registerFromKey()
 	 */
 	protected function validateKey($key) {
@@ -206,6 +217,7 @@ class User
 
 	/**
 	 * Validates the user
+	 *
 	 * @return boolean true if the user is valid, false either
 	 */
 	protected function validateUser() {
@@ -214,14 +226,13 @@ class User
 
 	/**
 	 * Register a user from its key
+	 *
 	 * @param string $key User key
 	 * @return boolean true is the key is valid, false either
-	 *
 	 * @uses User::_validateKey()
 	 */
 	public function registerFromKey($key) {
-		if ($this->validateKey($key))
-		{
+		if ($this->validateKey($key)) {
 			$this->_key = $key;
 			$this->_valid = $this->validateUser();
 			return true;
@@ -232,6 +243,7 @@ class User
 
 	/**
 	 * Gets the current user key
+	 *
 	 * @return string The function returns NULL if no valid user is currently registered
 	 */
 	public function getKey() {
@@ -240,6 +252,7 @@ class User
 
 	/**
 	 * Gets the current user status.
+	 *
 	 * @return boolean true if the current user is valid, false for guests
 	 */
 	public function isValid() {
@@ -248,16 +261,15 @@ class User
 
 	/**
 	 * Fetches user data from the database
+	 *
 	 * @return boolean true if data has been successfully fetched, false either
 	 */
 	protected final function fetch() {
 		if (!$this->isValid())
 			return false;
 
-		if ($this->_dataFetched == false)
-		{
-			if (($data = $this->fetchData()) === false)
-			{
+		if ($this->_dataFetched == false) {
+			if (($data = $this->fetchData()) === false) {
 				$this->_valid = false;
 				return false;
 			}
@@ -272,17 +284,28 @@ class User
 	/**
 	 * Fetches user data from the database.
 	 * This function can be overridden.
+	 *
 	 * @return mixed An associative array if data could be fetched, false either.
 	 */
 	protected function fetchData() {
 		$dbm = DatabaseManager::open('__mfx');
-		$row = $dbm->getRow(sprintf("SELECT * FROM `%s` WHERE `%s` = ?", self::getTableName(), self::getKeyField()), \PDO::FETCH_ASSOC, $this->_key);
+		$row = $dbm->getRow($this->getFetchDataQuery(), \PDO::FETCH_ASSOC, $this->_key);
 		$dbm = NULL;
 		return $row;
 	}
 
 	/**
+	 * Builds the user data's fetch query
+	 *
+	 * @return string
+	 */
+	protected function getFetchDataQuery() {
+		return sprintf("SELECT * FROM `%s` WHERE `%s` = ?", self::getTableName(), self::getKeyField());
+	}
+
+	/**
 	 * Tells if data has been fetched and is ready to use
+	 *
 	 * @return boolean true if data is ready to use, false either.
 	 */
 	protected final function isDataReady() {
@@ -291,6 +314,7 @@ class User
 
 	/**
 	 * PHP magic method
+	 *
 	 * @param string $name Variable name
 	 * @return mixed
 	 *
@@ -305,6 +329,7 @@ class User
 
 	/**
 	 * PHP magic method
+	 *
 	 * @param string $name Varible name
 	 * @return boolean
 	 *
@@ -316,4 +341,5 @@ class User
 		}
 		return isset($this->_data[$name]);
 	}
+
 }
