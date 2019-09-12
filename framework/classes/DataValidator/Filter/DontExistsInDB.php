@@ -8,8 +8,8 @@
  */
 namespace CheeseBurgames\MFX\DataValidator\Filter;
 
-use CheeseBurgames\MFX\DataValidator\AbstractFilter;
 use CheeseBurgames\MFX\DatabaseManager;
+use CheeseBurgames\MFX\DataValidator\AbstractFilter;
 
 /**
  * Description of a filter validating if the specified value exists in a database table
@@ -22,9 +22,9 @@ class DontExistsInDB extends ExistsInDB {
 	 * @param string $table Database table name
 	 * @param string $field Database field name
 	 * @param string $message Error message (Defaults to NULL)
-	 * @param string|DatabaseManager $connection Database connection name or instance (Default to '__default')
+	 * @param string|DatabaseManager $connection Database connection name or instance (Default to DatabaseManager::DEFAULT_CONNECTION)
 	 */
-	public function __construct($table, $field, $message = NULL, $connection = '__default') {
+	public function __construct($table, $field, $message = NULL, $connection = DatabaseManager::DEFAULT_CONNECTION) {
 		if (empty($message))
 			$message = sprintf(dgettext('mfx', "The '%%s' field must reprensent a non-existing entry in the '%s' table (matched on the '%s' field)."), $table, $field);
 		parent::__construct($table, $field, $message, $connection);

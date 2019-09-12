@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Database management helpers
  *
@@ -6,48 +7,47 @@
  * @version 1.0
  * @package framework
  */
-
 namespace CheeseBurgames\MFX;
 
-use \CheeseBurgames\PDO\DatabaseManagerException;
+use CheeseBurgames\PDO\DatabaseManagerException;
 
 /**
  * Database manager class
  */
-final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager
-{
+final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager {
+	const DEFAULT_CONNECTION = '__default';
+
 	/**
 	 * @var array Open connections container
 	 */
 	private static $_openConnections = array();
 
 	private $_serverConfigurationKey;
-	
+
 	/**
 	 * Constructor
+	 *
 	 * @param string $dsn Data Source Name (ie mysql:host=localhost;dbname=mydb)
 	 * @param string $username Username
 	 * @param string $password Password
 	 * @param string $server Server configuration key
-	 *
 	 * @see \PDO::__construct()
 	 */
-	public function __construct($dsn, $username, $password, $server = '__default')
-	{
+	public function __construct($dsn, $username, $password, $server = self::DEFAULT_CONNECTION) {
 		parent::__construct($dsn, $username, $password, Config::get('database.error_logging', false));
-		
+
 		$this->_serverConfigurationKey = $server;
 	}
 
 	/**
 	 * Opens a connection to a database server, or returns the currently active connection to this server
+	 *
 	 * @param string $server Server configuration key (Defaults to __default).
 	 * @param bool $forceNew If set, a new connection is open even if a previous similar one exists in the cache (Defaults to false)
 	 * @throws DatabaseManagerException If no configuration is available nor valid for this server key
 	 * @return DatabaseManager
 	 */
-	public static function open($server = '__default', $forceNew = false)
-	{
+	public static function open($server = self::DEFAULT_CONNECTION, $forceNew = false) {
 		if (array_key_exists($server, self::$_openConnections) && empty($forceNew))
 			return self::$_openConnections[$server];
 
@@ -63,8 +63,11 @@ final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager
 		$dsn = NULL;
 		$username = NULL;
 		$password = NULL;
-		foreach (array('dsn', 'username', 'password') as $p)
-		{
+		foreach (array( 
+				'dsn',
+				'username',
+				'password'
+		) as $p) {
 			if (empty($serverConfig[$p]))
 				throw new DatabaseManagerException("Unable to find the '{$p}' parameter for database server '{$server}'.");
 			$$p = $serverConfig[$p];
@@ -75,10 +78,10 @@ final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager
 			self::$_openConnections[$server] = $dbm;
 		return $dbm;
 	}
-	
+
 	public static function close(DatabaseManager &$_manager) {
 		unset(self::$_openConnections[$_manager->_serverConfigurationKey]);
 		$_manager = NULL;
 	}
-	
+
 }

@@ -37,9 +37,9 @@ class ExistsInDB extends AbstractFilter {
 	 * @param string $table Database table name
 	 * @param string $field Database field name
 	 * @param string $message Error message (Defaults to NULL)
-	 * @param string|DatabaseManager $connection Database connection name or instance (Default to '__default')
+	 * @param string|DatabaseManager $connection Database connection name or instance (Default to DatabaseManager::DEFAULT_CONNECTION)
 	 */
-	public function __construct($table, $field, $message = NULL, $connection = '__default') {
+	public function __construct($table, $field, $message = NULL, $connection = DatabaseManager::DEFAULT_CONNECTION) {
 		if (empty($message))
 			$message = sprintf(dgettext('mfx', "The '%%s' field must reprensent an existing entry in the '%s' table (matched on the '%s' field)."), $table, $field);
 		parent::__construct($message);
