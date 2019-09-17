@@ -19,6 +19,9 @@ class RegExp extends AbstractFilter {
 	const REGEX_UCWORD = '/^[A-Z0-9_]+$/';
 	const REGEX_LCALPHANUMERIC = '/^[a-z0-9]+$/';
 	const REGEX_UCALPHANUMERIC = '/^[A-Z0-9]+$/';
+	const REGEX_LCHEXADECIMAL = '/^[a-f0-9]+$/';
+	const REGEX_UCHEXADECIMAL = '/^[A-F0-9]+$/';
+	const REGEX_ICHEXADECIMAL = '/^[a-f0-9]+$/i';
 	const REGEX_SQL_DATETIME = '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/';
 
 	/**
@@ -128,7 +131,7 @@ class RegExp extends AbstractFilter {
 	}
 
 	/**
-	 * Helper function to build variante bit-length hexadecimal key validation filter
+	 * Helper function to build variable bit-length hexadecimal key validation filter
 	 *
 	 * @param int $_bitLength Bit-length of the key (must be a multiple of 8)
 	 * @param bool $_ignoreCase If set, produces a case-insensitive validation filter
