@@ -3,7 +3,10 @@
 	"description" : "Simple and efficient micro-framework",
 	"homepage" : "https://github.com/chsxf/mfx",
 	"require" : {
-		"php" : ">=8"
+		"php" : ">=8",
+        "chsxf/pdo-database-manager": "~2.0",
+        "chsxf/twig-tools": "~1.0",
+        "twig/twig": ">=2"
 	},
 	"autoload" : {
 		"psr-4" : {
