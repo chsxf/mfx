@@ -1,0 +1,19 @@
+{
+	"name" : "chsxf/mfx",
+	"description" : "Simple and efficient micro-framework",
+	"homepage" : "https://github.com/chsxf/mfx",
+	"require" : {
+		"php" : ">=8"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"" : "src/"
+		}
+	},
+	"authors" : [{
+			"name" : "Christophe SAUVEUR",
+			"email" : "chsxf.pro@gmail.com"
+		}
+	],
+	"license" : "MIT"
+}
