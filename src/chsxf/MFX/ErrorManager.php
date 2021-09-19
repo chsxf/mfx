@@ -8,6 +8,8 @@
 
 namespace chsxf\MFX;
 
+use Twig\Environment;
+
 /**
  * Integrated error management class
  */
@@ -145,7 +147,7 @@ class ErrorManager
 	 * @param \Twig_Environment $twig Twig environment. If NULL, the function flushes containers only and returns an empty string
 	 * @return string
 	 */
-	public static function flush(\Twig_Environment $twig = NULL) {
+	public static function flush(Environment $twig = NULL) {
 		if ($twig !== NULL)
 			$str = $twig->render('@mfx/ErrorManager.twig', array('errors' => self::$_errors, 'notifs' => self::$_notifs, 'debug' => Config::get('response.full_errors', false)));
 		else

@@ -8,6 +8,8 @@
 
 namespace chsxf\MFX;
 
+use Twig\Environment;
+
 /**
  * Exceptions dispatched by the StyleSheets class
  */
@@ -55,10 +57,12 @@ class StyleSheets
 				'type' => $type,
 				'content' => empty($inline) ? NULL : file_get_contents($url)
 		);
-		if ($prepend)
-			array_unshif(self::$styleSheets, $obj);
-		else
-			self::$styleSheets[] = $obj;
+        if ($prepend) {
+            array_unshift(self::$styleSheets, $obj);
+        }
+		else {
+            self::$styleSheets[] = $obj;
+        }
 	}
 	
 	/**
@@ -66,7 +70,7 @@ class StyleSheets
 	 * @param \Twig_Environment $twig Twig environnement used for rendering HTML
 	 * @return string
 	 */
-	public static function export(\Twig_Environment $twig) {
+	public static function export(Environment $twig) {
 		return $twig->render('@mfx/StyleSheets.twig', array( 'sheets' => self::$styleSheets ));
 	}
 }

@@ -9,6 +9,7 @@
 namespace chsxf\MFX;
 
 use chsxf\MFX\L10n\L10nManager;
+use Twig\Environment;
 
 /**
  * Core manager singleton class
@@ -221,7 +222,7 @@ final class CoreManager
 	 *
 	 * @param string $defaultRoute Route to use if none can be guessed from request
 	 */
-	public static function handleRequest(\Twig_Environment $twig, $defaultRoute) {
+	public static function handleRequest(Environment $twig, $defaultRoute) {
 		$inst = self::_ensureInit();
 
 		$inst->_currentTwigEnvironment = $twig;
@@ -372,7 +373,7 @@ final class CoreManager
 			call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters);
 	}
 
-	private static function outputJSON(RequestResult $reqResult, array $subRouteParameters = array(), \Twig_Environment $twig = NULL) {
+	private static function outputJSON(RequestResult $reqResult, array $subRouteParameters = array(), Environment $twig = NULL) {
 		self::_setStatusCode($reqResult->statusCode());
 		self::_setResponseContentType($subRouteParameters, 'application/json', Config::get('response.default_charset', 'UTF-8'));
 		if ($twig != NULL && $reqResult->preformatted())
@@ -388,7 +389,7 @@ final class CoreManager
 		}
 	}
 
-	private static function outputXML(RequestResult $reqResult, array $subRouteParamters = array(), \Twig_Environment $twig = NULL) {
+	private static function outputXML(RequestResult $reqResult, array $subRouteParamters = array(), Environment $twig = NULL) {
 		self::_setStatusCode($reqResult->statusCode());
 		self::_setResponseContentType($subRouteParamters, 'application/xml', Config::get('response.default_charset', 'UTF-8'));
 		if ($twig != NULL && $reqResult->preformatted())

@@ -8,6 +8,8 @@
 
 namespace chsxf\MFX;
 
+use Twig\Environment;
+
 /**
  * Exceptions dispatched by the Scripts class
  */
@@ -66,7 +68,7 @@ class Scripts
 	 * @param \Twig_Environment $twig Twig environnement used for rendering HTML
 	 * @return string
 	 */
-	public static function export(\Twig_Environment $twig) {
+	public static function export(Environment $twig) {
 		foreach (self::$scripts as &$v)
 		{
 			if ($v->inline)

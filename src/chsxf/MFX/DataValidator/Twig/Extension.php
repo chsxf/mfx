@@ -9,11 +9,17 @@
 namespace chsxf\MFX\DataValidator\Twig;
 
 use chsxf\MFX\DataValidator;
+use Twig\Compiler;
+use Twig\Extension\AbstractExtension;
+use Twig\Node\Node;
+use Twig\Token;
+use Twig\TokenParser\AbstractTokenParser;
+use Twig\TwigFunction;
 
 /**
  * Data validator Twig extension class
  */
-class Extension extends \Twig_Extension
+class Extension extends AbstractExtension
 {
 	/**
 	 * (non-PHPdoc)
@@ -29,8 +35,8 @@ class Extension extends \Twig_Extension
 	 */
 	public function getFunctions() {
 		return array(
-				new \Twig_SimpleFunction('dv_value', array(&$this, 'getFieldValue')),
-				new \Twig_SimpleFunction('dv_indexed_value', array(&$this, 'getIndexedFieldValue'))
+				new TwigFunction('dv_value', array(&$this, 'getFieldValue')),
+				new TwigFunction('dv_indexed_value', array(&$this, 'getIndexedFieldValue'))
 		);
 	}
 	
@@ -71,17 +77,17 @@ class Extension extends \Twig_Extension
 /**
  * Data validator reset counters Twig token parser
  */
-class DataValidator_ResetCountersTokenParser extends \Twig_TokenParser
+class DataValidator_ResetCountersTokenParser extends AbstractTokenParser
 {
 	/**
 	 * (non-PHPdoc)
 	 * @see \Twig_TokenParserInterface::parse()
 	 */
-	public function parse(\Twig_Token $token) {
+	public function parse(Token $token) {
 		$stream = $this->parser->getStream();
 		
-		$validatorName = $stream->expect(\Twig_Token::NAME_TYPE)->getValue();
-		$stream->expect(\Twig_Token::BLOCK_END_TYPE);
+		$validatorName = $stream->expect(Token::NAME_TYPE)->getValue();
+		$stream->expect(Token::BLOCK_END_TYPE);
 		
 		return new DataValidator_ResetCountersToken($validatorName, $token->getLine(), $this->getTag());
 	}
@@ -98,7 +104,7 @@ class DataValidator_ResetCountersTokenParser extends \Twig_TokenParser
 /**
  * Data validator reset counters Twig token
  */
-class DataValidator_ResetCountersToken extends \Twig_Node
+class DataValidator_ResetCountersToken extends Node
 {
 	/**
 	 * Constructor
@@ -114,7 +120,7 @@ class DataValidator_ResetCountersToken extends \Twig_Node
 	 * (non-PHPdoc)
 	 * @see \Twig_Node::compile()
 	 */
-	public function compile(\Twig_Compiler $compiler) {
+	public function compile(Compiler $compiler) {
 		$code = sprintf("\$context['%s']->resetRepeatCounters()", $this->getAttribute('validatorName'));
 		
 		$compiler
@@ -127,7 +133,7 @@ class DataValidator_ResetCountersToken extends \Twig_Node
 /**
  * Data validator field Twig token parser
  */
-class DataValidator_FieldTokenParser extends \Twig_TokenParser
+class DataValidator_FieldTokenParser extends AbstractTokenParser
 {
 	/**
 	 * (non-PHPdoc)
@@ -135,25 +141,25 @@ class DataValidator_FieldTokenParser extends \Twig_TokenParser
 	 * 
 	 * @param \Twig_Token $token
 	 */
-	public function parse(\Twig_Token $token) {
+	public function parse(Token $token) {
 		$stream = $this->parser->getStream();
 		
-		$validatorName = $stream->expect(\Twig_Token::NAME_TYPE)->getValue();
-		$fieldName = $stream->expect(\Twig_Token::STRING_TYPE)->getValue();
+		$validatorName = $stream->expect(Token::NAME_TYPE)->getValue();
+		$fieldName = $stream->expect(Token::STRING_TYPE)->getValue();
 		
 		$idIsString = true;
 		$typeOverride = NULL;
 		$currentToken = $stream->getCurrent();
 		switch ($currentToken->getType())
 		{
-			case \Twig_Token::NAME_TYPE:
+			case Token::NAME_TYPE:
 				$idIsString = false;
-			case \Twig_Token::STRING_TYPE:
+			case Token::STRING_TYPE:
 				$id = $stream->expect($currentToken->getType())->getValue();
 				
 				$currentToken = $stream->getCurrent();
-				if ($currentToken->getType() == \Twig_Token::STRING_TYPE)
-					$typeOverride = $stream->expect(\Twig_Token::STRING_TYPE)->getValue();
+				if ($currentToken->getType() == Token::STRING_TYPE)
+					$typeOverride = $stream->expect(Token::STRING_TYPE)->getValue();
 				break;
 				
 			default:
@@ -161,7 +167,7 @@ class DataValidator_FieldTokenParser extends \Twig_TokenParser
 				break;
 		}
 
-		$stream->expect(\Twig_Token::BLOCK_END_TYPE);
+		$stream->expect(Token::BLOCK_END_TYPE);
 		
 		if ($id === NULL) {
 			$id = $fieldName;
@@ -182,25 +188,25 @@ class DataValidator_FieldTokenParser extends \Twig_TokenParser
 /**
  * Data validator field group Twig token parser
  */
-class DataValidator_FieldGroupTokenParser extends \Twig_TokenParser
+class DataValidator_FieldGroupTokenParser extends AbstractTokenParser
 {
 	/**
 	 * (non-PHPdoc)
 	 * @see \Twig_TokenParserInterface::parse()
 	 * @param \Twig_Token $token
 	 */
-	public function parse(\Twig_Token $token) {
+	public function parse(Token $token) {
 		$stream = $this->parser->getStream();
 		
-		$validatorName = $stream->expect(\Twig_Token::NAME_TYPE)->getValue();
+		$validatorName = $stream->expect(Token::NAME_TYPE)->getValue();
 		
 		$nameIsString = true;
 		$currentToken = $stream->getCurrent();
 		switch ($currentToken->getType())
 		{
-			case \Twig_Token::NAME_TYPE:
+			case Token::NAME_TYPE:
 				$nameIsString = false;
-			case \Twig_Token::STRING_TYPE:
+			case Token::STRING_TYPE:
 				$groupName = $stream->expect($currentToken->getType())->getValue();
 				break;
 				
@@ -208,10 +214,10 @@ class DataValidator_FieldGroupTokenParser extends \Twig_TokenParser
 				$groupName = NULL;
 				break;
 		}
-		$stream->expect(\Twig_Token::BLOCK_END_TYPE);
+		$stream->expect(Token::BLOCK_END_TYPE);
 		
 		$body = $this->parser->subparse(array($this, 'decideGroupEnd'), true);
-		$stream->expect(\Twig_Token::BLOCK_END_TYPE);
+		$stream->expect(Token::BLOCK_END_TYPE);
 		
 		return new DataValidator_FieldGroupNode($validatorName, $groupName, $nameIsString, $body, $token->getLine(), $this->getTag());
 	}
@@ -229,7 +235,7 @@ class DataValidator_FieldGroupTokenParser extends \Twig_TokenParser
 	 * @param \Twig_Token $token
 	 * @return boolean
 	 */
-	public function decideGroupEnd(\Twig_Token $token) {
+	public function decideGroupEnd(Token $token) {
 		return $token->test('end_dv_field_group');
 	}
 }
@@ -237,7 +243,7 @@ class DataValidator_FieldGroupTokenParser extends \Twig_TokenParser
 /**
  * Data validator field Twig node
  */
-class DataValidator_FieldNode extends \Twig_Node
+class DataValidator_FieldNode extends Node
 {
 	/**
 	 * Constructor
@@ -264,7 +270,7 @@ class DataValidator_FieldNode extends \Twig_Node
 	 * (non-PHPdoc)
 	 * @see \Twig_Node::compile()
 	 */
-	public function compile(\Twig_Compiler $compiler)
+	public function compile(Compiler $compiler)
 	{
 		if ($this->getAttribute('typeOverride') !== NULL)
 			$code1 = sprintf("\$fieldResult = \$context['%s']->generate('%s', new \\CheeseBurgames\\MFX\\DataValidator\\FieldType('%s'))",
@@ -303,7 +309,7 @@ class DataValidator_FieldNode extends \Twig_Node
 /**
  * Data validator field group Twig node
  */
-class DataValidator_FieldGroupNode extends \Twig_Node
+class DataValidator_FieldGroupNode extends Node
 {
 	/**
 	 * Constructor
@@ -314,7 +320,7 @@ class DataValidator_FieldGroupNode extends \Twig_Node
 	 * @param int $line Line number of this node
 	 * @param string $tag Tag for this node
 	 */
-	public function __construct($validatorName, $groupName, $nameIsString, \Twig_Node $body, $line, $tag)
+	public function __construct($validatorName, $groupName, $nameIsString, Node $body, $line, $tag)
 	{
 		parent::__construct(array( 'body' => $body ), array(
 				'validatorName' => $validatorName,
@@ -327,7 +333,7 @@ class DataValidator_FieldGroupNode extends \Twig_Node
 	 * (non-PHPdoc)
 	 * @see \Twig_Node::compile()
 	 */
-	public function compile(\Twig_Compiler $compiler)
+	public function compile(Compiler $compiler)
 	{
 		if ($this->getAttribute('nameIsString'))
 			$code = "'{$this->getAttribute('groupName')}'";
