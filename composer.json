@@ -11,7 +11,10 @@
 	"autoload" : {
 		"psr-4" : {
 			"" : "src/"
-		}
+		},
+		"files": [
+			"src/error_functions.php"
+		]
 	},
 	"authors" : [{
 			"name" : "Christophe SAUVEUR",
