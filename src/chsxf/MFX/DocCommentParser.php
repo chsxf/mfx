@@ -2,7 +2,6 @@
 /**
  * Documentation comment parser
  *
- * @version 1.0
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  *
  * @license GPL version 2

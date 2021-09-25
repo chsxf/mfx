@@ -3,7 +3,6 @@
  * Data validator "in range of integer values" field filter class
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- * @version 1.0
  */
 namespace chsxf\MFX\DataValidator\Filter;
 

@@ -3,7 +3,6 @@
  * Data validation "value exists in database" filter class
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- * @version 1.0
  */
 namespace chsxf\MFX\DataValidator\Filter;
 

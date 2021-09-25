@@ -3,7 +3,6 @@
  * Data validation "value is of type" filter class
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- * @version 1.0
  */
 
 namespace chsxf\MFX\DataValidator\Filter;

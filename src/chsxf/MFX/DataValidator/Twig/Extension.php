@@ -3,7 +3,6 @@
  * Data validator extension for Twig
  * 
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- * @version 1.0
  */
 
 namespace chsxf\MFX\DataValidator\Twig;

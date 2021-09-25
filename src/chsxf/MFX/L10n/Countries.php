@@ -3,7 +3,6 @@
  * ISO 3166-1 alpha-2 country codes helper class
  * 
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- * @version 1.0
  */
 
 namespace chsxf\MFX\L10n;

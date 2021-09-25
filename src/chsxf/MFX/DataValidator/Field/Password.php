@@ -3,7 +3,6 @@
  * Data validation Password field type class
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- * @version 1.0
  */
 namespace chsxf\MFX\DataValidator\Field;
 

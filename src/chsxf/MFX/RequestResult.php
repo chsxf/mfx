@@ -3,7 +3,6 @@
  * Request response data and information structure
  * 
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- * @version 1.0
  */
 
 namespace chsxf\MFX;
