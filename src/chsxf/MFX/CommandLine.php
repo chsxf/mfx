@@ -17,21 +17,21 @@ class CommandLine
 	/**
 	 * @var array Arguments list
 	 */
-	private static $_argv;
+	private static array $_argv;
 	/**
 	 * @var int Argument count
 	 */
-	private static $_argc;
+	private static int $_argc;
 	/**
 	 * @var int Argument current index
 	 */
-	private static $_argi;
+	private static int $_argi;
 	
 	/**
 	 * Tells if PHP is running on the command-line interface server API
 	 * @return boolean true is the current server API is the command-line interface, false either
 	 */
-	public static function isCLI() {
+	public static function isCLI(): bool {
 		return (PHP_SAPI == 'cli');
 	}
 	
@@ -39,20 +39,18 @@ class CommandLine
 	 * Handles command-line invocation and the parsing of MicroFX specific options from the arguments list
 	 */
 	public static function handleInvocation() {
-		if (!self::isCLI())
-			return;
+        if (!self::isCLI()) {
+            return;
+        }
 		
 		self::_initArgs();
 		
 		// Options
-		while (self::_hasArgument())
-		{
+		while (self::_hasArgument()) {
 			$opt = self::_getNextArgument();
 			
-			if (preg_match('/^-/', $opt))
-			{
-				switch ($opt)
-				{
+			if (preg_match('/^-/', $opt)) {
+				switch ($opt) {
 					case '--config':
 						define('MFX_CONFIG_FILE_PATH', self::_getNextArgument());
 						break;
@@ -61,8 +59,7 @@ class CommandLine
 						self::_dieUsage();
 				}
 			}
-			else
-			{
+			else {
 				$_SERVER['REQUEST_URI'] = "{$_SERVER['PHP_SELF']}/{$opt}";
 				break;
 			}
@@ -83,7 +80,7 @@ class CommandLine
 	 * Tells if the arguments list contains further argument
 	 * @return boolean
 	 */
-	private static function _hasArgument() {
+	private static function _hasArgument(): bool {
 		return (self::$_argi < self::$_argc);
 	}
 	
@@ -91,9 +88,10 @@ class CommandLine
 	 * Retrieves the next argument in the list
 	 * @return string
 	 */
-	private static function _getNextArgument() {
-		if (!self::_hasArgument())
-			self::_dieUsage();
+	private static function _getNextArgument(): string {
+        if (!self::_hasArgument()) {
+            self::_dieUsage();
+        }
 		return self::$_argv[self::$_argi++];
 	}
 	
@@ -102,9 +100,7 @@ class CommandLine
 	 */
 	private static function _dieUsage() {
 		printf("Usage: php -f /path/to/php-micro-framework/entrypoint.php [-- [options] [route]]\n\n");
-		
 		printf("\t--config <file>\t\tPath to custom config file\n");
-		
 		printf("\n");
 		exit();
 	}
