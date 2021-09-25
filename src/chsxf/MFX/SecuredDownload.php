@@ -23,8 +23,9 @@ class SecuredDownload implements IRouteProvider {
 	 */
 	public static function get(array $params) {
 		$validator = self::__buildInputValidator();
-		if (!$validator->validate($params))
-			CoreManager::dieWithStatusCode(400);
+        if (!$validator->validate($params)) {
+            CoreManager::dieWithStatusCode(400);
+        }
 		
 		// Add to download log
 		$dbm = DatabaseManager::open('__mfx');
@@ -35,7 +36,7 @@ class SecuredDownload implements IRouteProvider {
 					LEFT JOIN `mfx_secured_downloads` AS `sd`
 						ON `sd`.`secured_download_id` = `sdk`.`secured_download_id`
 					WHERE `sdk`.`secured_download_key` = ?";
-		$keyData = $dbm->getRow($sql, DBM_OBJECT, $validator['0']);
+		$keyData = $dbm->getRow($sql, \PDO::FETCH_OBJ, $validator['0']);
 		if ($keyData === false) {
 			$dbm->rollBack();
 			CoreManager::dieWithStatusCode(500);
