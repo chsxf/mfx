@@ -15,28 +15,28 @@ class CoreProfiler
 	/**
 	 * @var CoreProfiler Singleton instance
 	 */
-	private static $_singleInstance = NULL;
+	private static ?CoreProfiler $_singleInstance = NULL;
 	
 	/**
 	 * @var boolean Flag indicating if the class should fill the profiling data
 	 */
-	private $_ticking = true;
+	private bool $_ticking = true;
 	/**
 	 * @var float Profiling start time as returned by microtime(true);
 	 */
-	private $_profilingStartTime;
+	private float $_profilingStartTime;
 	/**
 	 * @var float Profiling end time as returned by microtime(true);
 	 */
-	private $_profilingEndTime;
+	private float $_profilingEndTime;
 	/**
 	 * @var array Profiling data
 	 */
-	private $_profilingData;
+	private array $_profilingData;
 	/**
 	 * @var int Last annotation index
 	 */
-	private $_lastAnnotation = 0;
+	private int $_lastAnnotation = 0;
 	
 	/**
 	 * Constructor
@@ -51,15 +51,16 @@ class CoreProfiler
 	 * Tick handler used for gathering profiling data
 	 * @param string $event Custom event annotation to identify event times during profiling. If NULL, no event is provided (Defaults to NULL).
 	 */
-	public function tickHandler($event = NULL) {
-		if ($this->_ticking || !empty($event))
-			$this->_profilingData[] = array(
-					microtime(true) - $this->_profilingStartTime, 
-					memory_get_usage(), 
-					memory_get_usage(true), 
-					empty($event) ? 'null' : sprintf('%d', ++$this->_lastAnnotation), 
-					empty($event) ? 'null' : $event
-			);
+	public function tickHandler(?string $event = NULL) {
+        if ($this->_ticking || !empty($event)) {
+            $this->_profilingData[] = array(
+                    microtime(true) - $this->_profilingStartTime,
+                    memory_get_usage(),
+                    memory_get_usage(true),
+                    empty($event) ? 'null' : sprintf('%d', ++$this->_lastAnnotation),
+                    empty($event) ? 'null' : $event
+            );
+        }
 	}
 	
 	/**
@@ -68,8 +69,9 @@ class CoreProfiler
 	 * This function enables output buffering.
 	 */
 	public static function init() {
-		if (self::$_singleInstance !== NULL)
-			return;
+        if (self::$_singleInstance !== null) {
+            return;
+        }
 		
 		self::$_singleInstance = new CoreProfiler();
 		register_tick_function(array(&self::$_singleInstance, 'tickHandler'));
@@ -83,14 +85,15 @@ class CoreProfiler
 	 * Push a custom event into profiling data
 	 * @param string $event Name of the even
 	 */
-	public static function pushEvent($event)
-	{
-		if (self::$_singleInstance === NULL || !empty(self::$_singleInstance->_profilingEndTime))
-			return;
+	public static function pushEvent(string $event) {
+        if (self::$_singleInstance === null || !empty(self::$_singleInstance->_profilingEndTime)) {
+            return;
+        }
 		
 		self::$_singleInstance->_ticking = false;
-		if (self::$_singleInstance !== NULL)
-			self::$_singleInstance->tickHandler($event, true);
+        if (self::$_singleInstance !== null) {
+            self::$_singleInstance->tickHandler($event, true);
+        }
 		self::$_singleInstance->_ticking = true;
 	}
 	
@@ -98,8 +101,9 @@ class CoreProfiler
 	 * Terminates profiling and output buffering and echoes the result
 	 */
 	public static function stop() {
-		if (self::$_singleInstance === NULL)
-			return;
+        if (self::$_singleInstance === null) {
+            return;
+        }
 		
 		unregister_tick_function(array(&self::$_singleInstance, 'tickHandler'));
 		self::$_singleInstance->_profilingEndTime = microtime(true);
@@ -109,18 +113,17 @@ class CoreProfiler
 		
 		$ini_output_buffering = ini_get('output_buffering');
 		$minLevel = empty($ini_output_buffering) ? 1 : 2;
-		while (ob_get_level() > $minLevel)
-			ob_end_flush();
+        while (ob_get_level() > $minLevel) {
+            ob_end_flush();
+        }
 		$buffer = ob_get_contents();
 		ob_clean();
 		
 		$memlimit = ini_get('memory_limit');
 		$regs = NULL;
 		preg_match('/^([1-9]\d*)([kmg])?$/i', $memlimit, $regs);
-		if (!empty($regs[2]))
-		{
-			switch ($regs[2])
-			{
+		if (!empty($regs[2])) {
+			switch ($regs[2]) {
 				case 'k':
 				case 'K':
 					$memlimit = $regs[1] * 1024;
@@ -168,8 +171,9 @@ class CoreProfiler
 				$decoded->mfx_profiler = $context;
 				echo json_encode($decoded);
 			}
-			else
-				echo $buffer;
+			else {
+                echo $buffer;
+            }
 		}
 		// XML
 		else if ($contentType == 'application/xml') {
@@ -188,8 +192,9 @@ class CoreProfiler
 						$dataRow->addChild('event', $row[4]);
 					}
 				}
-				else
-					$profilerRoot->addChild($k, $v);
+				else {
+                    $profilerRoot->addChild($k, $v);
+                }
 			}
 			
 			echo $xmlTree->asXML();
@@ -200,18 +205,19 @@ class CoreProfiler
 			echo "{$buffer}\n\n{$str}";
 		}
 		// Unsupported content-type
-		else
-			echo $buffer;
+		else {
+            echo $buffer;
+        }
 	}
 	
 	/**
 	 * Evaluates how long was the profiling
 	 * @return boolean|float false if profiling is not initialized or complete, or the duration in milliseconds
 	 */
-	public static function getProfilingDuration() {
-		if (self::$_singleInstance === NULL || empty(self::$_singleInstance->_profilingEndTime))
-			return false;
-		
+	public static function getProfilingDuration(): float|false {
+        if (self::$_singleInstance === null || empty(self::$_singleInstance->_profilingEndTime)) {
+            return false;
+        }
 		return (self::$_singleInstance->_profilingEndTime - self::$_singleInstance->_profilingStartTime);
 	}
 }
