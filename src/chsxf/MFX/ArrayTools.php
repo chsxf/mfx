@@ -87,4 +87,27 @@ class ArrayTools
 			return mt_rand(-1, 1);
 		});
 	}
+
+	/**
+	 * Checks if the parameter is an array or a union type accepting an array
+	 * 
+	 * @param \RefelctionParameter $parameter The parameter to investigate
+	 * @return bool
+	 */
+	public static function isParameterArray(\ReflectionParameter $parameter): bool {
+        $type = $parameter->getType();
+
+        if ($type !== null) {
+            if ($type instanceof \ReflectionNamedType) {
+                return $type->getName() === 'array';
+            } else {
+                foreach ($type->getTypes() as $unionType) {
+                    if ($unionType->getName() === 'array') {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+    }
 }
