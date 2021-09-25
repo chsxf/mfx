@@ -27,22 +27,24 @@ class ArrayTools
 	 * @param array $store Source array
 	 * @return array
 	 */
-	public static function reverseArrays(array $store) {
-		if (empty($store))
+	public static function reverseArrays(array $store): array {
+		if (empty($store)) {
 			return array();
+		}
 
 		$keys = array_keys(reset($store));
 		$result = array();
-		foreach ($keys as $k)
-			$result[$k] = array();
-		foreach ($store as $row)
-		{
-			foreach ($keys as $k)
-			{
-				if (array_key_exists($k, $result))
-					$result[$k][] = $row[$k];
-				else
-					$result[$k][] = NULL;
+        foreach ($keys as $k) {
+            $result[$k] = array();
+        }
+		foreach ($store as $row) {
+			foreach ($keys as $k) {
+                if (array_key_exists($k, $result)) {
+                    $result[$k][] = $row[$k];
+                }
+				else {
+                    $result[$k][] = null;
+                }
 			}
 		}
 		return $result;
@@ -56,10 +58,10 @@ class ArrayTools
 	 *
 	 * @return array
 	 */
-	public static function concatArrays() {
+	public static function concatArrays(mixed ...$arguments): array {
 		$result = array();
 
-		$args = func_get_args();
+		$args = $arguments;
 		if (count($args) == 1 && is_array($args[0])) {
 			$args = $args[0];
 		}
