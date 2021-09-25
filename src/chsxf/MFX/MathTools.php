@@ -16,11 +16,10 @@ final class MathTools {
 	 * Generates a randomly-generated float number
 	 * comprised between 0.0 (inclusive) and 1.0 (inclusive)
 	 *
-	 * @return number
+	 * @return float
 	 */
-	public static function randomFloat() {
+	public static function randomFloat(): float {
 		return mt_rand() / mt_getrandmax();
 	}
 
 }
-
