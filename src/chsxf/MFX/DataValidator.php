@@ -21,11 +21,11 @@ final class DataValidator implements \ArrayAccess
 	/**
 	 * @var array Fields container
 	 */
-	private $_fields;
+	private array $_fields;
 	/**
 	 * @var array Generation groups
 	 */		
-	private $_generationGroups;
+	private array $_generationGroups;
 	
 	/**
 	 * Constructor
@@ -34,10 +34,10 @@ final class DataValidator implements \ArrayAccess
 	public function __construct(array $fields = NULL) {
 		$this->_fields = array(); 
 		
-		if (!empty($fields))
-		{
-			foreach ($fields as $f)
-				$this->addField($f);
+		if (!empty($fields)) {
+            foreach ($fields as $f) {
+                $this->addField($f);
+            }
 		}
 		
 		$this->_generationGroups = array();
@@ -49,10 +49,10 @@ final class DataValidator implements \ArrayAccess
 	 * @throws DataValidatorException If a field with the same name already exists
 	 * @return Field The added field
 	 */
-	public function addField(Field $field) {
-		if (array_key_exists($field->getName(), $this->_fields))
-			throw new DataValidatorException(dgettext('mfx', "Duplicate field name '{$field->getName()}'."));
-		
+	public function addField(Field $field): Field {
+        if (array_key_exists($field->getName(), $this->_fields)) {
+            throw new DataValidatorException(dgettext('mfx', "Duplicate field name '{$field->getName()}'."));
+        }
 		$this->_fields[$field->getName()] = $field;
 		return $field;
 	}
@@ -68,7 +68,7 @@ final class DataValidator implements \ArrayAccess
 	 * 
 	 * @see Field::addField()
 	 */
-	public function createField($name, FieldType $type, $defaultValue = NULL, $required = true, array $extras = array()) {
+	public function createField(string $name, FieldType $type, mixed $defaultValue = NULL, bool $required = true, array $extras = array()) {
 		$f = $this->addField(Field::create($name, $type, $defaultValue, $required));
 		$f->addExtras($extras);
 		return $f;
@@ -81,14 +81,14 @@ final class DataValidator implements \ArrayAccess
 	 * @param boolean $makeEmptyStringsNull If set, all empty string values will be set to NULL. (Defaults to false)
 	 * @throws DataValidatorException If no field exists with this name
 	 */
-	public function getFieldValue($name, $returnDefaultIfNotSet = false, $makeEmptyStringsNull = false)
-	{
-		if (!array_key_exists($name, $this->_fields))
-			throw new DataValidatorException(dgettext('mfx', "Unknown '{$name}' field."));
-		
+	public function getFieldValue(string $name, bool $returnDefaultIfNotSet = false, bool $makeEmptyStringsNull = false): mixed {
+        if (!array_key_exists($name, $this->_fields)) {
+            throw new DataValidatorException(dgettext('mfx', "Unknown '{$name}' field."));
+        }
 		$val = $this->_fields[$name]->getValue($returnDefaultIfNotSet);
-		if ($makeEmptyStringsNull && is_string($val) && empty($val))
-			$val = NULL;
+        if ($makeEmptyStringsNull && is_string($val) && empty($val)) {
+            $val = null;
+        }
 		return $val;
 	}
 	
@@ -100,13 +100,14 @@ final class DataValidator implements \ArrayAccess
 	 * @param boolean $makeEmptyStringsNull If set, all empty string values will be set to NULL. (Defaults to false)
 	 * @throws DataValidatorException If no field exists with this name
 	 */
-	public function getIndexedFieldValue($name, $index, $returnDefaultIfNotSet = false, $makeEmptyStringsNull = false) {
-		if (!array_key_exists($name, $this->_fields))
-			throw new DataValidatorException(dgettext('mfx', "Unknown '{$name}' field."));
-			
+	public function getIndexedFieldValue(string $name, int $index, bool $returnDefaultIfNotSet = false, bool $makeEmptyStringsNull = false): mixed {
+        if (!array_key_exists($name, $this->_fields)) {
+            throw new DataValidatorException(dgettext('mfx', "Unknown '{$name}' field."));
+        }			
 		$val = $this->_fields[$name]->getIndexedValue($index, $returnDefaultIfNotSet);
-		if ($makeEmptyStringsNull && is_string($val) && empty($val))
-			$val = NULL;
+        if ($makeEmptyStringsNull && is_string($val) && empty($val)) {
+            $val = null;
+        }
 		return $val;
 	}
 	
@@ -118,15 +119,17 @@ final class DataValidator implements \ArrayAccess
 	 * @param boolean $makeEmptyStringsNull If set, all empty string values will be set to NULL. (Defaults to false)
 	 * @return array
 	 */
-	public function getFieldValues($prefix = '', array $excludes = array(), $returnDefaultIfNotSet = false, $makeEmptyStringsNull = false) {
-		if (!is_array($excludes))
-			$excludes = array();
+	public function getFieldValues(string $prefix = '', array $excludes = array(), bool $returnDefaultIfNotSet = false, bool $makeEmptyStringsNull = false): array {
+        if (!is_array($excludes)) {
+            $excludes = array();
+        }
 		$values = array();
 		foreach ($this->_fields as $n => $f) {
 			if (!in_array($n, $excludes)) {
 				$v = $f->getValue($returnDefaultIfNotSet);
-				if ($makeEmptyStringsNull && is_string($v) && empty($v))
-					$v = NULL;
+                if ($makeEmptyStringsNull && is_string($v) && empty($v)) {
+                    $v = null;
+                }
 				$values[$prefix.$n] = $v;
 			}
 		}
@@ -143,15 +146,17 @@ final class DataValidator implements \ArrayAccess
 	 * @param boolean $makeEmptyStringsNull If set, all empty string values will be set to NULL. (Defaults to false)
 	 * @return array
 	 */
-	public function getIndexedFieldValues($index, $prefix = '', array $excludes = array(), $returnDefaultIfNotSet = false, $makeEmptyStringsNull = false) {
-		if (!is_array($excludes))
-			$excludes = array();
+	public function getIndexedFieldValues(int $index, string $prefix = '', array $excludes = array(), bool $returnDefaultIfNotSet = false, bool $makeEmptyStringsNull = false): array {
+        if (!is_array($excludes)) {
+            $excludes = array();
+        }
 		$values = array();
 		foreach ($this->_fields as $n => $f) {
 			if (!in_array($n, $excludes)) {
 				$v = $f->getIndexedValue($index, $returnDefaultIfNotSet);
-				if ($makeEmptyStringsNull && is_string($v) && empty($v))
-					$v = NULL;
+                if ($makeEmptyStringsNull && is_string($v) && empty($v)) {
+                    $v = null;
+                }
 				$values[$prefix.$n] = $v;
 			}
 		}
@@ -162,8 +167,9 @@ final class DataValidator implements \ArrayAccess
 	 * Resets the repeat counters for all fields
 	 */
 	public function resetRepeatCounters() {
-		foreach ($this->_fields as $f)
-			$f->resetRepeatCounter();
+        foreach ($this->_fields as $f) {
+            $f->resetRepeatCounter();
+        }
 	}
 	
 	/**
@@ -172,25 +178,26 @@ final class DataValidator implements \ArrayAccess
 	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * @return boolean true if data is valid, false either
 	 */
-	public function validate($data, $silent = false) {
+	public function validate(array|\Traversable $data, bool $silent = false): bool {
 		// Populate data
-		foreach ($data as $k => $v)
-		{
-			if (array_key_exists($k, $this->_fields))
-				$this->_fields[$k]->setValue($v);
+		foreach ($data as $k => $v) {
+            if (array_key_exists($k, $this->_fields)) {
+                $this->_fields[$k]->setValue($v);
+            }
 		}
 		
 		// Revert unpopulated applying fields to default value
 		foreach ($this->_fields as $k => $v) {
-			if ($v->revertToDefaultIfNotPopulated() && !array_key_exists($k, $data))
-				$v->setValue($v->isRepeatable() ? array() : NULL);
+            if ($v->revertToDefaultIfNotPopulated() && !array_key_exists($k, $data)) {
+                $v->setValue($v->isRepeatable() ? array() : null);
+            }
 		}
 		
 		// Validation
-		foreach ($this->_fields as $f)
-		{
-			if (!$f->validate($silent))
-				return false;
+		foreach ($this->_fields as $f) {
+            if (!$f->validate($silent)) {
+                return false;
+            }
 		}
 		return true;
 	}
@@ -201,10 +208,10 @@ final class DataValidator implements \ArrayAccess
 	 * @param FieldType $type_override Type to use to override original field type. If NULL, no override. (Defaults to NULL)
 	 * @throws DataValidatorException If no field exists with this name
 	 */
-	public function generate($name, FieldType $type_override = NULL) {
-		if (!array_key_exists($name, $this->_fields))
-			throw new DataValidatorException(dgettext('mfx', "Unknown '{$name}' field."));
-		
+	public function generate(string $name, FieldType $type_override = NULL) {
+        if (!array_key_exists($name, $this->_fields)) {
+            throw new DataValidatorException(dgettext('mfx', "Unknown '{$name}' field."));
+        }
 		return $this->_fields[$name]->generate($this->_generationGroups, $type_override);
 	}
 	
@@ -212,17 +219,19 @@ final class DataValidator implements \ArrayAccess
 	 * Pushes a generation group name
 	 * @param string $name
 	 */
-	public function pushGenerationGroup($name) {
-		if (!empty($name) && is_string($name))
-			$this->_generationGroups[] = $name;
+	public function pushGenerationGroup(string $name) {
+        if (!empty($name) && is_string($name)) {
+            $this->_generationGroups[] = $name;
+        }
 	}
 	
 	/**
 	 * Pops a generation group name
 	 */
 	public function popGenerationGroup() {
-		if (!empty($this->_generationGroups))
-			array_pop($this->_generationGroups);
+        if (!empty($this->_generationGroups)) {
+            array_pop($this->_generationGroups);
+        }
 	}
 	
 	/**
@@ -230,7 +239,7 @@ final class DataValidator implements \ArrayAccess
 	 * @see \ArrayAccess::offsetExists()
 	 * @param mixed $offset
 	 */
-	public function offsetExists($offset) {
+	public function offsetExists(mixed $offset): bool {
 		return (is_string($offset) && array_key_exists($offset, $this->_fields));
 	}
 	
@@ -239,7 +248,7 @@ final class DataValidator implements \ArrayAccess
 	 * @see \ArrayAccess::offsetGet()
 	 * @param mixed $offset
 	 */
-	public function offsetGet($offset) {
+	public function offsetGet(mixed $offset): mixed {
 		return $this->getFieldValue($offset);
 	}
 	
@@ -249,7 +258,7 @@ final class DataValidator implements \ArrayAccess
 	 * @param mixed $offset
 	 * @param mixed $value
 	 */
-	public function offsetSet($offset, $value) {
+	public function offsetSet(mixed $offset, mixed $value) {
 		$this->offsetUnset($offset);
 	}
 	
@@ -258,7 +267,7 @@ final class DataValidator implements \ArrayAccess
 	 * @see \ArrayAccess::offsetUnset()
 	 * @param mixed $offset
 	 */
-	public function offsetUnset($offset) {
+	public function offsetUnset(mixed $offset) {
 		throw new DataValidatorException(dgettext('mfx', "Field values cannot be altered."));
 	}
 }
