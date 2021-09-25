@@ -8,7 +8,7 @@ final class Status implements IRouteProvider {
 	 * @mfx_subroute
 	 * @mfx_anonymous
 	 */
-	public static function ping() {
+	public static function ping(): RequestResult {
 		$result = array( 'result' => true );
 
 		$executionDuration = microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
