@@ -25,7 +25,7 @@ final class NetworkTools {
 	 *
 	 * @return string the remote IP address or IPv6 localhost if not found
 	 */
-	public static function getRemoteIP() {
+	public static function getRemoteIP(): string {
 		$env = getenv();
 		foreach (self::LOOKUP_TABLE as $lookup) {
 			if (!empty($env[$lookup])) {
