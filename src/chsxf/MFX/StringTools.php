@@ -26,7 +26,7 @@ class StringTools {
 	 * @param string $address The email address string to check
 	 * @return boolean true if the address is valid, false either
 	 */
-	public static function isValidEmailAddress($address) {
+	public static function isValidEmailAddress(string $address): bool {
 		return (bool) preg_match("/^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+$/", $address);
 	}
 
@@ -37,11 +37,13 @@ class StringTools {
 	 * @param boolean $canBeZero If set, the string can be evaluated to zero. If not, the integer must be positive. (Defaults to false)
 	 * @return boolean
 	 */
-	public static function isPositiveInteger($str, $canBeZero = false) {
-		if ($canBeZero)
-			$res = preg_match('/^(0|[1-9]\d*)$/', $str);
-		else
-			$res = preg_match('/^[1-9]\d*$/', $str);
+	public static function isPositiveInteger(string $str, bool $canBeZero = false): bool {
+        if ($canBeZero) {
+            $res = preg_match('/^(0|[1-9]\d*)$/', $str);
+        }
+		else {
+            $res = preg_match('/^[1-9]\d*$/', $str);
+        }
 		return !empty($res);
 	}
 
@@ -52,11 +54,13 @@ class StringTools {
 	 * @param boolean $canBeZero If set, the string can be evaluated to zero. If not, the integer must be negative. (Defaults to false)
 	 * @return boolean
 	 */
-	public static function isNegativeInteger($str, $canBeZero = false) {
-		if ($canBeZero)
-			$res = preg_match('/^\-(0|[1-9]\d*)$/', $str);
-		else
-			$res = preg_match('/^\-[1-9]\d*$/', $str);
+	public static function isNegativeInteger(string $str, bool $canBeZero = false): bool {
+        if ($canBeZero) {
+            $res = preg_match('/^\-(0|[1-9]\d*)$/', $str);
+        }
+		else {
+            $res = preg_match('/^\-[1-9]\d*$/', $str);
+        }
 		return !empty($res);
 	}
 
@@ -66,7 +70,7 @@ class StringTools {
 	 * @param string $str String to evaluate
 	 * @return boolean
 	 */
-	public static function isInteger($str) {
+	public static function isInteger(string $str): bool {
 		$res = preg_match('/^\-?(0|[1-9]\d*)$/', $str);
 		return !empty($res);
 	}
@@ -78,15 +82,17 @@ class StringTools {
 	 * @param string $charset Character set (Defaults to alphanumeric lower case characters)
 	 * @return boolean|string Returns false if length is zero or negative or charset is not a non-empty string. Returns the generated string either.
 	 */
-	public static function generateRandomString($length, $charset = self::CHARSET_ALPHANUMERIC_LC) {
+	public static function generateRandomString(int $length, string $charset = self::CHARSET_ALPHANUMERIC_LC): string|false {
 		$length = intval($length);
-		if (empty($charset) || !is_string($charset) || $length <= 0)
-			return false;
+        if (empty($charset) || !is_string($charset) || $length <= 0) {
+            return false;
+        }
 
 		$charset_max_index = strlen($charset) - 1;
 		$str = '';
-		for ($i = 0; $i < $length; $i++)
-			$str .= $charset[mt_rand(0, $charset_max_index)];
+        for ($i = 0; $i < $length; $i++) {
+            $str .= $charset[mt_rand(0, $charset_max_index)];
+        }
 		return $str;
 	}
 
@@ -100,19 +106,22 @@ class StringTools {
 	 * @return string Note :
 	 *         If $elements contains only two elements and that both $lastSeperator and $firstSeparator are defined, $lastSeparator is used.
 	 */
-	public static function implode($separator, array $elements, $lastSeparator = NULL, $firstSeparator = NULL) {
+	public static function implode(string $separator, array $elements, ?string $lastSeparator = NULL, ?string $firstSeparator = NULL): string {
 		if (count($elements) <= 2)
 			return implode(($lastSeparator === NULL) ? $separator : $lastSeparator, $elements);
 		else {
 			$elements = array_values($elements);
 			$str = $elements[0];
 			for ($i = 1; $i < count($elements); $i++) {
-				if ($firstSeparator !== NULL && $i == 1)
-					$str .= $firstSeparator;
-				else if ($lastSeparator !== NULL && $i == count($elements) - 1)
+                if ($firstSeparator !== null && $i == 1) {
+                    $str .= $firstSeparator;
+                }
+				else if ($lastSeparator !== NULL && $i == count($elements) - 1) {
 					$str .= $lastSeparator;
-				else
-					$str .= $separator;
+				}
+				else {
+                    $str .= $separator;
+                }
 				$str .= $elements[$i];
 			}
 			return $str;
@@ -125,7 +134,7 @@ class StringTools {
 	 * @param string $_str Input string
 	 * @return string Resulting string in camel case
 	 */
-	public static function snakeToCamelCase(string $_str) {
+	public static function snakeToCamelCase(string $_str): string {
 		return lcfirst(self::snakeToPascalCase($_str));
 	}
 
@@ -135,7 +144,7 @@ class StringTools {
 	 * @param string $_str Input string
 	 * @return string Resulting string in Pascal case
 	 */
-	public static function snakeToPascalCase(string $_str) {
+	public static function snakeToPascalCase(string $_str): string {
 		return str_replace('_', '', ucwords($_str, '_'));
 	}
 
@@ -146,7 +155,7 @@ class StringTools {
 	 * @param bool $_upperCase If set, returns the string in upper snake case.
 	 * @return string Resulting string in snake case
 	 */
-	public static function toSnakeCase(string $_str, bool $_upperCase = false) {
+	public static function toSnakeCase(string $_str, bool $_upperCase = false): string {
 		$snake = preg_replace([
 				'/([a-z\d])([A-Z])/',
 				'/([^_])([A-Z][a-z])/'
@@ -165,7 +174,7 @@ class StringTools {
 	 * @param string $placeholder Placeholder text (Defaults to '-')
 	 * @return string
 	 */
-	public static function sanitize($string, $placeholder = '-') {
+	public static function sanitize(string $string, string $placeholder = '-'): string {
 		$string = self::removeAccents($string);
 		$string = strtolower($string);
 
@@ -182,9 +191,10 @@ class StringTools {
 	 * @param string $string Source string
 	 * @return string
 	 */
-	public static function removeAccents($string) {
-		if (!preg_match('/[\x80-\xff]/', $string))
-			return $string;
+	public static function removeAccents(string $string): string {
+        if (!preg_match('/[\x80-\xff]/', $string)) {
+            return $string;
+        }
 
 		$chars = array(
 				// Decompositions for Latin-1 Supplement
