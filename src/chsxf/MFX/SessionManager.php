@@ -16,8 +16,9 @@ class SessionManager
 	 * Starts and sets up the PHP session
 	 */
 	public static function start() {
-		if (empty(Config::get('session.enabled', true)))
-			return;
+        if (empty(Config::get('session.enabled', true))) {
+            return;
+        }
 		
 		// Setting session parameters
 		session_name(Config::get('session.name', 'MFXSESSION'));
@@ -31,8 +32,9 @@ class SessionManager
 		else {
 			ini_set('session.use_cookies', '0');
 			ini_set('session.use_trans_id', '1');
-			if (!empty($_REQUEST[session_name()]))
-				session_id($_REQUEST[session_name()]);
+            if (!empty($_REQUEST[session_name()])) {
+                session_id($_REQUEST[session_name()]);
+            }
 			session_start();
 			output_add_rewrite_var(session_name(), session_id());
 		}
@@ -42,7 +44,7 @@ class SessionManager
 	 * Retrieves the default cookie path based on current script and framework location
 	 * @return string
 	 */
-	public static function getDefaultCookiePath() {
+	public static function getDefaultCookiePath(): string {
 		return preg_replace('#/mfx$#', '/', dirname($_SERVER['PHP_SELF']));
 	}
 }
