@@ -17,7 +17,7 @@ class FileTools
 	 * @param string $ext File extension
 	 * @return string
 	 */
-	public static function mimeTypeFromExtension($ext) {
+	public static function mimeTypeFromExtension(string $ext): string {
 		switch (strtolower($ext)) {
 			case 'zip':
 			case 'pdf':
