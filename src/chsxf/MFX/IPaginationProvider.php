@@ -16,11 +16,11 @@ interface IPaginationProvider
 	 * Retrieves the total number of items
 	 * @return int
 	 */
-	public function totalItemCount();
+	public function totalItemCount(): int;
 	
 	/**
 	 * Retrieves the default number of items to display per page
 	 * @return int
 	 */
-	public function defaultPageCount();
+	public function defaultPageCount(): int;
 }
