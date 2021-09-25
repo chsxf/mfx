@@ -45,7 +45,7 @@ class DocCommentParserException extends \ErrorException
 	 * @param string $filename Name of the file where the exception was thrown
 	 * @param int $lineno Line number where the exception was thrown
 	 */
-	public function __construct($message, $code, $filename, $lineno) {
+	public function __construct(string $message, int $code, string $filename, int $lineno) {
 		parent::__construct($message, 0, 0, $filename, $lineno);
 	}
 }
@@ -58,7 +58,7 @@ class DocCommentParser
 	/**
 	 * @var array List of regular expressions used to filter valid parameters from comment
 	 */
-	private $_validParametersRegularExpressions = NULL;
+	private ?array $_validParametersRegularExpressions = NULL;
 
 	/**
 	 * Constructor
@@ -79,9 +79,10 @@ class DocCommentParser
 	 * @param string $regexp Regular expression. Syntax follows preg_match's ones.
 	 * @see preg_match()
 	 */
-	public final function addValidParametersRegularExpression($regexp) {
-		if (is_array($this->_validParametersRegularExpressions) && !empty($regexp))
-			$this->_validParametersRegularExpressions[] = $regexp;
+	public final function addValidParametersRegularExpression(string $regexp) {
+        if (is_array($this->_validParametersRegularExpressions) && !empty($regexp)) {
+            $this->_validParametersRegularExpressions[] = $regexp;
+        }
 	}
 
 	/**
@@ -105,34 +106,40 @@ class DocCommentParser
 	 * @param \Reflector $reflector Reflector object identifying the langage element to use as a reference
 	 * @return array An associative array listing all valid parameters
 	 */
-	public final function parse(\Reflector $reflector) {
-		if ($reflector instanceof \ReflectionFunctionAbstract == false && $reflector instanceof \ReflectionClass == false)
-			throw new DocCommentParserException("The provided Reflector is not an instance of ReflectionFunction, ReflectionMethod or ReflectionClass",
-												DCPE_WRONG_REFLECTOR_CODE, __FILE__, __LINE__);
+	public final function parse(\ReflectionClass|\ReflectionFunctionAbstract $reflector): array {
+        if ($reflector instanceof \ReflectionFunctionAbstract == false && $reflector instanceof \ReflectionClass == false) {
+            throw new DocCommentParserException(
+                "The provided Reflector is not an instance of ReflectionFunction, ReflectionMethod or ReflectionClass",
+                DCPE_WRONG_REFLECTOR_CODE,
+                __FILE__,
+                __LINE__
+            );
+        }
 
 		$docComment = $reflector->getDocComment();
 
 		$lines = preg_split("/\r|\n/", $docComment);
 		$valid_parameters = array();
-		foreach ($lines as $line)
-		{
+		foreach ($lines as $line) {
 			$line = trim($line);
-			if (preg_match('#^/\*\*#', $line) || preg_match('#\*/$#', $line))
-				continue;
+            if (preg_match('#^/\*\*#', $line) || preg_match('#\*/$#', $line)) {
+                continue;
+            }
 			$line = ltrim($line, '* ');
-			if (empty($line) || !preg_match('/^@/', $line))
-				continue;
+            if (empty($line) || !preg_match('/^@/', $line)) {
+                continue;
+            }
 			$line = ltrim($line, '@');
 
-			foreach ($this->_validParametersRegularExpressions as $regexp)
-			{
-				if (preg_match($regexp, $line))
-				{
+			foreach ($this->_validParametersRegularExpressions as $regexp) {
+				if (preg_match($regexp, $line)) {
 					$chunks = explode(' ', $line, 2);
-					if (count($chunks) == 1)
-						$valid_parameters[$chunks[0]] = true;
-					else
-						$valid_parameters[$chunks[0]] = $chunks[1];
+                    if (count($chunks) == 1) {
+                        $valid_parameters[$chunks[0]] = true;
+                    }
+					else {
+                        $valid_parameters[$chunks[0]] = $chunks[1];
+                    }
 					break;
 				}
 			}
@@ -149,7 +156,7 @@ class DocCommentParser
 	 *
 	 * @see DocCommentParser::parse()
 	 */
-	public final function parseFromFunction($function_name) {
+	public final function parseFromFunction(string $function_name): array {
 		try {
 			return $this->parse(new \ReflectionFunction($function_name));
 		}
@@ -168,7 +175,7 @@ class DocCommentParser
 	 *
 	 * @see DocCommentParser::parse()
 	 */
-	public final function parseFromClass($class_name) {
+	public final function parseFromClass(string $class_name): array {
 		try {
 			return $this->parse(new \ReflectionClass($class_name));
 		}
@@ -188,7 +195,7 @@ class DocCommentParser
 	 *
 	 * @see DocCommentParser::parse()
 	 */
-	public final function parseFromClassMethod($class_name, $method_name) {
+	public final function parseFromClassMethod(string $class_name, string $method_name): array {
 		try {
 			return $this->parse(new \ReflectionMethod($class_name, $method_name));
 		}
