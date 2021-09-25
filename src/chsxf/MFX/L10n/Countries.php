@@ -15,7 +15,7 @@ class Countries
 	/**
 	 * @var array Country codes container
 	 */
-	public static $MAP = array (
+	public static array $MAP = array (
 	  'AF' => 'Afghanistan',
 	  'AX' => 'Åland Islands',
 	  'AL' => 'Albania',

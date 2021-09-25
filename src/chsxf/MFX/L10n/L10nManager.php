@@ -10,11 +10,6 @@ namespace chsxf\MFX\L10n;
 use \chsxf\MFX\Config;
 use \chsxf\MFX\SessionManager;
 
-// Loading gettext placeholder if needed
-if (!function_exists('gettext')) {
-	require_once('php-gettext/gettext.inc');
-}
-
 if (!defined('LC_MESSAGES')) {
 	define('LC_MESSAGES', 6);
 }
@@ -28,19 +23,20 @@ class L10nManager
 	 * Detects the locale to use based on the request
 	 * @return string
 	 */
-	private static function detectLocaleFromRequest() {
+	private static function detectLocaleFromRequest(): string {
 		// Locale from $_GET
 		$locale = trim(empty($_GET['locale']) ? '' : $_GET['locale']);
-		if (!empty($locale))
-			setcookie('mfx_locale', $locale, time() + 86400 * 365, SessionManager::getDefaultCookiePath());
+        if (!empty($locale)) {
+            setcookie('mfx_locale', $locale, time() + 86400 * 365, SessionManager::getDefaultCookiePath());
+        }
 
 		// Locale from $_COOKIE
-		if (empty($locale) && !empty($_COOKIE['mfx_locale']))
-			$locale = $_COOKIE['mfx_locale'];
+        if (empty($locale) && !empty($_COOKIE['mfx_locale'])) {
+            $locale = $_COOKIE['mfx_locale'];
+        }
 
 		// Locale from $_SERVER
-		if (empty($locale) && !empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
-		{
+		if (empty($locale) && !empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 			$locales = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 			array_walk($locales, function(&$item) {
 				$item = preg_replace('/;.+$/', '', $item);
@@ -53,13 +49,15 @@ class L10nManager
 				$item = sprintf("%s_%s", $chunks[0], strtoupper($chunks[1]));
 			});
 			$locales = array_unique(array_values($locales));
-			if (!empty($locales))
-				$locale = $locales[0];
+            if (!empty($locales)) {
+                $locale = $locales[0];
+            }
 		}
 
 		// Default locale from config
-		if (empty($locale))
-			$locale = Config::get('default_locale', 'en_US');
+        if (empty($locale)) {
+            $locale = Config::get('default_locale', 'en_US');
+        }
 
 		return $locale;
 	}
@@ -80,14 +78,14 @@ class L10nManager
 		// Setting application specific text domains
 		$hasDefault = false;
 		$appTextDomains = Config::get('text_domains');
-		if (!empty($appTextDomains) && is_array($appTextDomains))
-		{
+		if (!empty($appTextDomains) && is_array($appTextDomains)) {
 			$hasDefault = array_key_exists('__default', $appTextDomains);
 			foreach ($appTextDomains as $k => $v)
 				self::bindTextDomain($k, $v);
 		}
-		if ($hasDefault)
-			textdomain('__default');
+        if ($hasDefault) {
+            textdomain('__default');
+        }
 	}
 
 	/**
@@ -96,7 +94,7 @@ class L10nManager
 	 * @param string $path Text domain path
 	 * @param string $charset Text domain charset (Defaults to UTF-8)
 	 */
-	public static function bindTextDomain($key, $path, $charset = 'UTF-8') {
+	public static function bindTextDomain(string $key, string $path, string $charset = 'UTF-8') {
 		bindtextdomain($key, $path);
 		bind_textdomain_codeset($key, $charset);
 	}
@@ -105,7 +103,7 @@ class L10nManager
 	 * Gets the current locale from environment
 	 * @return string
 	 */
-	public static function getLocale() {
+	public static function getLocale(): string {
 		$locale_env = getenv('LANG');
 		return ($locale_env === false) ? self::detectLocaleFromRequest() : $locale_env;
 	}
@@ -114,7 +112,7 @@ class L10nManager
 	 * Gets the current language from the current locale
 	 * @return string
 	 */
-	public static function getLanguage() {
+	public static function getLanguage(): string {
 		$locale = explode('_', self::getLocale());
 		return $locale[0];
 	}

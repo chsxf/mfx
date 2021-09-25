@@ -15,7 +15,7 @@ class Languages
 	/**
 	 * @var array Language codes container
 	 */
-	public static $MAP = array (
+	public static array $MAP = array (
 	  'aa' => 'Afaraf',
 	  'ab' => 'Аҧсуа',
 	  'ae' => 'Avesta',
