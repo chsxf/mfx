@@ -7,20 +7,21 @@
  */
 namespace chsxf\MFX;
 
-use CheeseBurgames\PDO\DatabaseManagerException;
+use chsxf\PDO\DatabaseManager as PDODatabaseManager;
+use chsxf\PDO\DatabaseManagerException;
 
 /**
  * Database manager class
  */
-final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager {
+final class DatabaseManager extends PDODatabaseManager {
 	const DEFAULT_CONNECTION = '__default';
 
 	/**
 	 * @var array Open connections container
 	 */
-	private static $_openConnections = array();
+	private static array $_openConnections = array();
 
-	private $_serverConfigurationKey;
+	private string $_serverConfigurationKey;
 
 	/**
 	 * Constructor
@@ -31,9 +32,8 @@ final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager {
 	 * @param string $server Server configuration key
 	 * @see \PDO::__construct()
 	 */
-	public function __construct($dsn, $username, $password, $server = self::DEFAULT_CONNECTION) {
-		parent::__construct($dsn, $username, $password, Config::get('database.error_logging', false));
-
+	public function __construct(string $dsn, string $username, string $password, string $server = self::DEFAULT_CONNECTION) {
+		parent::__construct($dsn, $username, $password, NULL, Config::get('database.error_logging', false));
 		$this->_serverConfigurationKey = $server;
 	}
 
@@ -45,35 +45,38 @@ final class DatabaseManager extends \CheeseBurgames\PDO\DatabaseManager {
 	 * @throws DatabaseManagerException If no configuration is available nor valid for this server key
 	 * @return DatabaseManager
 	 */
-	public static function open($server = self::DEFAULT_CONNECTION, $forceNew = false) {
-		if (array_key_exists($server, self::$_openConnections) && empty($forceNew))
-			return self::$_openConnections[$server];
+	public static function open(string $server = self::DEFAULT_CONNECTION, bool $forceNew = false): DatabaseManager {
+        if (array_key_exists($server, self::$_openConnections) && empty($forceNew)) {
+            return self::$_openConnections[$server];
+        }
 
-		if (!Config::has('database.servers'))
-			throw new DatabaseManagerException("No database server configured.");
+        if (!Config::has('database.servers')) {
+            throw new DatabaseManagerException("No database server configured.");
+        }
 
 		$serverConfig = Config::get("database.servers.{$server}");
-		if (is_string($serverConfig) && !empty($serverConfig))
-			$serverConfig = Config::get("database.servers.{$serverConfig}");
-		if (empty($serverConfig) || !is_array($serverConfig))
-			throw new DatabaseManagerException("No server can be found for the '{$server}' key.");
+        if (is_string($serverConfig) && !empty($serverConfig)) {
+            $serverConfig = Config::get("database.servers.{$serverConfig}");
+        }
+        if (empty($serverConfig) || !is_array($serverConfig)) {
+            throw new DatabaseManagerException("No server can be found for the '{$server}' key.");
+        }
 
-		$dsn = NULL;
-		$username = NULL;
-		$password = NULL;
 		foreach (array( 
 				'dsn',
 				'username',
 				'password'
 		) as $p) {
-			if (empty($serverConfig[$p]))
-				throw new DatabaseManagerException("Unable to find the '{$p}' parameter for database server '{$server}'.");
+            if (empty($serverConfig[$p])) {
+                throw new DatabaseManagerException("Unable to find the '{$p}' parameter for database server '{$server}'.");
+            }
 			$$p = $serverConfig[$p];
 		}
 
 		$dbm = new DatabaseManager($dsn, $username, $password, $server);
-		if (!array_key_exists($server, self::$_openConnections))
-			self::$_openConnections[$server] = $dbm;
+        if (!array_key_exists($server, self::$_openConnections)) {
+            self::$_openConnections[$server] = $dbm;
+        }
 		return $dbm;
 	}
 
