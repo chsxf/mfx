@@ -17,17 +17,17 @@ class Config {
 	/**
 	 * @var Config Singleton reference
 	 */
-	private static $singleInstance = NULL;
+	private static ?Config $singleInstance = NULL;
 
 	/**
 	 * @var string Domain used when loading the next configuration file
 	 */
-	private static $nextLoadDomain = NULL;
+	private static ?string $nextLoadDomain = NULL;
 
 	/**
 	 * @var array Configuration properties container
 	 */
-	private $configData;
+	private array $configData;
 
 	/**
 	 * Constructor
@@ -73,9 +73,10 @@ class Config {
 	 * @throws ErrorException If the Config::load() function has not been executed at least once before
 	 * @return mixed
 	 */
-	public static function get($property, $default = NULL) {
-		if (self::$singleInstance === NULL)
-			throw new ErrorException("Config is not loaded.");
+	public static function get(string $property, mixed $default = NULL): mixed {
+        if (self::$singleInstance === null) {
+            throw new ErrorException("Config is not loaded.");
+        }
 		return self::$singleInstance->getProperty($property, $default);
 	}
 
@@ -86,9 +87,10 @@ class Config {
 	 * @throws ErrorException If the Config::load() function has not been executed at least once before
 	 * @return boolean true if the property has been provided, false either
 	 */
-	public static function has($property) {
-		if (self::$singleInstance === NULL)
-			throw new ErrorException("Config is not loaded.");
+	public static function has(string $property): bool {
+        if (self::$singleInstance === null) {
+            throw new ErrorException("Config is not loaded.");
+        }
 		return self::$singleInstance->hasProperty($property);
 	}
 
@@ -99,16 +101,18 @@ class Config {
 	 * @param mixed $default Default value if the property has not been provided (Defaults to NULL)
 	 * @return mixed
 	 */
-	public function getProperty($property, $default = NULL) {
+	public function getProperty(string $property, mixed $default = NULL): mixed {
 		$property = trim($property);
-		if (empty($property))
-			return false;
+        if (empty($property)) {
+            return false;
+        }
 
 		$members = explode('.', $property);
 		$arr = $this->configData;
 		foreach ($members as $m) {
-			if (!array_key_exists($m, $arr))
-				return $default;
+            if (!array_key_exists($m, $arr)) {
+                return $default;
+            }
 			$arr = $arr[$m];
 		}
 		return $arr;
@@ -120,28 +124,21 @@ class Config {
 	 * @param string $property Name of the propery
 	 * @return boolean true if the property has been provided, false either
 	 */
-	public function hasProperty($property) {
+	public function hasProperty(string $property): bool {
 		$property = trim($property);
-		if (empty($property))
-			return false;
+        if (empty($property)) {
+            return false;
+        }
 
 		$members = explode('.', $property);
 		$arr = $this->configData;
 		foreach ($members as $m) {
-			if (!array_key_exists($m, $arr))
-				return false;
+            if (!array_key_exists($m, $arr)) {
+                return false;
+            }
 			$arr = $arr[$m];
 		}
 		return true;
-	}
-
-	/**
-	 * Tells if the current runtime is Google App Engine
-	 *
-	 * @return boolean
-	 */
-	public static function isGoogleAppEngineRuntime() {
-		return isset($_ENV['APPENGINE_RUNTIME']);
 	}
 
 }
