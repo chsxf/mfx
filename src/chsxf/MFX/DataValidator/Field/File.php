@@ -14,7 +14,7 @@ use chsxf\MFX\DataValidator\FieldType;
  */
 class File extends Field {
 
-	private static $_requiredKeys = array(
+	private static array $_requiredKeys = array(
 			'name',
 			'type',
 			'tmp_name',
@@ -27,7 +27,7 @@ class File extends Field {
 	 *
 	 * @see Field::validate()
 	 */
-	public function validate($silent = false) {
+	public function validate(bool $silent = false): bool {
 		if (!parent::validate($silent)) {
 			return false;
 		}
@@ -40,7 +40,7 @@ class File extends Field {
 			for ($i = 0; $i <= $maxIndex; $i++) {
 				$value = $this->getIndexedValue($i, true);
 				if (($this->isRequired() || !empty($value)) && !$this->_validateFileData($value)) {
-					if (empty($silent)) {
+					if (!$silent) {
 						trigger_error(sprintf($errorRepeatable, $this->getName(), $i));
 					}
 					return false;
@@ -50,7 +50,7 @@ class File extends Field {
 		else {
 			$value = $this->getValue(true);
 			if (($this->isRequired() || !empty($value)) && !$this->_validateFileData($value)) {
-				if (empty($silent)) {
+				if (!$silent) {
 					trigger_error(sprintf($error, $this->getName()));
 				}
 				return false;
@@ -65,7 +65,7 @@ class File extends Field {
 	 *
 	 * @param mixed $_data
 	 */
-	private function _validateFileData($_data) {
+	private function _validateFileData(mixed $_data): bool {
 		$isValid = false;
 		if (is_array($_data)) {
 			$intersect = array_intersect(self::$_requiredKeys, array_keys($_data));
@@ -82,7 +82,7 @@ class File extends Field {
 	 * {@inheritdoc}
 	 * @see \chsxf\MFX\DataValidator\Field::setValue()
 	 */
-	public function setValue($value) {
+	public function setValue(mixed $value) {
 		if ($this->isRepeatable()) {
 			if (is_array($value)) {
 				$value = array_filter($value, function ($item) {
@@ -103,7 +103,7 @@ class File extends Field {
 	 *
 	 * @see Field::revertToDefaultIfNotPopulated()
 	 */
-	public function revertToDefaultIfNotPopulated() {
+	public function revertToDefaultIfNotPopulated(): bool {
 		return true;
 	}
 

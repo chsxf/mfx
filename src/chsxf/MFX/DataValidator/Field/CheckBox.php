@@ -21,7 +21,7 @@ class CheckBox extends Field {
 	 * @param array $containingGroups
 	 * @param FieldType $type_override
 	 */
-	public function generate(array $containingGroups = array(), FieldType $type_override = NULL) {
+	public function generate(array $containingGroups = array(), FieldType $type_override = NULL): array {
 		$result = parent::generate($containingGroups, $type_override);
 		if (!empty($result[1]['value']) && $this->shouldGenerateWithValue())
 			$result[1]['extras']['checked'] = 'checked';
@@ -34,7 +34,7 @@ class CheckBox extends Field {
 	 *
 	 * @see Field::revertToDefaultIfNotPopulated()
 	 */
-	public function revertToDefaultIfNotPopulated() {
+	public function revertToDefaultIfNotPopulated(): bool {
 		return $this->isEnabled();
 	}
 

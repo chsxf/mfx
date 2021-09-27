@@ -20,17 +20,19 @@ class Email extends Field {
 	 *
 	 * @see Field::validate()
 	 */
-	public function validate($silent = false) {
-		if (!parent::validate($silent))
-			return false;
+	public function validate(bool $silent = false): bool {
+        if (!parent::validate($silent)) {
+            return false;
+        }
 
 		if ($this->isRepeatable()) {
 			$maxIndex = $this->getMaxRepeatIndex();
 			for ($i = 0; $i <= $maxIndex; $i++) {
 				$fieldValue = $this->getIndexedValue($i, true);
 				if ($fieldValue !== NULL && !StringTools::isValidEmailAddress($fieldValue)) {
-					if (empty($silent))
+					if (!$silent) {
 						trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is not a valid email address."), $this->getName(), $i));
+					}
 					return false;
 				}
 			}
@@ -38,8 +40,9 @@ class Email extends Field {
 		else {
 			$fieldValue = $this->getValue(true);
 			if ($fieldValue !== NULL && !StringTools::isValidEmailAddress($fieldValue)) {
-				if (empty($silent))
-					trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a valid email address."), $this->getName()));
+                if (!$silent) {
+                    trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a valid email address."), $this->getName()));
+                }
 				return false;
 			}
 		}

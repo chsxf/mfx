@@ -17,16 +17,17 @@ class Path extends AbstractFilter {
 	/**
 	 * @var string Root path holder
 	 */
-	private $_root;
+	private string $_root;
 	
 	/**
 	 * Constructor
 	 * @param string $root Root path to look file into. Defaults to current working directory.
 	 * @param string $message Error message
 	 */
-	public function __construct($root = './', $message = NULL) {
-		if ($message == NULL)
-			$message = dgettext('mfx', "The '%s' field does not contain an existing path.");
+	public function __construct(string $root = './', ?string $message = NULL) {
+        if ($message == null) {
+            $message = dgettext('mfx', "The '%s' field does not contain an existing path.");
+        }
 		parent::__construct($message);
 		
 		$this->_root = $root;
@@ -38,17 +39,17 @@ class Path extends AbstractFilter {
 	 * 
 	 * @param string $fieldName Field's name
 	 * @param mixed $value Field's value
-	 * @param int $atIndex Index for repeatable fields. If NULL, no index is provided. (Defaults to NULL)
+	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)
 	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 */
-	public function validate($fieldName, $value, $atIndex = NULL, $silent = false) {
+	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool {
 		$fp = $this->_root . $value;
 		if (!file_exists($fp)) {
-			if (empty($silent))
-				$this->emitMessage($fieldName);
+            if (!$silent) {
+                $this->emitMessage($fieldName);
+            }
 			return false;
 		}
-		else
-			return true;
+		return true;
 	}
 }

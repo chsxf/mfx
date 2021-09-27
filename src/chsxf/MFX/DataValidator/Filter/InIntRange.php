@@ -13,11 +13,11 @@ use chsxf\MFX\DataValidator\AbstractFilter;
  */
 class InIntRange extends AbstractFilter {
 
-	private $min;
+	private int $min;
 
-	private $max;
+	private int $max;
 
-	private $includeMax;
+	private bool $includeMax;
 
 	/**
 	 * Constructor
@@ -27,7 +27,7 @@ class InIntRange extends AbstractFilter {
 	 * @param bool $includeMax If set, includes the max value. If not, the max value is not part of the range.
 	 * @param string $message Error message
 	 */
-	public function __construct(int $_value1, int $_value2, bool $_includeMax = false, $message = NULL) {
+	public function __construct(int $_value1, int $_value2, bool $_includeMax = false, ?string $message = NULL) {
 		$this->min = min($_value1, $_value2);
 		$this->max = max($_value1, $_value2);
 
@@ -45,19 +45,17 @@ class InIntRange extends AbstractFilter {
 	 * {@inheritdoc}
 	 * @see AbstractFilter::validate()
 	 */
-	public function validate($fieldName, $value, $atIndex = NULL, $silent = false) {
+	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool {
 		$minOk = ($value >= $this->min);
 		$maxOk = $this->includeMax ? ($value <= $this->max) : ($value < $this->max);
 
 		if (!$minOk || !$maxOk) {
-			if (empty($silent)) {
+			if (!$silent) {
 				$this->emitMessage($fieldName);
 			}
-
 			return false;
 		}
-		else
-			return true;
+		return true;
 	}
 
 }

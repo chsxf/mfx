@@ -17,6 +17,6 @@ interface IMessageDispatcher {
 	 * @param string $message Message to dispatch
 	 * @param int $level Error level of the message to dispatch
 	 */
-	function dispatchMessage($message, $level);
+	function dispatchMessage(string $message, int $level);
 	
 }

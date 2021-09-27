@@ -21,19 +21,19 @@ class LogicOr extends AbstractFilter implements IMessageDispatcher {
 	 * Filters container
 	 * @var array
 	 */
-	private $_filters = array();
+	private array $_filters = array();
 	
 	/**
 	 * Messages container
 	 * @var array
 	 */
-	private $_messages = array();
+	private array $_messages = array();
 	
 	/**
 	 * Maximum message level
 	 * @var int
 	 */
-	private $_messageLevel = 0;
+	private int $_messageLevel = 0;
 	
 	/**
 	 * Constructor
@@ -55,13 +55,14 @@ class LogicOr extends AbstractFilter implements IMessageDispatcher {
 	 * (non-PHPdoc)
 	 * @see AbstractFilter::validate()
 	 */
-	public function validate($fieldName, $value, $atIndex = NULL, $silent = false) {
+	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool {
 		foreach ($this->_filters as $filter) {
-			if ($filter->validate($fieldName, $value, $atIndex, $silent))
-				return true;
+            if ($filter->validate($fieldName, $value, $atIndex, $silent)) {
+                return true;
+            }
 		}
 		
-		if (empty($silent)) {
+		if (!$silent) {
 			$message = implode(sprintf('<br />%d<br />', dgettext('mfx', ' or ')), $this->_messages);
 			$this->emitMessage($message, $this->_messageLevel);
 		}
@@ -72,7 +73,7 @@ class LogicOr extends AbstractFilter implements IMessageDispatcher {
 	 * (non-PHPdoc)
 	 * @see IMessageDispatcher::dispatchMessage()
 	 */
-	public function dispatchMessage($message, $level) {
+	public function dispatchMessage(string $message, int $level) {
 		$this->_messages[] = $message;
 		$this->_messageLevel = max($this->_messageLevel, $level);
 	}

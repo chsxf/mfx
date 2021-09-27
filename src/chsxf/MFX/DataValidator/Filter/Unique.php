@@ -18,10 +18,10 @@ class Unique extends AbstractFilter
 	 * Constructor
 	 * @param string $message Error message
 	 */
-	public function __construct($message = NULL)
-	{
-		if (empty($message))
-			$message = dgettext('mfx', "The field '%s' must contain unique values.");
+	public function __construct(?string $message = NULL) {
+        if (empty($message)) {
+            $message = dgettext('mfx', "The field '%s' must contain unique values.");
+        }
 		parent::__construct($message);
 	}
 	
@@ -29,7 +29,7 @@ class Unique extends AbstractFilter
 	 * (non-PHPdoc)
 	 * @see AbstractFilter::appliesToField()
 	 */
-	public function appliesToField() {
+	public function appliesToField(): bool {
 		return true;
 	}
 	
@@ -39,29 +39,30 @@ class Unique extends AbstractFilter
 	 * 
 	 * @param string $fieldName Field name
 	 * @param mixed $value Value to validate
-	 * @param int $atIndex Index for repeatable fields. If NULL, no index is provided. (Defaults to NULL)
+	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)
 	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * 
 	 * Note:
 	 * The $atIndex parameter is ignored for filters returning true in appliesToField().
 	 */
-	public function validate($fieldName, $value, $atIndex = NULL, $silent = false) {
-		if (!is_array($value))
-			return true;
+	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool {
+        if (!is_array($value)) {
+            return true;
+        }
 		
 		$value = array_filter($value, function($item) {
 			return ($item !== NULL && $item !== '');
 		});
-		if (empty($value))
-			return true;
+        if (empty($value)) {
+            return true;
+        }
 		$cv = array_count_values($value);
-		if (max($cv) != 1)
-		{
-			if (empty($silent))
-				$this->emitMessage($fieldName);
+		if (max($cv) != 1) {
+            if (!$silent) {
+                $this->emitMessage($fieldName);
+            }
 			return false;
 		}
-		else
-			return true;
+		return true;
 	}
 }

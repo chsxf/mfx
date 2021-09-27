@@ -18,7 +18,7 @@ class WithOptions extends Field
 	/**
 	 * @var array Options holder
 	 */
-	private $_options = NULL;
+	private array $_options = array();
 
 	/**
 	 * Add an option to the list
@@ -26,14 +26,11 @@ class WithOptions extends Field
 	 * @param string $value Option value. Equals to label if NULL. (Defaults to NULL)
 	 * @param string $group Option group. If set, the option will be added to the corresponding group. (Defaults to NULL)
 	 */
-	public function addOption($label, $value = NULL, $group = NULL) {
+	public function addOption(string $label, ?string $value = NULL, ?string $group = NULL) {
 		if ($value === NULL) {
 			$value = $label;
 		}
 		$option = array( 'value' => $value, 'label' => $label, 'group' => $group );
-		if ($this->_options === NULL) {
-			$this->_options = array();
-		}
 		$this->_options[] = $option;
 	}
 
@@ -43,7 +40,7 @@ class WithOptions extends Field
 	 * @param bool $useAsKeyValueStore If set, items for the $options array that are not arrays themselves will be considered as key/value pairs. If not set, item value will be used for label and value. (Defaults to false)
 	 * @param string $group Options group. If set, the options will be added to the corresponding group. (Defaults to NULL)
 	 */
-	public function addOptions(array $options, $useAsKeyValueStore = false, $group = NULL) {
+	public function addOptions(array $options, bool $useAsKeyValueStore = false, ?string $group = NULL) {
 		array_walk($options, function(&$item, $key, $userData) {
 			if (!is_array($item)) {
 				$item = array( 'value' => ($userData[0] || is_string($key)) ? $key : $item, 'label' => $item );
@@ -51,9 +48,6 @@ class WithOptions extends Field
 			$item['group'] = $userData[1];
 		}, array( $useAsKeyValueStore, $group ));
 
-		if ($this->_options === NULL) {
-			$this->_options = array();
-		}
 		$this->_options = array_merge($this->_options, $options);
 	}
 
@@ -61,86 +55,89 @@ class WithOptions extends Field
 	 * (non-PHPdoc)
 	 * @see Field::validate()
 	 */
-	public function validate($silent = false) {
-		if ($this->isEnabled() == false)
-			return true;
+	public function validate(bool $silent = false): bool {
+        if ($this->isEnabled() == false) {
+            return true;
+        }
 
 		$value = $this->getValue();
 
 		// Checks value against required status
-		if ($this->isRequired() && empty($value))
-		{
-			if (empty($silent))
-				trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
+		if ($this->isRequired() && empty($value)) {
+            if (!$silent) {
+                trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
+            }
 			return false;
 		}
 
-		if ($this->isRepeatable())
-		{
+		if ($this->isRepeatable()) {
 			// Checks value against required status
-			if (!is_array($value))
-			{
-				if (empty($silent))
+			if (!is_array($value)) {
+				if (!$silent) {
 					trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
+				}
 				return false;
 			}
 
 			// Validates through filters
-			if (!$this->applyFiltersOnField($silent))
-				return false;
+            if (!$this->applyFiltersOnField($silent)) {
+                return false;
+            }
 
 			$maxIndex = $this->getMaxRepeatIndex();
-			for ($i = 0; $i <= $maxIndex; $i++)
-			{
+			for ($i = 0; $i <= $maxIndex; $i++) {
 				$val = $this->getIndexedValue($i);
 
 				// Checks value against required status
-				if ($this->isRequired() && empty($val))
-				{
-					if (empty($silent))
+				if ($this->isRequired() && empty($val)) {
+					if (!$silent) {
 						trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is required."), $this->getName(), $i));
+					}
 					return false;
 				}
 
-				if (!is_array($val))
-					$val = array($val);
+                if (!is_array($val)) {
+                    $val = array($val);
+                }
 
 				// Checks value against options and applies filters
-				foreach ($val as $v)
-				{
-					if (!$this->_isValidOption($v))
-					{
-						if (empty($silent))
+				foreach ($val as $v) {
+					if (!$this->_isValidOption($v)) {
+						if (!$silent) {
 							trigger_error(sprintf(dgettext('mfx', "'%s' is not a valid value for the '%s' field at index %d."), $v, $this->getName(), $i));
+						}
 						return false;
 					}
 
-					if (!$this->applyFilterOnValue($v, $i, $silent))
-						return false;
+                    if (!$this->applyFilterOnValue($v, $i, $silent)) {
+                        return false;
+                    }
 				}
 			}
 		}
 		else
 		{
 			// Validates through filters
-			if (!$this->applyFiltersOnField($silent))
-				return false;
+            if (!$this->applyFiltersOnField($silent)) {
+                return false;
+            }
 
-			if (!is_array($value))
-				$value = array($value);
+            if (!is_array($value)) {
+                $value = array($value);
+            }
 
 			// Checks value against options and applies filters
-			foreach ($value as $v)
-			{
-				if (!$this->_isValidOption($v))
-				{
-					if (empty($silent))
+			foreach ($value as $v) {
+				if (!$this->_isValidOption($v)) {
+					if (!$silent) {
 						trigger_error(sprintf(dgettext('mfx', "'%s' is not a valid value for the '%s' field."), $v, $this->getName()));
+					}
 					return false;
 				}
 
-				if (!$this->applyFilterOnValue($v, NULL, $silent))
-					return false;
+                if (!$this->applyFilterOnValue($v, -1, $silent)) {
+                    return false;
+                }
 			}
 		}
 		return true;
@@ -151,14 +148,11 @@ class WithOptions extends Field
 	 * @param mixed $value
 	 * @return boolean true if the value is a valid option, false either.
 	 */
-	private function _isValidOption($value) {
-		if ($this->_options !== NULL)
-		{
-			foreach ($this->_options as $opt)
-			{
-				if ($opt['value'] == $value)
-					return true;
-			}
+	private function _isValidOption(mixed $value): bool {
+		foreach ($this->_options as $opt) {
+            if ($opt['value'] == $value) {
+                return true;
+            }
 		}
 		return false;
 	}
@@ -168,7 +162,7 @@ class WithOptions extends Field
 	 * @see Field::getHTMLType()
 	 * @param FieldType $type_override
 	 */
-	public function getHTMLType(FieldType $type_override = NULL) {
+	public function getHTMLType(?FieldType $type_override = NULL): string {
 		return ($this->getType() === FieldType::MULTI_SELECT) ? 'select' : parent::getHTMLType($type_override);
 	}
 
@@ -178,7 +172,7 @@ class WithOptions extends Field
 	 * @param array $containingGroups
 	 * @param FieldType $type_override
 	 */
-	public function generate(array $containingGroups = array(), FieldType $type_override = NULL) {
+	public function generate(array $containingGroups = array(), ?FieldType $type_override = NULL): array {
 		$template = ($this->getType()->equals(FieldType::RADIO)) ? '@mfx/DataValidator/radio.twig' : '@mfx/DataValidator/select.twig';
 
 		$hasOptionGroup = false;

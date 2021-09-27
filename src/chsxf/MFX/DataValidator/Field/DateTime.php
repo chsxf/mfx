@@ -13,7 +13,7 @@ class DateTime extends Field {
 	 * @param mixed $defaultValue Field's default value
 	 * @param boolean $required If set, this field will become required in the validation process.
 	 */
-	protected function __construct($name, FieldType $type, $defaultValue, $required) {
+	protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required) {
 		parent::__construct($name, $type, empty($defaultValue) ? 0 : $defaultValue, $required);
 	}
 
@@ -21,9 +21,10 @@ class DateTime extends Field {
 	 * (non-PHPdoc)
 	 * @see Field::validate()
 	 */
-	public function validate($silent = false) {
-		if (!parent::validate($silent))
-			return false;
+	public function validate(bool $silent = false): bool {
+        if (!parent::validate($silent)) {
+            return false;
+        }
 
 		$re = sprintf('#^%s$#', self::regexPattern($this->getType()));
 		switch ($this->getType()->value()) {
@@ -37,25 +38,22 @@ class DateTime extends Field {
 				break;
 		}
 
-		if ($this->isRepeatable())
-		{
+		if ($this->isRepeatable()) {
 			$maxIndex = $this->getMaxRepeatIndex();
-			for ($i = 0; $i <= $maxIndex; $i++)
-			{
-				if (!preg_match($re, $this->getIndexedValue($i, true)))
-				{
-					if (empty($silent))
-						trigger_error(sprintf($errorRepeatable, $this->getName(), $i));
+			for ($i = 0; $i <= $maxIndex; $i++) {
+				if (!preg_match($re, $this->getIndexedValue($i, true))) {
+                    if (!$silent) {
+                        trigger_error(sprintf($errorRepeatable, $this->getName(), $i));
+                    }
 					return false;
 				}
 			}
 		}
-		else
-		{
-			if (!preg_match($re, $this->getValue(true)))
-			{
-				if (empty($silent))
-					trigger_error(sprintf($error, $this->getName()));
+		else {
+			if (!preg_match($re, $this->getValue(true))) {
+                if (!$silent) {
+                    trigger_error(sprintf($error, $this->getName()));
+                }
 				return false;
 			}
 		}
@@ -69,7 +67,7 @@ class DateTime extends Field {
 	 * @param array $containingGroups
 	 * @param FieldType $type_override
 	 */
-	public function generate(array $containingGroups = array(), FieldType $type_override = NULL) {
+	public function generate(array $containingGroups = array(), ?FieldType $type_override = NULL): array {
 		$result = parent::generate($containingGroups, $type_override);
 		$result[1]['suffix'] = self::humanlyReadablePattern($this->getType());
 		return $result;
@@ -80,7 +78,7 @@ class DateTime extends Field {
 	 * @param FieldType $type Type of the field
 	 * @return string
 	 */
-	public static function dateFunctionPattern(FieldType $type) {
+	public static function dateFunctionPattern(FieldType $type): string {
 		return $type->equals(FieldType::DATE) ? 'Y-m-d' : 'H:i';
 	}
 
@@ -89,7 +87,7 @@ class DateTime extends Field {
 	 * @param FieldType $type Type of the field
 	 * @return string
 	 */
-	public static function humanlyReadablePattern(FieldType $type) {
+	public static function humanlyReadablePattern(FieldType $type): string {
 		return $type->equals(FieldType::DATE) ? dgettext('mfx', 'mm/dd/yyyy') : dgettext('mfx', 'hh:mm');
 	}
 
@@ -99,11 +97,13 @@ class DateTime extends Field {
 	 * @param boolean $withBackReferences If set, the function should return a regular expression pattern containing name back references
 	 * @return string
 	 */
-	public static function regexPattern(FieldType $type, $withBackReferences = false) {
-		if (empty($withBackReferences))
-			return $type->equals(FieldType::DATE) ? '\d{4}-(0\d|1[0-2])-([0-2]\d|3[01])' : '([01]\d|2[0-3]):[0-5]\d';
-		else
-			return $type->equals(FieldType::DATE) ? '(?<year>\d{4})-(?<month>0\d|1[0-2])-(?<day>[0-2]\d|3[01])' : '(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d)';
+	public static function regexPattern(FieldType $type, bool $withBackReferences = false): string {
+        if (empty($withBackReferences)) {
+            return $type->equals(FieldType::DATE) ? '\d{4}-(0\d|1[0-2])-([0-2]\d|3[01])' : '([01]\d|2[0-3]):[0-5]\d';
+        }
+		else {
+            return $type->equals(FieldType::DATE) ? '(?<year>\d{4})-(?<month>0\d|1[0-2])-(?<day>[0-2]\d|3[01])' : '(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d)';
+        }
 	}
 }
 

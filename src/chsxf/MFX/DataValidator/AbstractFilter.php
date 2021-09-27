@@ -17,18 +17,18 @@ abstract class AbstractFilter
 	/**
 	 * @var string Filter error message
 	 */
-	private $_message;
+	private string $_message;
 	
 	/**
 	 * @var IMessageDispatcher Overridden message dispatcher
 	 */
-	private $_messageDispatcher = NULL;
+	private ?IMessageDispatcher $_messageDispatcher = NULL;
 	
 	/**
 	 * Constructor
 	 * @param string $message Error message
 	 */
-	public function __construct($message = NULL)
+	public function __construct(string $message = NULL)
 	{
 		$this->setMessage($message);
 	}
@@ -40,15 +40,17 @@ abstract class AbstractFilter
 	 * @see sprintf()
 	 * 
 	 * @param string $fieldName Field name to which this message applies
-	 * @param string $level Error level (Defaults to E_USER_NOTICE)
+	 * @param int $level Error level (Defaults to E_USER_NOTICE)
 	 */
-	protected final function emitMessage($fieldName, $level = E_USER_NOTICE) {
+	protected final function emitMessage(string $fieldName, int $level = E_USER_NOTICE) {
 		if (!empty($this->_message)) {
 			$msg = sprintf($this->_message, $fieldName);
-			if ($this->_messageDispatcher === NULL)
-				trigger_error($msg, $level);
-			else
-				$this->_messageDispatcher->dispatchMessage($msg, $level);
+            if ($this->_messageDispatcher === null) {
+                trigger_error($msg, $level);
+            }
+			else {
+                $this->_messageDispatcher->dispatchMessage($msg, $level);
+            }
 		}
 	}
 	
@@ -59,11 +61,13 @@ abstract class AbstractFilter
 	 * 
 	 * @param string $message
 	 */
-	protected final function setMessage($message) {
-		if (is_string($message) && !empty($message))
-			$this->_message = $message;
-		else
-			$this->_message = NULL;
+	protected final function setMessage(string $message) {
+        if (is_string($message) && !empty($message)) {
+            $this->_message = $message;
+        }
+		else {
+            $this->_message = null;
+        }
 	}
 	
 	/**
@@ -76,13 +80,13 @@ abstract class AbstractFilter
 	
 	/**
 	 * Tells if this filter can be skipped during the validation process if the field is not required and has no value.
-	 * @param int $atIndex Index for repeatable fields. If NULL, no index is provided. (Defaults to NULL)
+	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)
 	 * @return boolean
 	 * 
 	 * Note:
 	 * This function is ignored for filters returning true in appliesToField().
 	 */
-	public function mayBeSkipped($atIndex = NULL) {
+	public function mayBeSkipped(int $atIndex = -1): bool {
 		return true;
 	}
 	
@@ -90,7 +94,7 @@ abstract class AbstractFilter
 	 * Tells if this filter must be applied to the field's values or to the field instance only
 	 * @return boolean
 	 */
-	public function appliesToField() {
+	public function appliesToField(): bool {
 		return false;
 	}
 	
@@ -98,9 +102,9 @@ abstract class AbstractFilter
 	 * Validates value
 	 * @param string $fieldName Field name
 	 * @param mixed $value Value to validate
-	 * @param int $atIndex Index for repeatable fields. If NULL, no index is provided. (Defaults to NULL)
+	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)
 	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * @return bool true if the filter validates, false either
 	 */
-	abstract public function validate($fieldName, $value, $atIndex = NULL, $silent = false);
+	abstract public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool;
 }

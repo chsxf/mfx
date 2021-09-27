@@ -149,16 +149,16 @@ class DataValidator_FieldTokenParser extends AbstractTokenParser
 		$idIsString = true;
 		$typeOverride = NULL;
 		$currentToken = $stream->getCurrent();
-		switch ($currentToken->getType())
-		{
+		switch ($currentToken->getType()) {
 			case Token::NAME_TYPE:
 				$idIsString = false;
 			case Token::STRING_TYPE:
 				$id = $stream->expect($currentToken->getType())->getValue();
 				
 				$currentToken = $stream->getCurrent();
-				if ($currentToken->getType() == Token::STRING_TYPE)
-					$typeOverride = $stream->expect(Token::STRING_TYPE)->getValue();
+                if ($currentToken->getType() == Token::STRING_TYPE) {
+                    $typeOverride = $stream->expect(Token::STRING_TYPE)->getValue();
+                }
 				break;
 				
 			default:
@@ -201,14 +201,13 @@ class DataValidator_FieldGroupTokenParser extends AbstractTokenParser
 		
 		$nameIsString = true;
 		$currentToken = $stream->getCurrent();
-		switch ($currentToken->getType())
-		{
+		switch ($currentToken->getType()) {
 			case Token::NAME_TYPE:
 				$nameIsString = false;
 			case Token::STRING_TYPE:
 				$groupName = $stream->expect($currentToken->getType())->getValue();
 				break;
-				
+
 			default:
 				$groupName = NULL;
 				break;
@@ -271,26 +270,34 @@ class DataValidator_FieldNode extends Node
 	 */
 	public function compile(Compiler $compiler)
 	{
-		if ($this->getAttribute('typeOverride') !== NULL)
-			$code1 = sprintf("\$fieldResult = \$context['%s']->generate('%s', new \\CheeseBurgames\\MFX\\DataValidator\\FieldType('%s'))",
-					$this->getAttribute('validatorName'),
-					$this->getAttribute('fieldName'),
-					$this->getAttribute('typeOverride'));
-		else
-			$code1 = sprintf("\$fieldResult = \$context['%s']->generate('%s')",
-							$this->getAttribute('validatorName'),
-							$this->getAttribute('fieldName'));
+        if ($this->getAttribute('typeOverride') !== null) {
+            $code1 = sprintf(
+                "\$fieldResult = \$context['%s']->generate('%s', new \\CheeseBurgames\\MFX\\DataValidator\\FieldType('%s'))",
+                $this->getAttribute('validatorName'),
+                $this->getAttribute('fieldName'),
+                $this->getAttribute('typeOverride')
+            );
+        }
+		else {
+            $code1 = sprintf(
+                "\$fieldResult = \$context['%s']->generate('%s')",
+                $this->getAttribute('validatorName'),
+                $this->getAttribute('fieldName')
+            );
+        }
 		
-		if ($this->getAttribute('idIsString'))
-			$code2 = sprintf("\$fieldResult[1] = array_merge(array(
-										'id' => '%s'
-								), \$fieldResult[1])",
-					$this->getAttribute('id'));
-		else
-			$code2 = sprintf("\$fieldResult[1] = array_merge(array(
-										'id' => \$context['%s']
-								), \$fieldResult[1])",
-					$this->getAttribute('id'));
+        if ($this->getAttribute('idIsString')) {
+            $code2 = sprintf(
+                "\$fieldResult[1] = array_merge(array( 'id' => '%s' ), \$fieldResult[1])",
+                $this->getAttribute('id')
+            );
+        }
+		else {
+            $code2 = sprintf(
+                "\$fieldResult[1] = array_merge(array( 'id' => \$context['%s'] ), \$fieldResult[1])",
+                $this->getAttribute('id')
+            );
+        }
 		
 		$code3 = sprintf('$this->env->display($fieldResult[0], $fieldResult[1])');
 		
@@ -334,10 +341,12 @@ class DataValidator_FieldGroupNode extends Node
 	 */
 	public function compile(Compiler $compiler)
 	{
-		if ($this->getAttribute('nameIsString'))
-			$code = "'{$this->getAttribute('groupName')}'";
-		else
-			$code = "\$context['{$this->getAttribute('groupName')}']";
+        if ($this->getAttribute('nameIsString')) {
+            $code = "'{$this->getAttribute('groupName')}'";
+        }
+		else {
+            $code = "\$context['{$this->getAttribute('groupName')}']";
+        }
 		
 		$compiler->addDebugInfo($this)
 			->write("\$context['{$this->getAttribute('validatorName')}']->pushGenerationGroup({$code});")->raw("\n")

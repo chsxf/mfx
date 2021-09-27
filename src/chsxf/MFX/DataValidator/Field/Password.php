@@ -22,7 +22,7 @@ class Password extends Field {
 	 * @param mixed $defaultValue Field's default value
 	 * @param boolean $required If set, this field will become required in the validation process.
 	 */
-	protected function __construct($name, FieldType $type, $defaultValue, $required) {
+	protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required) {
 		parent::__construct($name, $type, $defaultValue, $required);
 
 		$this->setGenerationWithValue(false);

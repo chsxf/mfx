@@ -25,7 +25,7 @@ class Word extends Field
 	 * @param mixed $defaultValue Field's default value
 	 * @param boolean $required If set, this field will become required in the validation process.
 	 */
-	protected function __construct($name, FieldType $type, $defaultValue, $required) {
+	protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required) {
 		parent::__construct($name, $type, $defaultValue, $required);
 		
 		switch ($type->value())
@@ -49,7 +49,7 @@ class Word extends Field
 	 * @see Field::getHTMLType()
 	 * @param FieldType $type_override
 	 */
-	public function getHTMLType(FieldType $type_override = NULL) {
+	public function getHTMLType(?FieldType $type_override = NULL): string {
 		return parent::getHTMLType(($type_override === NULL) ? new FieldType(FieldType::TEXT) : $type_override);
 	}
 }

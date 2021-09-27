@@ -7,12 +7,14 @@
 
 namespace chsxf\MFX\DataValidator;
 
+use chsxf\MFX\Enum;
+
 /**
  * Enum of all available data validation types
  * 
  * @see Enum
  */
-final class FieldType extends \chsxf\MFX\Enum
+final class FieldType extends Enum
 {
 	const __default = self::TEXT;
 	
@@ -50,7 +52,7 @@ final class FieldType extends \chsxf\MFX\Enum
 	/**
 	 * @var array Type to class map
 	 */
-	private static $_classForType = array();
+	private static array $_classForType = array();
 	
 	/**
 	 * Registers a class name for a specific field type
@@ -58,10 +60,10 @@ final class FieldType extends \chsxf\MFX\Enum
 	 * @param string $className Class name
 	 * @throws DataValidatorException If a class is already registered for this type
 	 */
-	public static function registerClassForType(FieldType $type, $className) {
-		if (array_key_exists($type->value(), self::$_classForType))
-			throw new DataValidatorException(dgettext('mfx', "A class is already registered for the field type."));
-		
+	public static function registerClassForType(FieldType $type, string $className) {
+        if (array_key_exists($type->value(), self::$_classForType)) {
+            throw new DataValidatorException(dgettext('mfx', "A class is already registered for the field type."));
+        }
 		self::$_classForType[$type->value()] = $className;
 	}
 	
@@ -70,10 +72,12 @@ final class FieldType extends \chsxf\MFX\Enum
 	 * @param FieldType $type Field type
 	 * @return string
 	 */
-	public static function getClassForType(FieldType $type) {
-		if (!array_key_exists($type->value(), self::$_classForType))
-			return Field::class;
-		else
-			return self::$_classForType[$type->value()];
+	public static function getClassForType(FieldType $type): string {
+        if (!array_key_exists($type->value(), self::$_classForType)) {
+            return Field::class;
+        }
+		else {
+            return self::$_classForType[$type->value()];
+        }
 	}
 }

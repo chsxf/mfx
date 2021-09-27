@@ -17,17 +17,17 @@ class ExistsInDB extends AbstractFilter {
 	/**
 	 * @var string|DatabaseManager Database connection name or instance
 	 */
-	private $_connection;
+	private string|DatabaseManager $_connection;
 
 	/**
 	 * @var string Database table name
 	 */
-	private $_table;
+	private string $_table;
 
 	/**
 	 * @var string Database field name
 	 */
-	private $_field;
+	private string $_field;
 
 	/**
 	 * Constructor
@@ -37,9 +37,10 @@ class ExistsInDB extends AbstractFilter {
 	 * @param string $message Error message (Defaults to NULL)
 	 * @param string|DatabaseManager $connection Database connection name or instance (Default to DatabaseManager::DEFAULT_CONNECTION)
 	 */
-	public function __construct($table, $field, $message = NULL, $connection = DatabaseManager::DEFAULT_CONNECTION) {
-		if (empty($message))
-			$message = sprintf(dgettext('mfx', "The '%%s' field must reprensent an existing entry in the '%s' table (matched on the '%s' field)."), $table, $field);
+	public function __construct(string $table, string $field, ?string $message = NULL, string|DatabaseManager $connection = DatabaseManager::DEFAULT_CONNECTION) {
+        if (empty($message)) {
+            $message = sprintf(dgettext('mfx', "The '%%s' field must reprensent an existing entry in the '%s' table (matched on the '%s' field)."), $table, $field);
+        }
 		parent::__construct($message);
 
 		$this->_connection = $connection;
@@ -54,19 +55,19 @@ class ExistsInDB extends AbstractFilter {
 	 *
 	 * @param string $fieldName Field's name
 	 * @param mixed $value Field's value
-	 * @param int $atIndex Index for repeatable fields. If NULL, no index is provided. (Defaults to NULL)
+	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)
 	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 */
-	public function validate($fieldName, $value, $atIndex = NULL, $silent = false) {
+	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool {
 		$dbm = $this->getConnection();
 		$nb = $dbm->getValue($this->getSQLQuery(), $this->getSQLValues($value));
 		if (intval($nb) === 0) {
-			if (empty($silent))
-				$this->emitMessage($fieldName);
+            if (!$silent) {
+                $this->emitMessage($fieldName);
+            }
 			return false;
 		}
-		else
-			return true;
+		return true;
 	}
 
 	/**
@@ -74,11 +75,11 @@ class ExistsInDB extends AbstractFilter {
 	 *
 	 * @return DatabaseManager
 	 */
-	protected final function getConnection() {
-		if ($this->_connection instanceof DatabaseManager)
-			return $this->_connection;
-		else
-			return DatabaseManager::open($this->_connection);
+	protected final function getConnection(): DatabaseManager {
+        if ($this->_connection instanceof DatabaseManager) {
+            return $this->_connection;
+        }
+		return DatabaseManager::open($this->_connection);
 	}
 
 	/**
@@ -86,7 +87,7 @@ class ExistsInDB extends AbstractFilter {
 	 *
 	 * @return string
 	 */
-	protected final function getTable() {
+	protected final function getTable(): string {
 		return $this->_table;
 	}
 
@@ -95,7 +96,7 @@ class ExistsInDB extends AbstractFilter {
 	 *
 	 * @return string
 	 */
-	protected final function getField() {
+	protected final function getField(): string {
 		return $this->_field;
 	}
 
@@ -104,7 +105,7 @@ class ExistsInDB extends AbstractFilter {
 	 *
 	 * @return string
 	 */
-	protected function getSQLQuery() {
+	protected function getSQLQuery(): string {
 		return sprintf("SELECT COUNT(*) FROM `%s` WHERE `%s` = ?", $this->getTable(), $this->getField());
 	}
 
@@ -114,10 +115,8 @@ class ExistsInDB extends AbstractFilter {
 	 * @param mixed $_value Field's value
 	 * @return array
 	 */
-	protected function getSQLValues($_value) {
-		return array(
-				$_value
-		);
+	protected function getSQLValues(mixed $_value): array {
+		return array($_value);
 	}
 
 }
