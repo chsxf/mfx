@@ -14,10 +14,12 @@ final class Framework {
 
     public static function init() {
         CommandLine::handleInvocation();
-
+        
         // Loading configuration
-        $configFilePath = constant('chsxf\MFX\CONFIG_FILE_PATH') ?? 'application/config/config.php';
+        $configFilePath = defined('chsxf\MFX\CONFIG_FILE_PATH') ? constant('chsxf\MFX\CONFIG_FILE_PATH') : 'application/config/config.php';
         require_once($configFilePath);
+        
+        self::registerAutoloader();
 
         SessionManager::start();
         ErrorManager::unfreeze();
@@ -40,7 +42,7 @@ final class Framework {
         CoreProfiler::pushEvent('Loading Twig');
         $fsLoader = new FilesystemLoader(Config::get('twig.templates', array()));
         $fsLoader->addPath("{$srcPath}/templates", 'mfx');
-        $twig = new Environment($loader, [
+        $twig = new Environment($fsLoader, [
             'cache' => Config::get('twig.cache', 'tmp/twig_cache'),
             'debug' => true,
             'strict_variables' => true,
@@ -64,6 +66,39 @@ final class Framework {
 
         ErrorManager::freeze();
         CoreProfiler::stop();
+    }
+
+    private static function registerAutoloader() {
+        // Building autoload directory precedence list
+        $__MicroFX_autoload_precedence = Config::get('autoload.precedence', array());
+        // -- Ensure we do not have trailing slash (except for root && protocols)
+        $__MicroFX_autoload_precedence = array_map(function($entry) {
+            if (!preg_match('#^\w+://$#', $entry) && $entry != '/') {
+                if (preg_match('#/$#', $entry)) {
+                    $entry = substr($entry, 0, -1);
+                }
+            }
+            return $entry;
+        }, $__MicroFX_autoload_precedence);
+
+        // Setting include path
+        set_include_path(implode(PATH_SEPARATOR, $__MicroFX_autoload_precedence) . PATH_SEPARATOR . get_include_path());
+        unset($__MicroFX_autoload_precedence);
+
+        // Setting autoload built-in functions
+        spl_autoload_register(function($class) {
+            // Removing namespace for framework classes
+            $class = preg_replace('/^chsxf\\\\MFX\\\\/', '', $class);
+            $class = preg_replace('/(_|\\\\)/', '/', $class);
+            $incPath = explode(PATH_SEPARATOR, get_include_path());
+            foreach ($incPath as $p) {
+                $fp = "{$p}/{$class}.php";
+                if (file_exists($fp)) {
+                    require_once($fp);
+                    break;
+                }
+            }
+        });
     }
 
 }

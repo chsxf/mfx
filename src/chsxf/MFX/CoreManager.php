@@ -7,8 +7,16 @@
 
 namespace chsxf\MFX;
 
+use chsxf\MFX\Attributes\ContentTypeAttribute;
+use chsxf\MFX\Attributes\PreRouteCallbackAttribute;
+use chsxf\MFX\Attributes\RedirectURIAttribute;
+use chsxf\MFX\Attributes\RequiredContentTypeAttribute;
+use chsxf\MFX\Attributes\RequiredRequestMethodAttribute;
+use chsxf\MFX\Attributes\RouteAttributesParser;
+use chsxf\MFX\Attributes\SubRouteAttribute;
 use chsxf\MFX\L10n\L10nManager;
 use Twig\Environment;
+use Twig\Template;
 
 /**
  * Core manager singleton class
@@ -79,11 +87,6 @@ final class CoreManager
 	private static ?CoreManager $_singleInstance = NULL;
 
 	/**
-	 * @var DocCommentParser Current documentation comment parser
-	 */
-	private DocCommentParser $_docCommentParser;
-
-	/**
 	 * @var array Fake protocols list (keys are protocols names and values replacement strings)
 	 */
 	private array $_fakeProtocols = array();
@@ -105,7 +108,6 @@ final class CoreManager
 	private static function _ensureInit() {
 		if (self::$_singleInstance === NULL) {
 			self::$_singleInstance = new CoreManager();
-			self::setDocCommentParser(new DocCommentParser());
 
 			// Fake protocols
 			$mfxRelativeBaseHREF = Config::get('mfx_relative_base_href', 'mfx');
@@ -177,38 +179,22 @@ final class CoreManager
 	}
 
 	/**
-	 * Sets the current documentation comment parser
-	 *
-	 * @param DocCommentParser $parser New documentation comment parser. If empty, the current parser remains active.
-	 * @return DocCommentParser the previous parser
-	 */
-	public static function setDocCommentParser(DocCommentParser $parser): ?DocCommentParser {
-		$inst = self::_ensureInit();
-
-		$currentParser = $inst->_docCommentParser;
-        if (!empty($parser)) {
-            $inst->_docCommentParser = $parser;
-        }
-		return $currentParser;
-	}
-
-	/**
 	 * Checks if a specific method is a valid sub-route
 	 * @param \ReflectionMethod $method Method to inspect
-	 * @return boolean|array An array containing the valid sub-route parameters or false in case of an error
+	 * @return RouteAttributesParser|false The route's attributes parser or false in case of an error
 	 */
-	public static function isMethodValidSubRoute(\ReflectionMethod $method): array|false {
+	public static function isMethodValidSubRoute(\ReflectionMethod $method): RouteAttributesParser|false {
 		// Checking method
 		$params = $method->getParameters();
         if (!$method->isStatic() || !$method->isPublic() || (count($params) >= 1 && !ArrayTools::isParameterArray($params[0]))) {
             return false;
         }
 		// Building parameters from doc comment
-		$validSubRouteParameters = self::_ensureInit()->_docCommentParser->parse($method);
-		if (!isset($validSubRouteParameters['mfx_subroute'])) {
+		$routeParser = new RouteAttributesParser($method);
+		if (!$routeParser->hasAttribute(SubRouteAttribute::class)) {
 			return false;
 		}
-		return $validSubRouteParameters;
+		return $routeParser;
 	}
 
 	/**
@@ -269,7 +255,7 @@ final class CoreManager
 		}
 		list($mainRoute, $subRoute) = explode('.', $route);
 		try {
-			$rc = new \ReflectionClass($mainRoute);
+			$rc = new \ReflectionClass("\\{$mainRoute}");
 		}
 		catch (\ReflectionException $e) {
 			try {
@@ -283,12 +269,12 @@ final class CoreManager
         if (!$rc->implementsInterface(IRouteProvider::class)) {
             throw new \ErrorException("'{$mainRoute}' is not a valid route provider.");
         }
-		$validRouteProviderParameters = $inst->_docCommentParser->parse($rc);
+		$routeAttributes = new RouteAttributesParser($rc);
 
 		// Checking subroute
 		$rm = $rc->getMethod($subRoute);
-		$validSubRouteParameters = self::isMethodValidSubRoute($rm);
-        if (false === $validSubRouteParameters) {
+		$subRouteAttributes = self::isMethodValidSubRoute($rm);
+        if (false === $subRouteAttributes) {
             throw new \ErrorException("'{$subRoute}' is not a valid subroute of the '{$mainRoute}' route.");
         }
 
@@ -296,35 +282,35 @@ final class CoreManager
 		// -- Global
 		$callback = Config::get('request.pre_route_callback');
         if (!empty($callback) && is_callable($callback)) {
-            call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters, $routeParams);
+            call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
         }
 		// -- Route
-		if (array_key_exists('mfx_pre_route_callback', $validRouteProviderParameters)) {
-			$callback = $validRouteProviderParameters['mfx_pre_route_callback'];
+		if ($routeAttributes->hasAttribute(PreRouteCallbackAttribute::class)) {
+			$callback = $routeAttributes->getAttributeValue(PreRouteCallbackAttribute::class);
             if (!empty($callback) && is_callable($callback)) {
-                call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters, $routeParams);
+                call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
             }
 		}
 
 		// Checking pre-conditions
 		// -- Request method
-		if (array_key_exists('mfx_requires_request_method', $validSubRouteParameters)) {
-			if ($_SERVER['REQUEST_METHOD'] !== strtoupper($validSubRouteParameters['mfx_requires_request_method'])) {
+		if ($subRouteAttributes->hasAttribute(RequiredRequestMethodAttribute::class)) {
+			if ($_SERVER['REQUEST_METHOD'] !== strtoupper($subRouteAttributes->getAttributeValue(RequiredRequestMethodAttribute::class))) {
 				self::dieWithStatusCode(405);
 			}
 		}
 		// -- Content-Type
-		if (array_key_exists('mfx_requires_content_type', $validSubRouteParameters)) {
+		if ($subRouteAttributes->hasAttribute(RequiredContentTypeAttribute::class)) {
 			$regs = array();
 			preg_match('/^([^;]+);?/', $_SERVER['CONTENT_TYPE'], $regs);
-			if ($regs[1] !== $validSubRouteParameters['mfx_requires_content_type']) {
+			if ($regs[1] !== $subRouteAttributes->getAttributeValue(RequiredContentTypeAttribute::class)) {
 				self::dieWithStatusCode(415);
 			}
 		}
 
 		// Processing route
 		$reqResult = $rm->invoke(NULL, $routeParams);
-		$routeProvidedTemplate = array_key_exists('mfx_template', $validSubRouteParameters) ? $validSubRouteParameters['mfx_template'] : NULL;
+		$routeProvidedTemplate = $subRouteAttributes->hasAttribute(Template::class) ? $subRouteAttributes->getAttributeValue(Template::class) : NULL;
 		switch ($reqResult->subRouteType()->value()) {
 			// Views
 			case SubRouteType::VIEW:
@@ -333,7 +319,7 @@ final class CoreManager
                 }
 
 				CoreProfiler::pushEvent('Building response');
-				self::_setResponseContentType($validSubRouteParameters, Config::get('response.default_content_type', 'text/html'), Config::get('response.default_charset', 'UTF-8'));
+				self::_setResponseContentType($subRouteAttributes, Config::get('response.default_content_type', 'text/html'), Config::get('response.default_charset', 'UTF-8'));
 				$template = $reqResult->template(($routeProvidedTemplate === NULL) ? str_replace(array('_', '.'), '/', $route) : $routeProvidedTemplate);
 
 				$context = array_merge(RequestResult::getViewGlobals(), $reqResult->data(), array(
@@ -353,20 +339,20 @@ final class CoreManager
 			// Edit requests - Mostly requests with POST data
 			case SubRouteType::REDIRECT:
 				$redirectionURI = $reqResult->redirectURI();
-                if (empty($redirectionURI) && !empty($validSubRouteParameters['mfx_redirect_uri'])) {
-                    $redirectionURI = $validSubRouteParameters['mfx_redirect_uri'];
+                if (empty($redirectionURI) && $subRouteAttributes->hasAttribute(RedirectURIAttribute::class)) {
+                    $redirectionURI = $subRouteAttributes->getAttributeValue(RedirectURIAttribute::class);
                 }
 				self::redirect($redirectionURI);
 				break;
 
 			// Asynchronous requests expecting JSON data
 			case SubRouteType::JSON:
-				self::outputJSON($reqResult, $validSubRouteParameters, $twig);
+				self::outputJSON($reqResult, $subRouteAttributes, $twig);
 				break;
 
 			// Asynchronous requests expecting XML data
 			case SubRouteType::XML:
-				self::outputXML($reqResult, $validSubRouteParameters, $twig);
+				self::outputXML($reqResult, $subRouteAttributes, $twig);
 				break;
 
 			// Status
@@ -378,13 +364,13 @@ final class CoreManager
 		// Post-processing callback
 		$callback = Config::get('request.post_route_callback');
         if (!empty($callback) && is_callable($callback)) {
-            call_user_func($callback, $mainRoute, $subRoute, $validRouteProviderParameters, $validSubRouteParameters);
+            call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes);
         }
 	}
 
-	private static function outputJSON(RequestResult $reqResult, array $subRouteParameters = array(), Environment $twig = NULL) {
+	private static function outputJSON(RequestResult $reqResult, ?RouteAttributesParser $subRouteAttributes = NULL, Environment $twig = NULL) {
 		self::_setStatusCode($reqResult->statusCode());
-		self::_setResponseContentType($subRouteParameters, 'application/json', Config::get('response.default_charset', 'UTF-8'));
+		self::_setResponseContentType($subRouteAttributes, 'application/json', Config::get('response.default_charset', 'UTF-8'));
 		if ($twig != NULL && $reqResult->preformatted()) {
 			ErrorManager::flush();
 			echo $twig->render($reqResult->data(), array('mfx_current_user' => User::currentUser()));
@@ -396,9 +382,9 @@ final class CoreManager
 		}
 	}
 
-	private static function outputXML(RequestResult $reqResult, array $subRouteParamters = array(), Environment $twig = NULL) {
+	private static function outputXML(RequestResult $reqResult, ?RouteAttributesParser $subRouteAttributes = NULL, Environment $twig = NULL) {
 		self::_setStatusCode($reqResult->statusCode());
-		self::_setResponseContentType($subRouteParamters, 'application/xml', Config::get('response.default_charset', 'UTF-8'));
+		self::_setResponseContentType($subRouteAttributes, 'application/xml', Config::get('response.default_charset', 'UTF-8'));
 		if ($twig != NULL && $reqResult->preformatted()) {
 			ErrorManager::flush();
 			echo $twig->render($reqResult->data(), array('mfx_current_user' => User::currentUser()));
@@ -500,7 +486,7 @@ final class CoreManager
             $data['message'] = $message;
         }
 
-		self::_setResponseContentType(array(), $contentType, $charset);
+		self::_setResponseContentType(NULL, $contentType, $charset);
 		switch ($contentType) {
 			case 'application/json':
 				$reqResult = RequestResult::buildJSONRequestResult($data, false, $code);
@@ -532,13 +518,13 @@ final class CoreManager
 	/**
 	 * Sets the response Content-Type header from the sub-route documentation comment parameters
 	 *
-	 * @param array $subRouteParameters Documentation comment parameters of the sub-route
+	 * @param RouteAttributesParser $subRouteAttributes Documentation comment parameters of the sub-route
 	 * @param string $default Content type to use if not provided by the sub-route.
 	 * @param string $defaultCharset Charset to use if not provided by the sub-route.
 	 */
-	private static function _setResponseContentType(array $subRouteParameters, string $default, string $defaultCharset)
+	private static function _setResponseContentType(?RouteAttributesParser $subRouteAttributes, string $default, string $defaultCharset)
 	{
-		$ct = array_key_exists('mfx_content_type', $subRouteParameters) ? $subRouteParameters['mfx_content_type'] : $default;
+		$ct = ($subRouteAttributes !== NULL && $subRouteAttributes->hasAttribute(ContentTypeAttribute::class)) ? $subRouteAttributes->getAttributeValue(ContentTypeAttribute::class) : $default;
         if (!preg_match('/;\s+charset=.+$/', $ct)) {
             $ct .= "; charset={$defaultCharset}";
         }

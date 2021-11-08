@@ -24,12 +24,12 @@ class User {
 	/**
 	 * @var string User key. NULL for guests and most commonly the user database ID for valid users.
 	 */
-	private string $_key;
+	private ?string $_key;
 
 	/**
 	 * @var array User data fetched from the database
 	 */
-	private array $_data;
+	private ?array $_data;
 
 	/**
 	 * @var boolean If set, user data has been fetched.

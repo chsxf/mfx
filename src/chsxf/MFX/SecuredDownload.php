@@ -7,6 +7,7 @@
 
 namespace chsxf\MFX;
 
+use chsxf\MFX\Attributes\SubRouteAttribute;
 use chsxf\MFX\DataValidator\FieldType;
 use chsxf\MFX\DataValidator\Filter\RegExp;
 use chsxf\MFX\DataValidator\Filter\ExistsInDB;
@@ -16,11 +17,7 @@ use chsxf\MFX\DataValidator\Filter\ExistsInDB;
  */
 class SecuredDownload implements IRouteProvider {
 	
-	/**
-	 * @mfx_subroute
-	 * 
-	 * @param array $params
-	 */
+	#[SubRouteAttribute]
 	public static function get(array $params) {
 		$validator = self::__buildInputValidator();
         if (!$validator->validate($params)) {

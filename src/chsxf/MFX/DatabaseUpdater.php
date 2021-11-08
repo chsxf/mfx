@@ -1,15 +1,16 @@
 <?php
 namespace chsxf\MFX;
 
+use chsxf\MFX\Attributes\AnonymousAttribute;
+use chsxf\MFX\Attributes\SubRouteAttribute;
+
 final class DatabaseUpdater implements IRouteProvider {
 
 	private static ?array $_updatersData = NULL;
 	private static ?string $_updatersDomain = NULL;
 
-	/**
-	 * @mfx_subroute
-	 * @mfx_anonymous
-	 */
+	#[SubRouteAttribute]
+	#[AnonymousAttribute]
 	public static function update(): RequestResult|false {
 		$updaters = array_merge(array( FrameworkDatabaseUpdater::class ), Config::get('database.updaters.classes', array()));
         if (!is_array($updaters) || empty($updaters)) {
