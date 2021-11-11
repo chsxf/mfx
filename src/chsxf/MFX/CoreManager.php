@@ -110,14 +110,14 @@ final class CoreManager
 			self::$_singleInstance = new CoreManager();
 
 			// Fake protocols
-			$mfxRelativeBaseHREF = Config::get('mfx_relative_base_href', 'mfx');
+			$mfxRelativeBaseHREF = Config::get('mfx_relative_base_href', 'vendor/chsxf/mfx/static');
             if ('/' !== $mfxRelativeBaseHREF) {
                 $mfxRelativeBaseHREF = rtrim($mfxRelativeBaseHREF, '/');
             }
 			self::$_singleInstance->_fakeProtocols = array(
-					'mfxjs' => "{$mfxRelativeBaseHREF}/static/js/",
-					'mfxcss' => "{$mfxRelativeBaseHREF}/static/css/",
-					'mfximg' => "{$mfxRelativeBaseHREF}/static/img/"
+					'mfxjs' => "{$mfxRelativeBaseHREF}/js/",
+					'mfxcss' => "{$mfxRelativeBaseHREF}/css/",
+					'mfximg' => "{$mfxRelativeBaseHREF}/img/"
 			);
 			$fakeProtocols = Config::get('fake_protocols', array());
 			if (is_array($fakeProtocols)) {
