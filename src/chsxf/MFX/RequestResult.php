@@ -24,7 +24,7 @@ final class RequestResult
 	/**
 	 * @var string Template to use as the response renderer.
 	 */
-	private string $_template;
+	private ?string $_template;
 	/**
 	 * @var mixed Response data holder
 	 */
@@ -32,7 +32,7 @@ final class RequestResult
 	/**
 	 * @var string Redirection target URI container
 	 */
-	private string $_redirectURI;
+	private ?string $_redirectURI;
 	/**
 	 * @var int HTTP status code of the response
 	 */
