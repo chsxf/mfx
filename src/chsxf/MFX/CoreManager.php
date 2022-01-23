@@ -377,7 +377,8 @@ final class CoreManager
 		self::_setResponseContentType($subRouteAttributes, 'application/json', Config::get('response.default_charset', 'UTF-8'));
 		if ($twig != NULL && $reqResult->preformatted()) {
 			ErrorManager::flush();
-			echo $twig->render($reqResult->data(), array('mfx_current_user' => User::currentUser()));
+			$template = $twig->createTemplate($reqResult->data());
+			echo $template->render(array('mfx_current_user' => User::currentUser()));
 		}
 		else {
 			$d = $reqResult->data();
@@ -391,7 +392,8 @@ final class CoreManager
 		self::_setResponseContentType($subRouteAttributes, 'application/xml', Config::get('response.default_charset', 'UTF-8'));
 		if ($twig != NULL && $reqResult->preformatted()) {
 			ErrorManager::flush();
-			echo $twig->render($reqResult->data(), array('mfx_current_user' => User::currentUser()));
+			$template = $twig->createTemplate($reqResult->data());
+			echo $template->render(array('mfx_current_user' => User::currentUser()));
 		}
 		else {
 			$d = $reqResult->data();
