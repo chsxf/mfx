@@ -216,7 +216,11 @@ final class CoreManager
 		$inst->_currentTwigEnvironment = $twig;
 
 		// Finding route from REQUEST_URI
-		$prefix = preg_replace('#/mfx$#', '/', dirname($_SERVER['SCRIPT_NAME']));
+		$scriptPath = dirname($_SERVER['SCRIPT_NAME']);
+		if (PHP_OS_FAMILY == 'Windows' && $scriptPath == '\\') {
+			$scriptPath = '/';
+		}
+		$prefix = preg_replace('#/mfx$#', '/', $scriptPath);
         if (!preg_match('#/$#', $prefix)) {
             $prefix .= '/';
         }
