@@ -57,11 +57,11 @@ final class RequestResult
 	 * 
 	 * @see SubRouteType
 	 */
-	public function __construct(SubRouteType $type = NULL, mixed $data = NULL, ?string $template = NULL, ?string $redirectURI = NULL, int $statusCode = 200, bool $preformatted = false)
+	public function __construct(?SubRouteType $type = NULL, mixed $data = NULL, ?string $template = NULL, ?string $redirectURI = NULL, int $statusCode = 200, bool $preformatted = false)
 	{
-		$this->_type = ($type === NULL) ? new SubRouteType() : $type;
+		$this->_type = ($type ?? SubRouteType::VIEW);
 		$this->_template = $template;
-		$this->_data = ($this->_type->equals(SubRouteType::VIEW) && !is_array($data)) ? array() : $data;
+		$this->_data = ($this->_type === SubRouteType::VIEW && !is_array($data)) ? array() : $data;
 		$this->_redirectURI = $redirectURI;
 		$this->_statusCode = $statusCode;
 		$this->_preformatted = !empty($preformatted);
@@ -147,7 +147,7 @@ final class RequestResult
 	 * @return RequestResult
 	 */
 	public static function buildRedirectRequestResult(?string $redirectURI = NULL): RequestResult {
-		return new RequestResult(new SubRouteType(SubRouteType::REDIRECT), NULL, NULL, $redirectURI);
+		return new RequestResult(SubRouteType::REDIRECT, NULL, NULL, $redirectURI);
 	}
 	
 	/**
@@ -157,7 +157,7 @@ final class RequestResult
 	 * @return RequestResult
 	 */
 	public static function buildStatusRequestResult(int $statusCode = 400, ?string $message = NULL): RequestResult {
-		return new RequestResult(new SubRouteType(SubRouteType::STATUS), $message, NULL, NULL, $statusCode, true);
+		return new RequestResult(SubRouteType::STATUS, $message, NULL, NULL, $statusCode, true);
 	}
 
 	/**
@@ -168,7 +168,7 @@ final class RequestResult
 	 * @return RequestResult
 	 */
 	public static function buildJSONRequestResult(mixed $data, bool $preformatted = false, int $statusCode = 200): RequestResult {
-		return new RequestResult(new SubRouteType(SubRouteType::JSON), $data, NULL, NULL, $statusCode, $preformatted);
+		return new RequestResult(SubRouteType::JSON, $data, NULL, NULL, $statusCode, $preformatted);
 	}
 	
 	/**
@@ -179,6 +179,6 @@ final class RequestResult
 	 * @return RequestResult
 	 */
 	public static function buildXMLRequestResult(mixed $data, bool $preformatted = false, int $statusCode = 200): RequestResult {
-		return new RequestResult(new SubRouteType(SubRouteType::XML), $data, NULL, NULL, $statusCode, $preformatted);
+		return new RequestResult(SubRouteType::XML, $data, NULL, NULL, $statusCode, $preformatted);
 	}
 }

@@ -315,7 +315,7 @@ final class CoreManager
 		// Processing route
 		$reqResult = $rm->invoke(NULL, $routeParams);
 		$routeProvidedTemplate = $subRouteAttributes->hasAttribute(Template::class) ? $subRouteAttributes->getAttributeValue(Template::class) : NULL;
-		switch ($reqResult->subRouteType()->value()) {
+		switch ($reqResult->subRouteType()) {
 			// Views
 			case SubRouteType::VIEW:
                 if ($reqResult->statusCode() != 200) {
