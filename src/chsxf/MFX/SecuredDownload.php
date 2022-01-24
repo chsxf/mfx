@@ -73,7 +73,7 @@ class SecuredDownload implements IRouteProvider {
 	
 	private static function __buildInputValidator() {
 		$validator = new DataValidator();
-		$field = $validator->createField('0', new FieldType());
+		$field = $validator->createField('0', FieldType::TEXT);
 		$field->addFilter(new RegExp(RegExp::REGEX_LCALPHANUMERIC));
 		$field->addFilter(new ExistsInDB('mfx_secured_downloads_keys', 'secured_download_key', NULL, '__mfx'));
 		return $validator;

@@ -3,6 +3,7 @@ namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\FieldType;
+use chsxf\MFX\DataValidator\FieldTypeRegistry;
 
 class DateTime extends Field {
 
@@ -27,7 +28,7 @@ class DateTime extends Field {
         }
 
 		$re = sprintf('#^%s$#', self::regexPattern($this->getType()));
-		switch ($this->getType()->value()) {
+		switch ($this->getType()) {
 			case FieldType::DATE:
 				$error = dgettext('mfx', "The field '%s' does not contain a valid date.");
 				$errorRepeatable = dgettext('mfx', "The field '%s' at index %d does not contain a valid date.");
@@ -79,7 +80,7 @@ class DateTime extends Field {
 	 * @return string
 	 */
 	public static function dateFunctionPattern(FieldType $type): string {
-		return $type->equals(FieldType::DATE) ? 'Y-m-d' : 'H:i';
+		return ($type === FieldType::DATE) ? 'Y-m-d' : 'H:i';
 	}
 
 	/**
@@ -88,7 +89,7 @@ class DateTime extends Field {
 	 * @return string
 	 */
 	public static function humanlyReadablePattern(FieldType $type): string {
-		return $type->equals(FieldType::DATE) ? dgettext('mfx', 'mm/dd/yyyy') : dgettext('mfx', 'hh:mm');
+		return($type === FieldType::DATE) ? dgettext('mfx', 'mm/dd/yyyy') : dgettext('mfx', 'hh:mm');
 	}
 
 	/**
@@ -99,13 +100,13 @@ class DateTime extends Field {
 	 */
 	public static function regexPattern(FieldType $type, bool $withBackReferences = false): string {
         if (empty($withBackReferences)) {
-            return $type->equals(FieldType::DATE) ? '\d{4}-(0\d|1[0-2])-([0-2]\d|3[01])' : '([01]\d|2[0-3]):[0-5]\d';
+            return ($type === FieldType::DATE) ? '\d{4}-(0\d|1[0-2])-([0-2]\d|3[01])' : '([01]\d|2[0-3]):[0-5]\d';
         }
 		else {
-            return $type->equals(FieldType::DATE) ? '(?<year>\d{4})-(?<month>0\d|1[0-2])-(?<day>[0-2]\d|3[01])' : '(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d)';
+            return ($type === FieldType::DATE) ? '(?<year>\d{4})-(?<month>0\d|1[0-2])-(?<day>[0-2]\d|3[01])' : '(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d)';
         }
 	}
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::DATE), DateTime::class);
-FieldType::registerClassForType(new FieldType(FieldType::TIME), DateTime::class);
+FieldTypeRegistry::registerClassForType(FieldType::DATE, DateTime::class);
+FieldTypeRegistry::registerClassForType(FieldType::TIME, DateTime::class);

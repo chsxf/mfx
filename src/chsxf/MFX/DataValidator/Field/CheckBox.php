@@ -8,6 +8,7 @@ namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\FieldType;
+use chsxf\MFX\DataValidator\FieldTypeRegistry;
 
 /**
  * Descriptor of a checkbox field type
@@ -21,7 +22,7 @@ class CheckBox extends Field {
 	 * @param array $containingGroups
 	 * @param FieldType $type_override
 	 */
-	public function generate(array $containingGroups = array(), FieldType $type_override = NULL): array {
+	public function generate(array $containingGroups = array(), ?FieldType $type_override = NULL): array {
 		$result = parent::generate($containingGroups, $type_override);
 		if (!empty($result[1]['value']) && $this->shouldGenerateWithValue())
 			$result[1]['extras']['checked'] = 'checked';
@@ -40,4 +41,4 @@ class CheckBox extends Field {
 
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::CHECKBOX), CheckBox::class);
+FieldTypeRegistry::registerClassForType(FieldType::CHECKBOX, CheckBox::class);

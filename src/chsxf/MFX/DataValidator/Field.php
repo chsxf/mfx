@@ -123,7 +123,7 @@ class Field {
 	 * @return Field
 	 */
 	public static function create(string $name, FieldType $type, mixed $defaultValue = NULL, bool $required = true): Field {
-		$class = FieldType::getClassForType($type);
+		$class = FieldTypeRegistry::getClassForType($type);
 		return new $class($name, $type, $defaultValue, $required);
 	}
 
@@ -152,10 +152,7 @@ class Field {
 	 * @return string
 	 */
 	public function getHTMLType(?FieldType $type_override = NULL): string {
-        if ($type_override !== null) {
-            return $type_override->value();
-        }
-		return $this->_type->value();
+		return ($type_override ?? $this->_type)->value;
 	}
 
 	/**

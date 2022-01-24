@@ -9,6 +9,7 @@ namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\FieldType;
+use chsxf\MFX\DataValidator\FieldTypeRegistry;
 
 /**
  * Descriptor of a field type with multiple options (such as 'select' or 'radio' types)
@@ -173,7 +174,7 @@ class WithOptions extends Field
 	 * @param FieldType $type_override
 	 */
 	public function generate(array $containingGroups = array(), ?FieldType $type_override = NULL): array {
-		$template = ($this->getType()->equals(FieldType::RADIO)) ? '@mfx/DataValidator/radio.twig' : '@mfx/DataValidator/select.twig';
+		$template = ($this->getType() === FieldType::RADIO) ? '@mfx/DataValidator/radio.twig' : '@mfx/DataValidator/select.twig';
 
 		$hasOptionGroup = false;
 		foreach ($this->_options as $opt) {
@@ -203,11 +204,11 @@ class WithOptions extends Field
 		}
 
 		$result = parent::generate($containingGroups, $type_override);
-		if ($type_override === NULL || !$type_override->equals(FieldType::HIDDEN)) {
+		if ($type_override === NULL || $type_override !== FieldType::HIDDEN) {
 			$result[0] = $template;
 			$result[1] = array_merge($result[1], array(
-					'name' => $this->getType()->equals(FieldType::MULTI_SELECT) ? sprintf('%s[]', $result[1]['name']) : $result[1]['name'],
-					'multiple' => $this->getType()->equals(FieldType::MULTI_SELECT),
+					'name' => ($this->getType() === FieldType::MULTI_SELECT) ? sprintf('%s[]', $result[1]['name']) : $result[1]['name'],
+					'multiple' => ($this->getType() === FieldType::MULTI_SELECT),
 					'options' => $optionsToGenerate
 			));
 		}
@@ -215,6 +216,6 @@ class WithOptions extends Field
 	}
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::SELECT), WithOptions::class);
-FieldType::registerClassForType(new FieldType(FieldType::MULTI_SELECT), WithOptions::class);
-FieldType::registerClassForType(new FieldType(FieldType::RADIO), WithOptions::class);
+FieldTypeRegistry::registerClassForType(FieldType::SELECT, WithOptions::class);
+FieldTypeRegistry::registerClassForType(FieldType::MULTI_SELECT, WithOptions::class);
+FieldTypeRegistry::registerClassForType(FieldType::RADIO, WithOptions::class);

@@ -247,7 +247,7 @@ final class PaginationManager
 	 * @param DataValidator $validator
 	 */
 	public function addCurrentPageDataValidatorFields(DataValidator $validator) {
-		$validator->createField('page_start', new FieldType(FieldType::POSITIVEZERO_INTEGER), $this->pageStart($this->getCurrentPageIndex()), false);
-		$validator->createField('page_count', new FieldType(FieldType::POSITIVEZERO_INTEGER), $this->_pageCount, false);
+		$validator->createField('page_start', FieldType::POSITIVEZERO_INTEGER, $this->pageStart($this->getCurrentPageIndex()), false);
+		$validator->createField('page_count', FieldType::POSITIVEZERO_INTEGER, $this->_pageCount, false);
 	}
 }

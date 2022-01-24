@@ -8,6 +8,7 @@ namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\FieldType;
+use chsxf\MFX\DataValidator\FieldTypeRegistry;
 use chsxf\MFX\StringTools;
 
 /**
@@ -51,4 +52,4 @@ class Email extends Field {
 
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::EMAIL), Email::class);
+FieldTypeRegistry::registerClassForType(FieldType::EMAIL, Email::class);

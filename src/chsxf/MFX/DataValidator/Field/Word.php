@@ -9,6 +9,7 @@ namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\FieldType;
+use chsxf\MFX\DataValidator\FieldTypeRegistry;
 use chsxf\MFX\DataValidator\Filter\RegExp;
 
 /**
@@ -28,7 +29,7 @@ class Word extends Field
 	protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required) {
 		parent::__construct($name, $type, $defaultValue, $required);
 		
-		switch ($type->value())
+		switch ($type)
 		{
 			case FieldType::LOWERCASE_WORD:
 				$this->addFilter(RegExp::lowerCaseWord());
@@ -50,10 +51,10 @@ class Word extends Field
 	 * @param FieldType $type_override
 	 */
 	public function getHTMLType(?FieldType $type_override = NULL): string {
-		return parent::getHTMLType(($type_override === NULL) ? new FieldType(FieldType::TEXT) : $type_override);
+		return parent::getHTMLType($type_override ?? FieldType::TEXT);
 	}
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::LOWERCASE_WORD), Word::class);
-FieldType::registerClassForType(new FieldType(FieldType::UPPERCASE_WORD), Word::class);
-FieldType::registerClassForType(new FieldType(FieldType::WORD), Word::class);
+FieldTypeRegistry::registerClassForType(FieldType::LOWERCASE_WORD, Word::class);
+FieldTypeRegistry::registerClassForType(FieldType::UPPERCASE_WORD, Word::class);
+FieldTypeRegistry::registerClassForType(FieldType::WORD, Word::class);

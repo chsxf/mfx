@@ -8,6 +8,7 @@ namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\FieldType;
+use chsxf\MFX\DataValidator\FieldTypeRegistry;
 
 /**
  * Descriptor of a password field type
@@ -30,4 +31,4 @@ class Password extends Field {
 
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::PASSWORD), Password::class);
+FieldTypeRegistry::registerClassForType(FieldType::PASSWORD, Password::class);

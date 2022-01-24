@@ -8,6 +8,7 @@ namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\FieldType;
+use chsxf\MFX\DataValidator\FieldTypeRegistry;
 use chsxf\MFX\StringTools;
 
 /**
@@ -26,7 +27,7 @@ class Integer extends Field {
 	protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required) {
 		parent::__construct($name, $type, $defaultValue, $required);
 
-		switch ($this->getType()->value()) {
+		switch ($this->getType()) {
 			case FieldType::POSITIVE_INTEGER:
 				$this->addExtra('min', 1);
 				break;
@@ -57,7 +58,7 @@ class Integer extends Field {
 			for ($i = 0; $i <= $maxIndex; $i++) {
 				$val = $this->getIndexedValue($i, true);
 				if ($val !== NULL) {
-					switch ($this->getType()->value()) {
+					switch ($this->getType()) {
 						case FieldType::INTEGER:
 							if (!StringTools::isInteger($val)) {
 								if (!$silent) {
@@ -109,7 +110,7 @@ class Integer extends Field {
 		else {
 			$val = $this->getValue(true);
 			if ($val !== NULL) {
-				switch ($this->getType()->value()) {
+				switch ($this->getType()) {
 					case FieldType::INTEGER:
 						if (!StringTools::isInteger($val)) {
 							if (!$silent) {
@@ -167,13 +168,13 @@ class Integer extends Field {
 	 * @param FieldType $type_override
 	 */
 	public function getHTMLType(?FieldType $type_override = NULL): string {
-		return parent::getHTMLType(($type_override === NULL) ? new FieldType(FieldType::NUMBER) : $type_override);
+		return parent::getHTMLType(($type_override === NULL) ? FieldType::NUMBER : $type_override);
 	}
 
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::INTEGER), Integer::class);
-FieldType::registerClassForType(new FieldType(FieldType::POSITIVE_INTEGER), Integer::class);
-FieldType::registerClassForType(new FieldType(FieldType::POSITIVEZERO_INTEGER), Integer::class);
-FieldType::registerClassForType(new FieldType(FieldType::NEGATIVE_INTEGER), Integer::class);
-FieldType::registerClassForType(new FieldType(FieldType::NEGATIVEZERO_INTEGER), Integer::class);
+FieldTypeRegistry::registerClassForType(FieldType::INTEGER, Integer::class);
+FieldTypeRegistry::registerClassForType(FieldType::POSITIVE_INTEGER, Integer::class);
+FieldTypeRegistry::registerClassForType(FieldType::POSITIVEZERO_INTEGER, Integer::class);
+FieldTypeRegistry::registerClassForType(FieldType::NEGATIVE_INTEGER, Integer::class);
+FieldTypeRegistry::registerClassForType(FieldType::NEGATIVEZERO_INTEGER, Integer::class);

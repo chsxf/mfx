@@ -8,6 +8,7 @@ namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\FieldType;
+use chsxf\MFX\DataValidator\FieldTypeRegistry;
 
 /**
  * Descriptor of a checkbox field type
@@ -109,4 +110,4 @@ class File extends Field {
 
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::FILE), File::class);
+FieldTypeRegistry::registerClassForType(FieldType::FILE, File::class);

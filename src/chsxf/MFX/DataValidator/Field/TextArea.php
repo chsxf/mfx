@@ -9,6 +9,7 @@ namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\FieldType;
+use chsxf\MFX\DataValidator\FieldTypeRegistry;
 
 /**
  * Descriptor of a text area field type
@@ -28,4 +29,4 @@ class TextArea extends Field
 	}
 }
 
-FieldType::registerClassForType(new FieldType(FieldType::TEXTAREA), TextArea::class);
+FieldTypeRegistry::registerClassForType(FieldType::TEXTAREA, TextArea::class);
