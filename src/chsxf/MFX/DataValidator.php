@@ -258,7 +258,7 @@ final class DataValidator implements \ArrayAccess
 	 * @param mixed $offset
 	 * @param mixed $value
 	 */
-	public function offsetSet(mixed $offset, mixed $value) {
+	public function offsetSet(mixed $offset, mixed $value): void {
 		$this->offsetUnset($offset);
 	}
 	
@@ -267,7 +267,7 @@ final class DataValidator implements \ArrayAccess
 	 * @see \ArrayAccess::offsetUnset()
 	 * @param mixed $offset
 	 */
-	public function offsetUnset(mixed $offset) {
+	public function offsetUnset(mixed $offset): void {
 		throw new DataValidatorException(dgettext('mfx', "Field values cannot be altered."));
 	}
 }
