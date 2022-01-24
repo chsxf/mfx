@@ -96,7 +96,7 @@ final class RequestResult
 	 * Gets the redirection URI if existing
 	 * @return string
 	 */
-	public function redirectURI(): string {
+	public function redirectURI(): ?string {
 		return $this->_redirectURI;
 	}
 	
