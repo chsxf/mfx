@@ -33,10 +33,12 @@ class RouteAttributesParser
     }
 
     public function getAttributeValue(string $class): string|false {
-        foreach ($this->attributes as $attr) {
-            if (is_subclass_of($attr, AbstractRouteStringAttribute::class, false)) {
-                return $attr->getValue();
-            }
+        if (is_subclass_of($class, AbstractRouteStringAttribute::class)) {
+            foreach ($this->attributes as $attr) {
+                if ($attr instanceof $class || is_subclass_of($attr, $class, false)) {
+                    return $attr->getValue();
+                }
+            }    
         }
         return false;
     }
