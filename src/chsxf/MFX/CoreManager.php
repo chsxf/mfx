@@ -295,6 +295,13 @@ final class CoreManager
                 call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
             }
 		}
+		// -- Subroute
+		if ($subRouteAttributes->hasAttribute(PreRouteCallbackAttribute::class)) {
+			$callback = $subRouteAttributes->getAttributeValue(PreRouteCallbackAttribute::class);
+            if (!empty($callback) && is_callable($callback)) {
+                call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
+            }
+		}
 
 		// Checking pre-conditions
 		// -- Request method
