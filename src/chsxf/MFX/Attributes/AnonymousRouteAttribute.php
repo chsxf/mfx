@@ -4,7 +4,7 @@ namespace chsxf\MFX\Attributes;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
-class AnonymousAttribute extends AbstractRouteAttribute
+class AnonymousRouteAttribute extends AbstractRouteAttribute
 {
     
 }
