@@ -97,7 +97,7 @@ final class CoreManager
 	private ?string $_rootURI = NULL;
 
 	/**
-	 * @var \Twig_Environment Twig environment for the current request
+	 * @var \Twig\Environment Twig environment for the current request
 	 */
 	private ?Environment $_currentTwigEnvironment = NULL;
 
@@ -199,7 +199,7 @@ final class CoreManager
 
 	/**
 	 * Gets the Twig environment for the current request
-	 * @return \Twig_Environment
+	 * @return \Twig\Environment
 	 */
 	public static function getTwig(): ?Environment {
 		return self::_ensureInit()->_currentTwigEnvironment;
