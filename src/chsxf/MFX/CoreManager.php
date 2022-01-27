@@ -7,13 +7,13 @@
 
 namespace chsxf\MFX;
 
-use chsxf\MFX\Attributes\ContentTypeAttribute;
-use chsxf\MFX\Attributes\PreRouteCallbackAttribute;
-use chsxf\MFX\Attributes\RedirectURIAttribute;
-use chsxf\MFX\Attributes\RequiredContentTypeAttribute;
-use chsxf\MFX\Attributes\RequiredRequestMethodAttribute;
+use chsxf\MFX\Attributes\ContentType;
+use chsxf\MFX\Attributes\PreRouteCallback;
+use chsxf\MFX\Attributes\RedirectURI;
+use chsxf\MFX\Attributes\RequiredContentType;
+use chsxf\MFX\Attributes\RequiredRequestMethod;
 use chsxf\MFX\Attributes\RouteAttributesParser;
-use chsxf\MFX\Attributes\SubRouteAttribute;
+use chsxf\MFX\Attributes\SubRoute;
 use chsxf\MFX\L10n\L10nManager;
 use Twig\Environment;
 use Twig\Template;
@@ -191,7 +191,7 @@ final class CoreManager
         }
 		// Building parameters from doc comment
 		$routeParser = new RouteAttributesParser($method);
-		if (!$routeParser->hasAttribute(SubRouteAttribute::class)) {
+		if (!$routeParser->hasAttribute(SubRoute::class)) {
 			return false;
 		}
 		return $routeParser;
@@ -289,15 +289,15 @@ final class CoreManager
             call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
         }
 		// -- Route
-		if ($routeAttributes->hasAttribute(PreRouteCallbackAttribute::class)) {
-			$callback = $routeAttributes->getAttributeValue(PreRouteCallbackAttribute::class);
+		if ($routeAttributes->hasAttribute(PreRouteCallback::class)) {
+			$callback = $routeAttributes->getAttributeValue(PreRouteCallback::class);
             if (!empty($callback) && is_callable($callback)) {
                 call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
             }
 		}
 		// -- Subroute
-		if ($subRouteAttributes->hasAttribute(PreRouteCallbackAttribute::class)) {
-			$callback = $subRouteAttributes->getAttributeValue(PreRouteCallbackAttribute::class);
+		if ($subRouteAttributes->hasAttribute(PreRouteCallback::class)) {
+			$callback = $subRouteAttributes->getAttributeValue(PreRouteCallback::class);
             if (!empty($callback) && is_callable($callback)) {
                 call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
             }
@@ -305,16 +305,16 @@ final class CoreManager
 
 		// Checking pre-conditions
 		// -- Request method
-		if ($subRouteAttributes->hasAttribute(RequiredRequestMethodAttribute::class)) {
-			if ($_SERVER['REQUEST_METHOD'] !== strtoupper($subRouteAttributes->getAttributeValue(RequiredRequestMethodAttribute::class))) {
+		if ($subRouteAttributes->hasAttribute(RequiredRequestMethod::class)) {
+			if ($_SERVER['REQUEST_METHOD'] !== strtoupper($subRouteAttributes->getAttributeValue(RequiredRequestMethod::class))) {
 				self::dieWithStatusCode(405);
 			}
 		}
 		// -- Content-Type
-		if ($subRouteAttributes->hasAttribute(RequiredContentTypeAttribute::class)) {
+		if ($subRouteAttributes->hasAttribute(RequiredContentType::class)) {
 			$regs = array();
 			preg_match('/^([^;]+);?/', $_SERVER['CONTENT_TYPE'], $regs);
-			if ($regs[1] !== $subRouteAttributes->getAttributeValue(RequiredContentTypeAttribute::class)) {
+			if ($regs[1] !== $subRouteAttributes->getAttributeValue(RequiredContentType::class)) {
 				self::dieWithStatusCode(415);
 			}
 		}
@@ -350,8 +350,8 @@ final class CoreManager
 			// Edit requests - Mostly requests with POST data
 			case SubRouteType::REDIRECT:
 				$redirectionURI = $reqResult->redirectURI();
-                if (empty($redirectionURI) && $subRouteAttributes->hasAttribute(RedirectURIAttribute::class)) {
-                    $redirectionURI = $subRouteAttributes->getAttributeValue(RedirectURIAttribute::class);
+                if (empty($redirectionURI) && $subRouteAttributes->hasAttribute(RedirectURI::class)) {
+                    $redirectionURI = $subRouteAttributes->getAttributeValue(RedirectURI::class);
                 }
 				self::redirect($redirectionURI);
 				break;
@@ -537,7 +537,7 @@ final class CoreManager
 	 */
 	private static function _setResponseContentType(?RouteAttributesParser $subRouteAttributes, string $default, string $defaultCharset)
 	{
-		$ct = ($subRouteAttributes !== NULL && $subRouteAttributes->hasAttribute(ContentTypeAttribute::class)) ? $subRouteAttributes->getAttributeValue(ContentTypeAttribute::class) : $default;
+		$ct = ($subRouteAttributes !== NULL && $subRouteAttributes->hasAttribute(ContentType::class)) ? $subRouteAttributes->getAttributeValue(ContentType::class) : $default;
         if (!preg_match('/;\s+charset=.+$/', $ct)) {
             $ct .= "; charset={$defaultCharset}";
         }

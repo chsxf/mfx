@@ -5,7 +5,7 @@ use Error;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
-class PreRouteCallbackAttribute extends AbstractRouteStringAttribute
+class PreRouteCallback extends AbstractRouteStringAttribute
 {
     public function __construct(string $value) {
         if (!is_callable($value)) {
