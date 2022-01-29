@@ -25,7 +25,7 @@ class RouteAttributesParser
 
     public function hasAttribute(string $class) {
         foreach ($this->attributes as $attr) {
-            if (is_a($attr, $class, false)) {
+            if ($attr instanceof $class || is_subclass_of($attr, $class, false)) {
                 return true;
             }
         }
