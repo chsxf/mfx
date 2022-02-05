@@ -16,10 +16,6 @@ MFX is released under the [MIT license](LICENSE).
 
 # ⛓ Dependencies
 
-Dependencies are currently added directly into the repository or as submodules.
-
-There are four dependencies:
-
 * **Twig**\
   Template engine\
   https://twig.symfony.com/
