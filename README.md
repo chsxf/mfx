@@ -1,3 +1,3 @@
-# php-micro-framework
+# MFX
 
-Documentation is available in the [wiki](https://github.com/cheeseburgames/php-micro-framework/wiki)
+Documentation is available in the [wiki](https://github.com/chsxf/mfx/wiki)

@@ -8,7 +8,7 @@ final class FrameworkDatabaseUpdater implements IDatabaseUpdater {
 	 * @see \chsxf\MFX\DatabaseUpdater::key()
 	 */
 	public function key(): string {
-		return 'php-micro-framework';
+		return 'mfx';
 	}
 	
 	/**
@@ -17,7 +17,7 @@ final class FrameworkDatabaseUpdater implements IDatabaseUpdater {
 	 */
 	public function pathToSQLFile(): string {
 		$root = constant('chsxf\MFX\ROOT') ?? '';
-		return "{$root}/php-micro-framework.sql";
+		return "{$root}/mfx.sql";
 	}
 	
 }
