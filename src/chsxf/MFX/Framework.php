@@ -62,7 +62,7 @@ final class Framework {
         User::validate();
 
         CoreProfiler::pushEvent('Processing request');
-        CoreManager::handleRequest($twig, Config::get('request.default_route'));
+        CoreManager::handleRequest($twig, Config::get('request.default_route', 'none'));
 
         ErrorManager::freeze();
         CoreProfiler::stop();
