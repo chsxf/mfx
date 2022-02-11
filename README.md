@@ -40,13 +40,14 @@ To access a deeper and more complete documentation on the design and usage of MF
 
 *(This list is not prioritized)*
 
-* [x] Making it compatible with Composer
-* [ ] Adding a setup script
-* [ ] Making it compatible with nginx
-* [ ] Making it possible to replace the default router with a custom one
-* [ ] Improving `DatabaseUpdater` reliability and error resilience
-* [x] Removing php-gettext library dependency (making gettext extension mandatory)
-* [x] Updating Twig to version 2.x
+* [x] Make it compatible with Composer
+* [ ] Add a setup script
+* [ ] Make it compatible with nginx
+* [ ] Make it possible to replace the default router with a custom one
+* [ ] Improve `DatabaseUpdater` reliability and error resilience
+* [ ] Add support for routes inside one or several namespaces
+* [x] Remove php-gettext library dependency (making gettext extension mandatory)
+* [x] Update Twig to version 2.x
 
 # 💥 Known Issues
 
