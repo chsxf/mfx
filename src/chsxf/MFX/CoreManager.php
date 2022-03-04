@@ -282,6 +282,22 @@ final class CoreManager
             throw new \ErrorException("'{$subRoute}' is not a valid subroute of the '{$mainRoute}' route.");
         }
 
+		// Checking pre-conditions
+		// -- Request method
+		if ($subRouteAttributes->hasAttribute(RequiredRequestMethod::class)) {
+			if ($_SERVER['REQUEST_METHOD'] !== strtoupper($subRouteAttributes->getAttributeValue(RequiredRequestMethod::class))) {
+				self::dieWithStatusCode(405);
+			}
+		}
+		// -- Content-Type
+		if ($subRouteAttributes->hasAttribute(RequiredContentType::class)) {
+			$regs = array();
+			preg_match('/^([^;]+);?/', $_SERVER['CONTENT_TYPE'], $regs);
+			if ($regs[1] !== $subRouteAttributes->getAttributeValue(RequiredContentType::class)) {
+				self::dieWithStatusCode(415);
+			}
+		}
+
 		// Pre-processing callbacks
 		// -- Global
 		$callback = Config::get('request.pre_route_callback');
@@ -301,22 +317,6 @@ final class CoreManager
             if (!empty($callback) && is_callable($callback)) {
                 call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
             }
-		}
-
-		// Checking pre-conditions
-		// -- Request method
-		if ($subRouteAttributes->hasAttribute(RequiredRequestMethod::class)) {
-			if ($_SERVER['REQUEST_METHOD'] !== strtoupper($subRouteAttributes->getAttributeValue(RequiredRequestMethod::class))) {
-				self::dieWithStatusCode(405);
-			}
-		}
-		// -- Content-Type
-		if ($subRouteAttributes->hasAttribute(RequiredContentType::class)) {
-			$regs = array();
-			preg_match('/^([^;]+);?/', $_SERVER['CONTENT_TYPE'], $regs);
-			if ($regs[1] !== $subRouteAttributes->getAttributeValue(RequiredContentType::class)) {
-				self::dieWithStatusCode(415);
-			}
 		}
 
 		// Processing route
