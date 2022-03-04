@@ -35,23 +35,3 @@ Go to [this page](https://github.com/chsxf/mfx/wiki/Getting-Started) to start us
 # 📝 Complete documentation
 
 To access a deeper and more complete documentation on the design and usage of MFX, go to the [Framework Reference](https://github.com/chsxf/mfx/wiki/Framework-Reference).
-
-# 🗓 Planned Improvements
-
-*(This list is not prioritized)*
-
-* [x] Make it compatible with Composer
-* [ ] Add a setup script
-* [ ] Make it compatible with nginx
-* [ ] Make it possible to replace the default router with a custom one
-* [ ] Improve `DatabaseUpdater` reliability and error resilience
-* [ ] Add support for routes inside one or several namespaces
-* [x] Remove php-gettext library dependency (making gettext extension mandatory)
-* [x] Update Twig to version 2.x
-
-# 💥 Known Issues
-
-*(This list is not prioritized)*
-
-* [ ] The post-route callback may not be called with some request results
-* [ ] Pre-conditions should be validated before calling pre-route callbacks
