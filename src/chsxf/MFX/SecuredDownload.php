@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Secured download handler
  * 
@@ -15,15 +16,17 @@ use chsxf\MFX\DataValidator\Filter\ExistsInDB;
 /**
  * Secured downloads handling class
  */
-class SecuredDownload implements IRouteProvider {
-	
+class SecuredDownload implements IRouteProvider
+{
+
 	#[SubRoute]
-	public static function get(array $params) {
+	public static function get(array $params)
+	{
 		$validator = self::__buildInputValidator();
-        if (!$validator->validate($params)) {
-            CoreManager::dieWithStatusCode(400);
-        }
-		
+		if (!$validator->validate($params)) {
+			CoreManager::dieWithStatusCode(400);
+		}
+
 		// Add to download log
 		$dbm = DatabaseManager::open('__mfx');
 		$dbm->beginTransaction();
@@ -60,7 +63,7 @@ class SecuredDownload implements IRouteProvider {
 			CoreManager::dieWithStatusCode(500);
 		}
 		$dbm->commit();
-		
+
 		// Sending file
 		CoreManager::flushAllOutputBuffers();
 		$fileinfo = pathinfo($filePath);
@@ -70,13 +73,13 @@ class SecuredDownload implements IRouteProvider {
 		readfile($filePath);
 		exit();
 	}
-	
-	private static function __buildInputValidator() {
+
+	private static function __buildInputValidator()
+	{
 		$validator = new DataValidator();
 		$field = $validator->createField('0', FieldType::TEXT);
 		$field->addFilter(new RegExp(RegExp::REGEX_LCALPHANUMERIC));
 		$field->addFilter(new ExistsInDB('mfx_secured_downloads_keys', 'secured_download_key', NULL, '__mfx'));
 		return $validator;
 	}
-	
 }

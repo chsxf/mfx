@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Data validation field type enum class
  * 
@@ -12,7 +13,7 @@ namespace chsxf\MFX\DataValidator;
  */
 enum FieldType: string
 {
-	// Built-in HTML input types
+		// Built-in HTML input types
 	case CHECKBOX = 'checkbox';
 	case COLOR = 'color';
 	case DATE = 'date';
@@ -30,8 +31,8 @@ enum FieldType: string
 	case URL = 'url';
 	case WEEK = 'week';
 	case PASSWORD = 'password';
-	
-	// Custom type
+
+		// Custom type
 	case INTEGER = 'integer';
 	case MULTI_SELECT = 'multiselect';
 	case NEGATIVE_INTEGER = 'neginteger';

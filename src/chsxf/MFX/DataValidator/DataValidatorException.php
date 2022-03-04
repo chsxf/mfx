@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Data validation exception
  * 
@@ -10,4 +11,6 @@ namespace chsxf\MFX\DataValidator;
 /**
  * Data validator exception class
  */
-class DataValidatorException extends \Exception { }
+class DataValidatorException extends \Exception
+{
+}

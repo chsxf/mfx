@@ -1,4 +1,5 @@
 <?php
+
 namespace chsxf\MFX;
 
 enum RequestMethod

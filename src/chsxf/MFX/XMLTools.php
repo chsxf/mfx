@@ -1,4 +1,5 @@
 <?php
+
 /**
  * XML tools
  * 
@@ -24,7 +25,7 @@ class XMLTools
 	 * @var array Container for object references used to avoid recursions
 	 */
 	private static array $RECURSIONS;
-	
+
 	/**
 	 * Write XML tree from a variable
 	 *
@@ -35,53 +36,48 @@ class XMLTools
 	 *
 	 * @used-by XMLTools::build()
 	 */
-	private static function _build(\XMLWriter $writer, mixed $var, bool $filterStrings = true) {
+	private static function _build(\XMLWriter $writer, mixed $var, bool $filterStrings = true)
+	{
 		// NULL
-        if (is_null($var)) {
-            $writer->writeElement('null');
-        }
+		if (is_null($var)) {
+			$writer->writeElement('null');
+		}
 		// Scalar values
 		else if (is_scalar($var)) {
 			if (is_string($var)) {
 				$regs = NULL;
-				
+
 				// Booleans as string
-                if ($filterStrings && preg_match('/^(true|false)$/', $var)) {
-                    $writer->writeElement('bool', $var);
-                }
+				if ($filterStrings && preg_match('/^(true|false)$/', $var)) {
+					$writer->writeElement('bool', $var);
+				}
 				// Integers as string
 				else if ($filterStrings && preg_match('/^-?([1-9]\d*)$/', $var, $regs)) {
 					if (self::$PHP_INT_MAX_AS_STR === NULL) {
 						self::$PHP_INT_MAX_AS_STR = strval(PHP_INT_MAX);
 						self::$PHP_INT_MAX_LENGTH = strlen(self::$PHP_INT_MAX_AS_STR);
 					}
-	
+
 					$length = strlen($regs[1]);
-                    if ($length < self::$PHP_INT_MAX_LENGTH || ($length == self::$PHP_INT_MAX_LENGTH && strcmp(self::$PHP_INT_MAX_AS_STR, $regs[1]) >= 0)) {
-                        $writer->writeElement('int', $var);
-                    }
-					else {
+					if ($length < self::$PHP_INT_MAX_LENGTH || ($length == self::$PHP_INT_MAX_LENGTH && strcmp(self::$PHP_INT_MAX_AS_STR, $regs[1]) >= 0)) {
+						$writer->writeElement('int', $var);
+					} else {
 						$writer->startElement('string');
 						$writer->writeCdata($var);
 						$writer->endElement();
 					}
-				}
-				else if ($filterStrings && preg_match('/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/', $var)) {
+				} else if ($filterStrings && preg_match('/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/', $var)) {
 					$writer->writeElement('float', $var);
-				}
-				else {
+				} else {
 					$writer->startElement('string');
 					$writer->writeCdata($var);
 					$writer->endElement();
 				}
-			}
-			else if (is_int($var)) {
+			} else if (is_int($var)) {
 				$writer->writeElement('int', strval($var));
-			}
-			else if (is_float($var)) {
+			} else if (is_float($var)) {
 				$writer->writeElement('float', strval($var));
-			}
-			else if (is_bool($var)) {
+			} else if (is_bool($var)) {
 				$writer->writeElement('bool', $var ? 'true' : 'false');
 			}
 		}
@@ -106,14 +102,14 @@ class XMLTools
 				return;
 			}
 			self::$RECURSIONS[] = $var;
-			
+
 			$filterStrings = ($filterStrings && $var instanceof IUnfilteredSerializable == false);
-			
+
 			$ro = new \ReflectionObject($var);
 			$writer->startElement('object');
-            if ($var instanceof \stdClass == false) {
-                $writer->writeAttribute('class', $ro->name);
-            }
+			if ($var instanceof \stdClass == false) {
+				$writer->writeAttribute('class', $ro->name);
+			}
 			$props = $ro->getProperties(\ReflectionProperty::IS_PUBLIC);
 			foreach ($props as $v) {
 				$writer->startElement('prop');
@@ -122,20 +118,21 @@ class XMLTools
 				self::_build($writer, $v->getValue($var), $filterStrings);
 			}
 			$writer->endElement();
-			
+
 			array_pop(self::$RECURSIONS);
 		}
 	}
-	
+
 	/**
 	 * Build XML tree from a variable
 	 * @param mixed $var Variable from which building the XML tree
 	 * @param string $encoding Encoding charset (Defaults to UTF-8). 
 	 * @return string the XML tree string
 	 */
-	public static function build(mixed $var, string $encoding = 'UTF-8'): string {
+	public static function build(mixed $var, string $encoding = 'UTF-8'): string
+	{
 		self::$RECURSIONS = array();
-		
+
 		$writer = new \XMLWriter();
 		$writer->openMemory();
 		$writer->setIndent(true);

@@ -1,4 +1,5 @@
 <?php
+
 namespace chsxf\MFX;
 
 use chsxf\MFX\DataValidator\Twig\Extension;
@@ -10,15 +11,17 @@ use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
-final class Framework {
+final class Framework
+{
 
-    public static function init() {
+    public static function init()
+    {
         CommandLine::handleInvocation();
-        
+
         // Loading configuration
         $configFilePath = defined('chsxf\MFX\CONFIG_FILE_PATH') ? constant('chsxf\MFX\CONFIG_FILE_PATH') : 'application/config/config.php';
         require_once($configFilePath);
-        
+
         self::registerAutoloader();
 
         SessionManager::start();
@@ -68,11 +71,12 @@ final class Framework {
         CoreProfiler::stop();
     }
 
-    private static function registerAutoloader() {
+    private static function registerAutoloader()
+    {
         // Building autoload directory precedence list
         $__MicroFX_autoload_precedence = Config::get('autoload.precedence', array());
         // -- Ensure we do not have trailing slash (except for root && protocols)
-        $__MicroFX_autoload_precedence = array_map(function($entry) {
+        $__MicroFX_autoload_precedence = array_map(function ($entry) {
             if (!preg_match('#^\w+://$#', $entry) && $entry != '/') {
                 if (preg_match('#/$#', $entry)) {
                     $entry = substr($entry, 0, -1);
@@ -86,7 +90,7 @@ final class Framework {
         unset($__MicroFX_autoload_precedence);
 
         // Setting autoload built-in functions
-        spl_autoload_register(function($class) {
+        spl_autoload_register(function ($class) {
             // Removing namespace for framework classes
             $class = preg_replace('/^chsxf\\\\MFX\\\\/', '', $class);
             $class = preg_replace('/(_|\\\\)/', '/', $class);
@@ -100,5 +104,4 @@ final class Framework {
             }
         });
     }
-
 }

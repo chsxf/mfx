@@ -1,9 +1,11 @@
 <?php
+
 /**
  * Data validator regular expression based field filter class
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
+
 namespace chsxf\MFX\DataValidator\Filter;
 
 use chsxf\MFX\DataValidator\AbstractFilter;
@@ -11,7 +13,8 @@ use chsxf\MFX\DataValidator\AbstractFilter;
 /**
  * Descriptor of a filter field based on regular expressions
  */
-class RegExp extends AbstractFilter {
+class RegExp extends AbstractFilter
+{
 	const REGEX_WORD = '/^[a-z0-9_]+$/i';
 	const REGEX_LCWORD = '/^[a-z0-9_]+$/';
 	const REGEX_UCWORD = '/^[A-Z0-9_]+$/';
@@ -34,10 +37,11 @@ class RegExp extends AbstractFilter {
 	 * @param string $message Error message
 	 * @see preg_match()
 	 */
-	public function __construct(string $regexp, ?string $message = NULL) {
-        if ($message === null) {
-            $message = dgettext('mfx', "The '%s' field does not match the specified regular expression.");
-        }
+	public function __construct(string $regexp, ?string $message = NULL)
+	{
+		if ($message === null) {
+			$message = dgettext('mfx', "The '%s' field does not match the specified regular expression.");
+		}
 		parent::__construct($message);
 
 		$this->_regexp = $regexp;
@@ -53,12 +57,13 @@ class RegExp extends AbstractFilter {
 	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)
 	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 */
-	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool {
+	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool
+	{
 		$res = preg_match($this->_regexp, $value);
 		if (empty($res)) {
-            if (!$silent) {
-                $this->emitMessage($fieldName);
-            }
+			if (!$silent) {
+				$this->emitMessage($fieldName);
+			}
 			return false;
 		}
 		return true;
@@ -71,29 +76,26 @@ class RegExp extends AbstractFilter {
 	 * @param int $max Maximum required length. If empty or negative, no maximum is required. (Defaults to NULL)
 	 * @return RegExp
 	 */
-	public static function stringLength(?int $min = NULL, ?int $max = NULL): RegExp {
+	public static function stringLength(?int $min = NULL, ?int $max = NULL): RegExp
+	{
 		$min = is_scalar($min) ? intval($min) : 0;
 		$max = is_scalar($max) ? intval($max) : 0;
 
 		if (empty($min) && empty($max)) {
 			$regexp = '/^.*$/';
 			$message = NULL;
-		}
-		else {
+		} else {
 			$regexp = '/^.{';
 			if ($min > 0 && $min == $max) {
 				$regexp .= $min;
 				$message = sprintf(dgettext('mfx', "The string in field '%%s' must contain exactly %d characters."), $min);
-			}
-			else if ($min > 0 && $max > 0) {
+			} else if ($min > 0 && $max > 0) {
 				$regexp .= "{$min},{$max}";
 				$message = sprintf(dgettext('mfx', "The string in field '%%s' must contain between %d and %d characters (inclusive)."), $min, $max);
-			}
-			else if ($min > 0) {
+			} else if ($min > 0) {
 				$regexp .= "{$min},";
 				$message = sprintf(dgettext('mfx', "The string in field '%%s' must contain at least %d characters."), $min);
-			}
-			else if ($max > 0) {
+			} else if ($max > 0) {
 				$regexp .= "0,{$max}";
 				$message = sprintf(dgettext('mfx', "The string in field '%%s' must contain at most %d characters."), $max);
 			}
@@ -107,7 +109,8 @@ class RegExp extends AbstractFilter {
 	 *
 	 * @return RegExp
 	 */
-	public static function word(): RegExp {
+	public static function word(): RegExp
+	{
 		return new RegExp(self::REGEX_WORD, dgettext('mfx', "The field '%s' does not contain a word."));
 	}
 
@@ -116,7 +119,8 @@ class RegExp extends AbstractFilter {
 	 *
 	 * @return RegExp
 	 */
-	public static function lowerCaseWord(): RegExp {
+	public static function lowerCaseWord(): RegExp
+	{
 		return new RegExp(self::REGEX_LCWORD, dgettext('mfx', "The field '%s' does not contain a lower case word."));
 	}
 
@@ -125,7 +129,8 @@ class RegExp extends AbstractFilter {
 	 *
 	 * @return RegExp
 	 */
-	public static function upperCaseWord(): RegExp {
+	public static function upperCaseWord(): RegExp
+	{
 		return new RegExp(self::REGEX_UCWORD, dgettext('mfx', "The field '%s' does not contain an upper case word."));
 	}
 
@@ -137,7 +142,8 @@ class RegExp extends AbstractFilter {
 	 * @param bool $_lowerCase If set and case is not ignored, the validation filter will constrain to lower case. If not set and case is not ignored, the validation filter will constrain to upper case.
 	 * @return RegExp
 	 */
-	public static function hexKey(int $_bitLength, bool $_ignoreCase = false, bool $_lowerCase = true): RegExp {
+	public static function hexKey(int $_bitLength, bool $_ignoreCase = false, bool $_lowerCase = true): RegExp
+	{
 		$bytes = floor($_bitLength / 8);
 		$hexLength = $bytes * 2;
 
@@ -146,11 +152,9 @@ class RegExp extends AbstractFilter {
 		if ($_ignoreCase) {
 			$regexp .= 'i';
 			$message = dgettext('mfx', "The field '%%s' does not contain a %d bits hexadecimal key.");
-		}
-		else if ($_lowerCase) {
+		} else if ($_lowerCase) {
 			$message = dgettext('mfx', "The field '%%s' does not contain a %d bits lower case hexadecimal key.");
-		}
-		else {
+		} else {
 			$message = dgettext('mfx', "The field '%%s' does not contain a %d bits upper case hexadecimal key.");
 		}
 
@@ -164,9 +168,9 @@ class RegExp extends AbstractFilter {
 	 * @param string $value Exact value to match
 	 * @return RegExp
 	 */
-	public static function equals(string $value, bool $caseInsensitive = false): RegExp {
+	public static function equals(string $value, bool $caseInsensitive = false): RegExp
+	{
 		$regexp = sprintf('/^%s$/%s', preg_quote($value, '/'), empty($caseInsensitive) ? '' : 'i');
 		return new RegExp($regexp, sprintf(dgettext('mfx', "The field '%%s' does not equal the value '%s'."), $value));
 	}
-
 }

@@ -1,9 +1,11 @@
 <?php
+
 /**
  * Data validation Integer field type class
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
+
 namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
@@ -14,7 +16,8 @@ use chsxf\MFX\StringTools;
 /**
  * Descriptor of an integer field type
  */
-class Integer extends Field {
+class Integer extends Field
+{
 
 	/**
 	 * Constructor
@@ -24,7 +27,8 @@ class Integer extends Field {
 	 * @param mixed $defaultValue Field's default value
 	 * @param boolean $required If set, this field will become required in the validation process.
 	 */
-	protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required) {
+	protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required)
+	{
 		parent::__construct($name, $type, $defaultValue, $required);
 
 		switch ($this->getType()) {
@@ -48,10 +52,11 @@ class Integer extends Field {
 	 *
 	 * @see Field::validate()
 	 */
-	public function validate(bool $silent = false): bool {
-        if (!parent::validate($silent)) {
-            return false;
-        }
+	public function validate(bool $silent = false): bool
+	{
+		if (!parent::validate($silent)) {
+			return false;
+		}
 
 		if ($this->isRepeatable()) {
 			$maxIndex = $this->getMaxRepeatIndex();
@@ -106,8 +111,7 @@ class Integer extends Field {
 					}
 				}
 			}
-		}
-		else {
+		} else {
 			$val = $this->getValue(true);
 			if ($val !== NULL) {
 				switch ($this->getType()) {
@@ -167,10 +171,10 @@ class Integer extends Field {
 	 * @see Field::getHTMLType()
 	 * @param FieldType $type_override
 	 */
-	public function getHTMLType(?FieldType $type_override = NULL): string {
+	public function getHTMLType(?FieldType $type_override = NULL): string
+	{
 		return parent::getHTMLType(($type_override === NULL) ? FieldType::NUMBER : $type_override);
 	}
-
 }
 
 FieldTypeRegistry::registerClassForType(FieldType::INTEGER, Integer::class);

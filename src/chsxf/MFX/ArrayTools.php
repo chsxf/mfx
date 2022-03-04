@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class and helper functions for array management
  *
@@ -26,24 +27,24 @@ class ArrayTools
 	 * @param array $store Source array
 	 * @return array
 	 */
-	public static function reverseArrays(array $store): array {
+	public static function reverseArrays(array $store): array
+	{
 		if (empty($store)) {
 			return array();
 		}
 
 		$keys = array_keys(reset($store));
 		$result = array();
-        foreach ($keys as $k) {
-            $result[$k] = array();
-        }
+		foreach ($keys as $k) {
+			$result[$k] = array();
+		}
 		foreach ($store as $row) {
 			foreach ($keys as $k) {
-                if (array_key_exists($k, $result)) {
-                    $result[$k][] = $row[$k];
-                }
-				else {
-                    $result[$k][] = null;
-                }
+				if (array_key_exists($k, $result)) {
+					$result[$k][] = $row[$k];
+				} else {
+					$result[$k][] = null;
+				}
 			}
 		}
 		return $result;
@@ -57,7 +58,8 @@ class ArrayTools
 	 *
 	 * @return array
 	 */
-	public static function concatArrays(mixed ...$arguments): array {
+	public static function concatArrays(mixed ...$arguments): array
+	{
 		$result = array();
 
 		$args = $arguments;
@@ -68,22 +70,22 @@ class ArrayTools
 		foreach ($args as $arg) {
 			if (is_array($arg)) {
 				$result = array_merge($result, $arg);
-			}
-			else {
+			} else {
 				$result[] = $arg;
 			}
 		}
 
 		return $result;
 	}
-	
+
 	/**
 	 * Shuffles the content of an array
 	 * 
 	 * @param array $arr
 	 */
-	public static function shuffle(array &$arr) {
-		uasort($arr, function($a, $b) {
+	public static function shuffle(array &$arr)
+	{
+		uasort($arr, function ($a, $b) {
 			return mt_rand(-1, 1);
 		});
 	}
@@ -94,20 +96,21 @@ class ArrayTools
 	 * @param \RefelctionParameter $parameter The parameter to investigate
 	 * @return bool
 	 */
-	public static function isParameterArray(\ReflectionParameter $parameter): bool {
-        $type = $parameter->getType();
+	public static function isParameterArray(\ReflectionParameter $parameter): bool
+	{
+		$type = $parameter->getType();
 
-        if ($type !== null) {
-            if ($type instanceof \ReflectionNamedType) {
-                return $type->getName() === 'array';
-            } else {
-                foreach ($type->getTypes() as $unionType) {
-                    if ($unionType->getName() === 'array') {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-    }
+		if ($type !== null) {
+			if ($type instanceof \ReflectionNamedType) {
+				return $type->getName() === 'array';
+			} else {
+				foreach ($type->getTypes() as $unionType) {
+					if ($unionType->getName() === 'array') {
+						return true;
+					}
+				}
+				return false;
+			}
+		}
+	}
 }

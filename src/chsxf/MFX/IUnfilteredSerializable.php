@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Interface for use with JSONTools and XMLTools
  * 
@@ -13,5 +14,6 @@ namespace chsxf\MFX;
  * @see JSONTools::filterAndEncode()
  * @see XMLTools::build()
  */
-interface IUnfilteredSerializable { }
-	
+interface IUnfilteredSerializable
+{
+}

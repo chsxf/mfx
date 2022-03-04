@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Data validation field-matching filter class
  * 
@@ -22,20 +23,20 @@ class MatchFilter extends AbstractOtherFieldFilter
 	 * @param Field|array $otherFields One or more references to the matching fields
 	 * @param string $message Error message
 	 */
-	public function __construct(Field|array $otherFields, ?string $message = NULL) {
+	public function __construct(Field|array $otherFields, ?string $message = NULL)
+	{
 		parent::__construct($otherFields, $message);
-		
+
 		if (empty($message)) {
 			$of = $this->getOtherFields();
-            if (count($of) == 1) {
-                $message = sprintf(dgettext('mfx', "The field '%%s' must match the value of the field '%s'."), $of[0]->getName());
-            }
-			else {
+			if (count($of) == 1) {
+				$message = sprintf(dgettext('mfx', "The field '%%s' must match the value of the field '%s'."), $of[0]->getName());
+			} else {
 				$names = array();
-                foreach ($of as $f) {
-                    $names[] = $f->getName();
-                }
-				array_walk($names, function(&$item) {
+				foreach ($of as $f) {
+					$names[] = $f->getName();
+				}
+				array_walk($names, function (&$item) {
 					$item = sprintf("'%s'", $item);
 				});
 				$names = StringTools::implode(dgettext('mfx', ', '), $names, dgettext('mfx', ' and '));
@@ -44,7 +45,7 @@ class MatchFilter extends AbstractOtherFieldFilter
 			$this->setMessage($message);
 		}
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see AbstractFilter::validate()
@@ -54,14 +55,15 @@ class MatchFilter extends AbstractOtherFieldFilter
 	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)
 	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 */
-	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool {
+	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool
+	{
 		$otherFields = $this->getOtherFields();
 		foreach ($otherFields as $f) {
 			$matchingValue = ($atIndex < 0) ? $f->getValue() : $f->getIndexedValue($atIndex);
 			if ($value != $matchingValue) {
-                if (!$silent) {
-                    $this->emitMessage($fieldName);
-                }
+				if (!$silent) {
+					$this->emitMessage($fieldName);
+				}
 				return false;
 			}
 		}
@@ -74,13 +76,14 @@ class MatchFilter extends AbstractOtherFieldFilter
 	 * 
 	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)
 	 */
-	public function mayBeSkipped(int $atIndex = -1): bool {
+	public function mayBeSkipped(int $atIndex = -1): bool
+	{
 		$otherFields = $this->getOtherFields();
 		foreach ($otherFields as $f) {
 			$v = ($atIndex < 0) ? $f->getValue() : $f->getIndexedValue($atIndex);
-            if ($v !== null) {
-                return false;
-            }
+			if ($v !== null) {
+				return false;
+			}
 		}
 		return true;
 	}

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Data validation abstract field-matching filter class
  *
@@ -25,7 +26,7 @@ abstract class AbstractOtherFieldFilter extends AbstractFilter
 	public function __construct(Field|array $otherFields, ?string $message = NULL)
 	{
 		parent::__construct($message);
-		
+
 		if ($otherFields instanceof Field === false) {
 			$valid = true;
 			if (is_array($otherFields)) {
@@ -35,15 +36,14 @@ abstract class AbstractOtherFieldFilter extends AbstractFilter
 						break;
 					}
 				}
+			} else {
+				$valid = false;
 			}
-			else {
-                $valid = false;
-            }
-            if (!$valid) {
-                throw new DataValidatorException(dgettext('mfx', "References to other fields must be provided as a Field instance or an array containing only instances of this class."));
-            }
+			if (!$valid) {
+				throw new DataValidatorException(dgettext('mfx', "References to other fields must be provided as a Field instance or an array containing only instances of this class."));
+			}
 		}
-		
+
 		$this->_otherFields = is_array($otherFields) ? $otherFields : array($otherFields);
 	}
 
@@ -51,7 +51,8 @@ abstract class AbstractOtherFieldFilter extends AbstractFilter
 	 * Gets the references to the matching fields
 	 * @return array
 	 */
-	protected function getOtherFields(): array {
+	protected function getOtherFields(): array
+	{
 		return $this->_otherFields;
 	}
 }
