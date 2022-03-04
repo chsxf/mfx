@@ -1,4 +1,5 @@
 <?php
+
 /**
  * IRouteProvider interface
  * 
@@ -10,4 +11,6 @@ namespace chsxf\MFX;
 /**
  * Interface that route provider class must implement
  */
-interface IRouteProvider { }
+interface IRouteProvider
+{
+}

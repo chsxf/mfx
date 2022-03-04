@@ -1,9 +1,11 @@
 <?php
+
 /**
  * Data validation Email field type class
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
+
 namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
@@ -14,17 +16,19 @@ use chsxf\MFX\StringTools;
 /**
  * Descriptor of an email field type
  */
-class Email extends Field {
+class Email extends Field
+{
 
 	/**
 	 * (non-PHPdoc)
 	 *
 	 * @see Field::validate()
 	 */
-	public function validate(bool $silent = false): bool {
-        if (!parent::validate($silent)) {
-            return false;
-        }
+	public function validate(bool $silent = false): bool
+	{
+		if (!parent::validate($silent)) {
+			return false;
+		}
 
 		if ($this->isRepeatable()) {
 			$maxIndex = $this->getMaxRepeatIndex();
@@ -37,19 +41,17 @@ class Email extends Field {
 					return false;
 				}
 			}
-		}
-		else {
+		} else {
 			$fieldValue = $this->getValue(true);
 			if ($fieldValue !== NULL && !StringTools::isValidEmailAddress($fieldValue)) {
-                if (!$silent) {
-                    trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a valid email address."), $this->getName()));
-                }
+				if (!$silent) {
+					trigger_error(sprintf(dgettext('mfx', "The field '%s' is not a valid email address."), $this->getName()));
+				}
 				return false;
 			}
 		}
 		return true;
 	}
-
 }
 
 FieldTypeRegistry::registerClassForType(FieldType::EMAIL, Email::class);

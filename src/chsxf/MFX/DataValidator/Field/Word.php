@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Data validation Word field type class
  * 
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */	
+ */
 
 namespace chsxf\MFX\DataValidator\Field;
 
@@ -26,11 +27,11 @@ class Word extends Field
 	 * @param mixed $defaultValue Field's default value
 	 * @param boolean $required If set, this field will become required in the validation process.
 	 */
-	protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required) {
+	protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required)
+	{
 		parent::__construct($name, $type, $defaultValue, $required);
-		
-		switch ($type)
-		{
+
+		switch ($type) {
 			case FieldType::LOWERCASE_WORD:
 				$this->addFilter(RegExp::lowerCaseWord());
 				break;
@@ -40,17 +41,18 @@ class Word extends Field
 			case FieldType::WORD:
 				$this->addFilter(RegExp::word());
 				break;
-		} 
-		
+		}
+
 		$this->_lastLengthFilter = NULL;
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see Field::getHTMLType()
 	 * @param FieldType $type_override
 	 */
-	public function getHTMLType(?FieldType $type_override = NULL): string {
+	public function getHTMLType(?FieldType $type_override = NULL): string
+	{
 		return parent::getHTMLType($type_override ?? FieldType::TEXT);
 	}
 }

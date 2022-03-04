@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class and helper functions for file management
  * 
@@ -17,18 +18,19 @@ class FileTools
 	 * @param string $ext File extension
 	 * @return string
 	 */
-	public static function mimeTypeFromExtension(string $ext): string {
+	public static function mimeTypeFromExtension(string $ext): string
+	{
 		switch (strtolower($ext)) {
 			case 'zip':
 			case 'pdf':
 				return "application/{$ext}";
-				
+
 			case 'jpg':
 				return 'image/jpeg';
-			
+
 			case 'apk':
 				return 'application/vnd.android.package-archive';
-				
+
 			default:
 				CoreManager::dieWithStatusCode(401);
 		}

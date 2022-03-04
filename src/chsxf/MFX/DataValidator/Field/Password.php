@@ -1,9 +1,11 @@
 <?php
+
 /**
  * Data validation Password field type class
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
+
 namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
@@ -13,7 +15,8 @@ use chsxf\MFX\DataValidator\FieldTypeRegistry;
 /**
  * Descriptor of a password field type
  */
-class Password extends Field {
+class Password extends Field
+{
 
 	/**
 	 * Constructor
@@ -23,12 +26,12 @@ class Password extends Field {
 	 * @param mixed $defaultValue Field's default value
 	 * @param boolean $required If set, this field will become required in the validation process.
 	 */
-	protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required) {
+	protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required)
+	{
 		parent::__construct($name, $type, $defaultValue, $required);
 
 		$this->setGenerationWithValue(false);
 	}
-
 }
 
 FieldTypeRegistry::registerClassForType(FieldType::PASSWORD, Password::class);

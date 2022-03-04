@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Paginated routes helper
  * 
@@ -12,5 +13,4 @@ namespace chsxf\MFX;
  */
 abstract class PaginatedRoute implements IRouteProvider
 {
-	
 }

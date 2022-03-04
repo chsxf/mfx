@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Pagination provider interface
  * 
@@ -17,7 +18,7 @@ interface IPaginationProvider
 	 * @return int
 	 */
 	public function totalItemCount(): int;
-	
+
 	/**
 	 * Retrieves the default number of items to display per page
 	 * @return int

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Data validation unique values filter class
  * 
@@ -18,21 +19,23 @@ class Unique extends AbstractFilter
 	 * Constructor
 	 * @param string $message Error message
 	 */
-	public function __construct(?string $message = NULL) {
-        if (empty($message)) {
-            $message = dgettext('mfx', "The field '%s' must contain unique values.");
-        }
+	public function __construct(?string $message = NULL)
+	{
+		if (empty($message)) {
+			$message = dgettext('mfx', "The field '%s' must contain unique values.");
+		}
 		parent::__construct($message);
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see AbstractFilter::appliesToField()
 	 */
-	public function appliesToField(): bool {
+	public function appliesToField(): bool
+	{
 		return true;
 	}
-	
+
 	/**
 	 * (non-PHPdoc)
 	 * @see AbstractFilter::validate()
@@ -45,22 +48,23 @@ class Unique extends AbstractFilter
 	 * Note:
 	 * The $atIndex parameter is ignored for filters returning true in appliesToField().
 	 */
-	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool {
-        if (!is_array($value)) {
-            return true;
-        }
-		
-		$value = array_filter($value, function($item) {
+	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool
+	{
+		if (!is_array($value)) {
+			return true;
+		}
+
+		$value = array_filter($value, function ($item) {
 			return ($item !== NULL && $item !== '');
 		});
-        if (empty($value)) {
-            return true;
-        }
+		if (empty($value)) {
+			return true;
+		}
 		$cv = array_count_values($value);
 		if (max($cv) != 1) {
-            if (!$silent) {
-                $this->emitMessage($fieldName);
-            }
+			if (!$silent) {
+				$this->emitMessage($fieldName);
+			}
 			return false;
 		}
 		return true;

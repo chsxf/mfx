@@ -1,9 +1,11 @@
 <?php
+
 /**
  * Data validator "in range of float values" field filter class
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
+
 namespace chsxf\MFX\DataValidator\Filter;
 
 use chsxf\MFX\DataValidator\AbstractFilter;
@@ -11,7 +13,8 @@ use chsxf\MFX\DataValidator\AbstractFilter;
 /**
  * Descriptor of a filter field checking presence of the value in a Min Max range
  */
-class InFloatRange extends AbstractFilter {
+class InFloatRange extends AbstractFilter
+{
 
 	private float $min;
 
@@ -27,7 +30,8 @@ class InFloatRange extends AbstractFilter {
 	 * @param bool $includeMax If set, includes the max value. If not, the max value is not part of the range.
 	 * @param string $message Error message
 	 */
-	public function __construct(float $_value1, float $_value2, bool $_includeMax = false, ?string $message = NULL) {
+	public function __construct(float $_value1, float $_value2, bool $_includeMax = false, ?string $message = NULL)
+	{
 		$this->min = min($_value1, $_value2);
 		$this->max = max($_value1, $_value2);
 
@@ -45,7 +49,8 @@ class InFloatRange extends AbstractFilter {
 	 * {@inheritdoc}
 	 * @see AbstractFilter::validate()
 	 */
-	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool {
+	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool
+	{
 		$minOk = ($value >= $this->min);
 		$maxOk = $this->includeMax ? ($value <= $this->max) : ($value < $this->max);
 
@@ -58,5 +63,4 @@ class InFloatRange extends AbstractFilter {
 		}
 		return true;
 	}
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace chsxf\MFX\Attributes;
 
 use ReflectionClass;
@@ -9,7 +10,8 @@ class RouteAttributesParser
 {
     private array $attributes = array();
 
-    public function __construct(ReflectionClass|ReflectionMethod $reflectedElement) {
+    public function __construct(ReflectionClass|ReflectionMethod $reflectedElement)
+    {
         $baseAttributeClass = new ReflectionClass(AbstractRouteAttribute::class);
 
         $reflectedAttributes = $reflectedElement->getAttributes();
@@ -23,7 +25,8 @@ class RouteAttributesParser
         }
     }
 
-    public function hasAttribute(string $class) {
+    public function hasAttribute(string $class)
+    {
         foreach ($this->attributes as $attr) {
             if ($attr instanceof $class || is_subclass_of($attr, $class, false)) {
                 return true;
@@ -32,13 +35,14 @@ class RouteAttributesParser
         return false;
     }
 
-    public function getAttributeValue(string $class): string|false {
+    public function getAttributeValue(string $class): string|false
+    {
         if (is_subclass_of($class, AbstractRouteStringAttribute::class)) {
             foreach ($this->attributes as $attr) {
                 if ($attr instanceof $class || is_subclass_of($attr, $class, false)) {
                     return $attr->getValue();
                 }
-            }    
+            }
         }
         return false;
     }

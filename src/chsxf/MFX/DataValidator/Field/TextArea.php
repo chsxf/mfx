@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Data validation Text area field type class
  * 
@@ -22,7 +23,8 @@ class TextArea extends Field
 	 * @param array $containingGroups
 	 * @param FieldType $type_override
 	 */
-	public function generate(array $containingGroups = array(), ?FieldType $type_override = NULL): array {
+	public function generate(array $containingGroups = array(), ?FieldType $type_override = NULL): array
+	{
 		$result = parent::generate($containingGroups, $type_override);
 		$result[0] = '@mfx/DataValidator/textarea.twig';
 		return $result;

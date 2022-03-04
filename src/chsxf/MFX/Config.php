@@ -1,9 +1,11 @@
 <?php
+
 /**
  * Configuration management
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
+
 namespace chsxf\MFX;
 
 use ErrorException;
@@ -11,7 +13,8 @@ use ErrorException;
 /**
  * Singleton configuration management helper class
  */
-class Config {
+class Config
+{
 
 	/**
 	 * @var Config Singleton reference
@@ -33,7 +36,8 @@ class Config {
 	 *
 	 * @param array $configData Config data
 	 */
-	public function __construct(array $configData = array()) {
+	public function __construct(array $configData = array())
+	{
 		$this->configData = $configData;
 	}
 
@@ -42,11 +46,11 @@ class Config {
 	 *
 	 * @param array $configData Config data
 	 */
-	public static function load(array $configData = array()) {
+	public static function load(array $configData = array())
+	{
 		if (self::$singleInstance === NULL) {
 			self::$singleInstance = new Config($configData);
-		}
-		else if (self::$nextLoadDomain !== NULL) {
+		} else if (self::$nextLoadDomain !== NULL) {
 			$nextDomain = self::$nextLoadDomain;
 			self::$nextLoadDomain = NULL;
 			self::$singleInstance->configData[$nextDomain] = $configData;
@@ -59,9 +63,10 @@ class Config {
 	 * @param string $_domain Domain under which configuration properties will be set
 	 * @param string $_path Path of the configuration file to load
 	 */
-	public static function loadOnDomain(string $_domain, string $_path) {
+	public static function loadOnDomain(string $_domain, string $_path)
+	{
 		self::$nextLoadDomain = $_domain;
-		require ($_path);
+		require($_path);
 	}
 
 	/**
@@ -72,10 +77,11 @@ class Config {
 	 * @throws ErrorException If the Config::load() function has not been executed at least once before
 	 * @return mixed
 	 */
-	public static function get(string $property, mixed $default = NULL): mixed {
-        if (self::$singleInstance === null) {
-            throw new ErrorException("Config is not loaded.");
-        }
+	public static function get(string $property, mixed $default = NULL): mixed
+	{
+		if (self::$singleInstance === null) {
+			throw new ErrorException("Config is not loaded.");
+		}
 		return self::$singleInstance->getProperty($property, $default);
 	}
 
@@ -86,10 +92,11 @@ class Config {
 	 * @throws ErrorException If the Config::load() function has not been executed at least once before
 	 * @return boolean true if the property has been provided, false either
 	 */
-	public static function has(string $property): bool {
-        if (self::$singleInstance === null) {
-            throw new ErrorException("Config is not loaded.");
-        }
+	public static function has(string $property): bool
+	{
+		if (self::$singleInstance === null) {
+			throw new ErrorException("Config is not loaded.");
+		}
 		return self::$singleInstance->hasProperty($property);
 	}
 
@@ -100,18 +107,19 @@ class Config {
 	 * @param mixed $default Default value if the property has not been provided (Defaults to NULL)
 	 * @return mixed
 	 */
-	public function getProperty(string $property, mixed $default = NULL): mixed {
+	public function getProperty(string $property, mixed $default = NULL): mixed
+	{
 		$property = trim($property);
-        if (empty($property)) {
-            return false;
-        }
+		if (empty($property)) {
+			return false;
+		}
 
 		$members = explode('.', $property);
 		$arr = $this->configData;
 		foreach ($members as $m) {
-            if (!array_key_exists($m, $arr)) {
-                return $default;
-            }
+			if (!array_key_exists($m, $arr)) {
+				return $default;
+			}
 			$arr = $arr[$m];
 		}
 		return $arr;
@@ -123,21 +131,21 @@ class Config {
 	 * @param string $property Name of the propery
 	 * @return boolean true if the property has been provided, false either
 	 */
-	public function hasProperty(string $property): bool {
+	public function hasProperty(string $property): bool
+	{
 		$property = trim($property);
-        if (empty($property)) {
-            return false;
-        }
+		if (empty($property)) {
+			return false;
+		}
 
 		$members = explode('.', $property);
 		$arr = $this->configData;
 		foreach ($members as $m) {
-            if (!array_key_exists($m, $arr)) {
-                return false;
-            }
+			if (!array_key_exists($m, $arr)) {
+				return false;
+			}
 			$arr = $arr[$m];
 		}
 		return true;
 	}
-
 }

@@ -1,9 +1,11 @@
 <?php
+
 /**
  * Data validation Checkbox field type class
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
+
 namespace chsxf\MFX\DataValidator\Field;
 
 use chsxf\MFX\DataValidator\Field;
@@ -13,14 +15,15 @@ use chsxf\MFX\DataValidator\FieldTypeRegistry;
 /**
  * Descriptor of a checkbox field type
  */
-class File extends Field {
+class File extends Field
+{
 
 	private static array $_requiredKeys = array(
-			'name',
-			'type',
-			'tmp_name',
-			'error',
-			'size'
+		'name',
+		'type',
+		'tmp_name',
+		'error',
+		'size'
 	);
 
 	/**
@@ -28,7 +31,8 @@ class File extends Field {
 	 *
 	 * @see Field::validate()
 	 */
-	public function validate(bool $silent = false): bool {
+	public function validate(bool $silent = false): bool
+	{
 		if (!parent::validate($silent)) {
 			return false;
 		}
@@ -47,8 +51,7 @@ class File extends Field {
 					return false;
 				}
 			}
-		}
-		else {
+		} else {
 			$value = $this->getValue(true);
 			if (($this->isRequired() || !empty($value)) && !$this->_validateFileData($value)) {
 				if (!$silent) {
@@ -66,7 +69,8 @@ class File extends Field {
 	 *
 	 * @param mixed $_data
 	 */
-	private function _validateFileData(mixed $_data): bool {
+	private function _validateFileData(mixed $_data): bool
+	{
 		$isValid = false;
 		if (is_array($_data)) {
 			$intersect = array_intersect(self::$_requiredKeys, array_keys($_data));
@@ -83,7 +87,8 @@ class File extends Field {
 	 * {@inheritdoc}
 	 * @see \chsxf\MFX\DataValidator\Field::setValue()
 	 */
-	public function setValue(mixed $value) {
+	public function setValue(mixed $value)
+	{
 		if ($this->isRepeatable()) {
 			if (is_array($value)) {
 				$value = array_filter($value, function ($item) {
@@ -91,8 +96,7 @@ class File extends Field {
 				});
 			}
 			parent::setValue($value);
-		}
-		else {
+		} else {
 			if (isset($value['error']) && $value['error'] != UPLOAD_ERR_NO_FILE) {
 				parent::setValue($value);
 			}
@@ -104,10 +108,10 @@ class File extends Field {
 	 *
 	 * @see Field::revertToDefaultIfNotPopulated()
 	 */
-	public function revertToDefaultIfNotPopulated(): bool {
+	public function revertToDefaultIfNotPopulated(): bool
+	{
 		return true;
 	}
-
 }
 
 FieldTypeRegistry::registerClassForType(FieldType::FILE, File::class);

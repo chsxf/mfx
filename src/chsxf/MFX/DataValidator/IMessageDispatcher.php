@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Data validator message dispatcher interface
  * 
@@ -10,13 +11,13 @@ namespace chsxf\MFX\DataValidator;
 /**
  * Interface describing data validator's message dispatchers
  */
-interface IMessageDispatcher {
-	
+interface IMessageDispatcher
+{
+
 	/**
 	 * Dispatches a message
 	 * @param string $message Message to dispatch
 	 * @param int $level Error level of the message to dispatch
 	 */
 	function dispatchMessage(string $message, int $level);
-	
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class and helper functions for math
  *
@@ -10,7 +11,8 @@ namespace chsxf\MFX;
 /**
  * Math helper class
  */
-final class MathTools {
+final class MathTools
+{
 
 	/**
 	 * Generates a randomly-generated float number
@@ -18,8 +20,8 @@ final class MathTools {
 	 *
 	 * @return float
 	 */
-	public static function randomFloat(): float {
+	public static function randomFloat(): float
+	{
 		return mt_rand() / mt_getrandmax();
 	}
-
 }

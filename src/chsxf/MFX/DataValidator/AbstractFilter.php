@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Data validation field filter class
  * 
@@ -18,12 +19,12 @@ abstract class AbstractFilter
 	 * @var string Filter error message
 	 */
 	private string $_message;
-	
+
 	/**
 	 * @var IMessageDispatcher Overridden message dispatcher
 	 */
 	private ?IMessageDispatcher $_messageDispatcher = NULL;
-	
+
 	/**
 	 * Constructor
 	 * @param string $message Error message
@@ -32,7 +33,7 @@ abstract class AbstractFilter
 	{
 		$this->setMessage($message);
 	}
-	
+
 	/**
 	 * Dispatches the error message on demand
 	 * 
@@ -42,18 +43,18 @@ abstract class AbstractFilter
 	 * @param string $fieldName Field name to which this message applies
 	 * @param int $level Error level (Defaults to E_USER_NOTICE)
 	 */
-	protected final function emitMessage(string $fieldName, int $level = E_USER_NOTICE) {
+	protected final function emitMessage(string $fieldName, int $level = E_USER_NOTICE)
+	{
 		if (!empty($this->_message)) {
 			$msg = sprintf($this->_message, $fieldName);
-            if ($this->_messageDispatcher === null) {
-                trigger_error($msg, $level);
-            }
-			else {
-                $this->_messageDispatcher->dispatchMessage($msg, $level);
-            }
+			if ($this->_messageDispatcher === null) {
+				trigger_error($msg, $level);
+			} else {
+				$this->_messageDispatcher->dispatchMessage($msg, $level);
+			}
 		}
 	}
-	
+
 	/**
 	 * Sets the error message.
 	 * 
@@ -61,23 +62,24 @@ abstract class AbstractFilter
 	 * 
 	 * @param string $message
 	 */
-	protected final function setMessage(string $message) {
-        if (is_string($message) && !empty($message)) {
-            $this->_message = $message;
-        }
-		else {
-            $this->_message = null;
-        }
+	protected final function setMessage(string $message)
+	{
+		if (is_string($message) && !empty($message)) {
+			$this->_message = $message;
+		} else {
+			$this->_message = null;
+		}
 	}
-	
+
 	/**
 	 * Overriddes the default message dispatcher
 	 * @param IMessageDispatcher $dispatcher
 	 */
-	public final function setMessageDispatcher(IMessageDispatcher $dispatcher) {
+	public final function setMessageDispatcher(IMessageDispatcher $dispatcher)
+	{
 		$this->_messageDispatcher = $dispatcher;
 	}
-	
+
 	/**
 	 * Tells if this filter can be skipped during the validation process if the field is not required and has no value.
 	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)
@@ -86,18 +88,20 @@ abstract class AbstractFilter
 	 * Note:
 	 * This function is ignored for filters returning true in appliesToField().
 	 */
-	public function mayBeSkipped(int $atIndex = -1): bool {
+	public function mayBeSkipped(int $atIndex = -1): bool
+	{
 		return true;
 	}
-	
+
 	/**
 	 * Tells if this filter must be applied to the field's values or to the field instance only
 	 * @return boolean
 	 */
-	public function appliesToField(): bool {
+	public function appliesToField(): bool
+	{
 		return false;
 	}
-	
+
 	/**
 	 * Validates value
 	 * @param string $fieldName Field name
