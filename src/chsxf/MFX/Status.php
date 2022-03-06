@@ -1,14 +1,14 @@
 <?php
 
 use chsxf\MFX\Attributes\AnonymousRoute;
-use chsxf\MFX\Attributes\SubRoute;
-use chsxf\MFX\IRouteProvider;
+use chsxf\MFX\Attributes\Route;
 use chsxf\MFX\RequestResult;
+use chsxf\MFX\Routers\IRouteProvider;
 
 final class Status implements IRouteProvider
 {
 
-	#[SubRoute]
+	#[Route]
 	#[AnonymousRoute]
 	public static function ping(): RequestResult
 	{

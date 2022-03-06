@@ -8,6 +8,8 @@
 
 namespace chsxf\MFX;
 
+use chsxf\MFX\Routers\IRouteProvider;
+
 /**
  * Paginated route helper class
  */

@@ -3,7 +3,8 @@
 namespace chsxf\MFX;
 
 use chsxf\MFX\Attributes\AnonymousRoute;
-use chsxf\MFX\Attributes\SubRoute;
+use chsxf\MFX\Attributes\Route;
+use chsxf\MFX\Routers\IRouteProvider;
 
 final class DatabaseUpdater implements IRouteProvider
 {
@@ -11,7 +12,7 @@ final class DatabaseUpdater implements IRouteProvider
 	private static ?array $_updatersData = NULL;
 	private static ?string $_updatersDomain = NULL;
 
-	#[SubRoute]
+	#[Route]
 	#[AnonymousRoute]
 	public static function update(): RequestResult|false
 	{
