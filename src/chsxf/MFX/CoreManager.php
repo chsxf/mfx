@@ -10,12 +10,14 @@ namespace chsxf\MFX;
 
 use chsxf\MFX\Attributes\ContentType;
 use chsxf\MFX\Attributes\PreRouteCallback;
+use chsxf\MFX\Attributes\PostRouteCallback;
 use chsxf\MFX\Attributes\RedirectURI;
 use chsxf\MFX\Attributes\RequiredContentType;
 use chsxf\MFX\Attributes\RequiredRequestMethod;
 use chsxf\MFX\Attributes\RouteAttributesParser;
-use chsxf\MFX\Attributes\SubRoute;
 use chsxf\MFX\L10n\L10nManager;
+use chsxf\MFX\Routers\IRouter;
+use chsxf\MFX\Routers\MainSubRouter;
 use Twig\Environment;
 use Twig\Template;
 
@@ -26,8 +28,6 @@ use Twig\Template;
  */
 final class CoreManager
 {
-	const ROUTE_REGEXP = '/^[[:alnum:]_]+\.[[:alnum:]_]+?$/';
-
 	private static array $HTTP_STATUS_CODES = array(
 		100 => 'Continue',
 		101 => 'Switching Protocols',
@@ -170,7 +170,7 @@ final class CoreManager
 	 *
 	 * @return string
 	 */
-	public static function convertFakeProtocols($str): string
+	public static function convertFakeProtocols(string $str): string
 	{
 		$inst = self::_ensureInit();
 		$search = array();
@@ -178,26 +178,6 @@ final class CoreManager
 			$search[] = "{$k}://";
 		}
 		return str_replace($search, array_values($inst->_fakeProtocols), $str);
-	}
-
-	/**
-	 * Checks if a specific method is a valid sub-route
-	 * @param \ReflectionMethod $method Method to inspect
-	 * @return RouteAttributesParser|false The route's attributes parser or false in case of an error
-	 */
-	public static function isMethodValidSubRoute(\ReflectionMethod $method): RouteAttributesParser|false
-	{
-		// Checking method
-		$params = $method->getParameters();
-		if (!$method->isStatic() || !$method->isPublic() || (count($params) >= 1 && !ArrayTools::isParameterArray($params[0]))) {
-			return false;
-		}
-		// Building parameters from doc comment
-		$routeParser = new RouteAttributesParser($method);
-		if (!$routeParser->hasAttribute(SubRoute::class)) {
-			return false;
-		}
-		return $routeParser;
 	}
 
 	/**
@@ -220,7 +200,7 @@ final class CoreManager
 
 		$inst->_currentTwigEnvironment = $twig;
 
-		// Finding route from REQUEST_URI
+		// Finding route path info from REQUEST_URI
 		$scriptPath = dirname($_SERVER['SCRIPT_NAME']);
 		if (PHP_OS_FAMILY == 'Windows' && $scriptPath == '\\') {
 			$scriptPath = '/';
@@ -237,65 +217,28 @@ final class CoreManager
 		$routePathInfo = explode('?', $routePathInfo, 2);
 		$routePathInfo = ltrim($routePathInfo[0], '/');
 
-		// Guessing route from path info
-		if (empty($routePathInfo)) {
-			if ($defaultRoute == 'none') {
-				self::dieWithStatusCode(200);
-			}
-
-			$route = $defaultRoute;
-			$routeParams = array();
-		} else {
-			$chunks = explode('/', $routePathInfo, 2);
-			$route = $chunks[0];
-			$firstRouteParam = 1;
-			if (!preg_match(self::ROUTE_REGEXP, $route) && Config::get('allow_default_route_substitution', false)) {
-				$route = $defaultRoute;
-				$firstRouteParam = 0;
-			}
-			$routeParams = (empty($chunks[$firstRouteParam]) && (!isset($chunks[$firstRouteParam]) || $chunks[$firstRouteParam] !== '0')) ? array() : explode('/', $chunks[$firstRouteParam]);
+		// Parsing through the router
+		$routerClass = Config::get('router.class', MainSubRouter::class);
+		if (!class_exists($routerClass) || !is_subclass_of($routerClass, IRouter::class)) {
+			throw new \ErrorException("Invalid router class '{$routerClass}'");
 		}
-
-		// Checking route
-		if (!preg_match(self::ROUTE_REGEXP, $route)) {
-			self::_check404file($routeParams);
-			throw new \ErrorException("'{$route}' is not a valid route.");
-		}
-		list($mainRoute, $subRoute) = explode('.', $route);
-		try {
-			$rc = new \ReflectionClass("\\{$mainRoute}");
-		} catch (\ReflectionException $e) {
-			try {
-				$rc = new \ReflectionClass(__NAMESPACE__ . "\\{$mainRoute}");
-			} catch (\ReflectionException $e) {
-				self::_check404file($routeParams);
-				throw $e;
-			}
-		}
-		if (!$rc->implementsInterface(IRouteProvider::class)) {
-			throw new \ErrorException("'{$mainRoute}' is not a valid route provider.");
-		}
-		$routeAttributes = new RouteAttributesParser($rc);
-
-		// Checking subroute
-		$rm = $rc->getMethod($subRoute);
-		$subRouteAttributes = self::isMethodValidSubRoute($rm);
-		if (false === $subRouteAttributes) {
-			throw new \ErrorException("'{$subRoute}' is not a valid subroute of the '{$mainRoute}' route.");
+		$router = new $routerClass();
+		if ($router instanceof IRouter) {
+			$routerData = $router->parseRoute($routePathInfo, $defaultRoute);
 		}
 
 		// Checking pre-conditions
 		// -- Request method
-		if ($subRouteAttributes->hasAttribute(RequiredRequestMethod::class)) {
-			if ($_SERVER['REQUEST_METHOD'] !== strtoupper($subRouteAttributes->getAttributeValue(RequiredRequestMethod::class))) {
-				self::dieWithStatusCode(405);
-			}
+		$requiredRequestMethod = $routerData->routeAttributes->getAttributeValue(RequiredRequestMethod::class);
+		if (!empty($requiredRequestMethod) && $_SERVER['REQUEST_METHOD'] !== $requiredRequestMethod) {
+			self::dieWithStatusCode(405);
 		}
 		// -- Content-Type
-		if ($subRouteAttributes->hasAttribute(RequiredContentType::class)) {
+		$requiredContentType = $routerData->routeAttributes->getAttributeValue(RequiredContentType::class);
+		if (!empty($requiredContentType)) {
 			$regs = array();
 			preg_match('/^([^;]+);?/', $_SERVER['CONTENT_TYPE'], $regs);
-			if ($regs[1] !== $subRouteAttributes->getAttributeValue(RequiredContentType::class)) {
+			if ($regs[1] !== $requiredContentType) {
 				self::dieWithStatusCode(415);
 			}
 		}
@@ -304,26 +247,22 @@ final class CoreManager
 		// -- Global
 		$callback = Config::get('request.pre_route_callback');
 		if (!empty($callback) && is_callable($callback)) {
-			call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
+			call_user_func($callback, $routerData);
 		}
 		// -- Route
-		if ($routeAttributes->hasAttribute(PreRouteCallback::class)) {
-			$callback = $routeAttributes->getAttributeValue(PreRouteCallback::class);
-			if (!empty($callback) && is_callable($callback)) {
-				call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
-			}
+		$callback = $routerData->routeProviderAttributes->getAttributeValue(PreRouteCallback::class);
+		if (!empty($callback) && is_callable($callback)) {
+			call_user_func($callback, $routerData);
 		}
 		// -- Subroute
-		if ($subRouteAttributes->hasAttribute(PreRouteCallback::class)) {
-			$callback = $subRouteAttributes->getAttributeValue(PreRouteCallback::class);
-			if (!empty($callback) && is_callable($callback)) {
-				call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
-			}
+		$callback = $routerData->routeAttributes->getAttributeValue(PreRouteCallback::class);
+		if (!empty($callback) && is_callable($callback)) {
+			call_user_func($callback, $routerData);
 		}
 
 		// Processing route
-		$reqResult = $rm->invoke(NULL, $routeParams);
-		$routeProvidedTemplate = $subRouteAttributes->hasAttribute(Template::class) ? $subRouteAttributes->getAttributeValue(Template::class) : NULL;
+		$reqResult = $routerData->routeMethod->invoke(NULL, $routerData->routeParams);
+		$routeProvidedTemplate = $routerData->routeAttributes->hasAttribute(Template::class) ? $routerData->routeAttributes->getAttributeValue(Template::class) : NULL;
 		switch ($reqResult->subRouteType()) {
 				// Views
 			case SubRouteType::VIEW:
@@ -332,8 +271,8 @@ final class CoreManager
 				}
 
 				CoreProfiler::pushEvent('Building response');
-				self::_setResponseContentType($subRouteAttributes, Config::get('response.default_content_type', 'text/html'), Config::get('response.default_charset', 'UTF-8'));
-				$template = $reqResult->template(($routeProvidedTemplate === NULL) ? str_replace(array('_', '.'), '/', $route) : $routeProvidedTemplate);
+				self::_setResponseContentType($routerData->routeAttributes, Config::get('response.default_content_type', 'text/html'), Config::get('response.default_charset', 'UTF-8'));
+				$template = $reqResult->template(($routeProvidedTemplate === NULL) ? $routerData->defaultTemplate : $routeProvidedTemplate);
 
 				$context = array_merge(RequestResult::getViewGlobals(), $reqResult->data(), array(
 					'mfx_scripts' => Scripts::export($twig),
@@ -352,20 +291,20 @@ final class CoreManager
 				// Edit requests - Mostly requests with POST data
 			case SubRouteType::REDIRECT:
 				$redirectionURI = $reqResult->redirectURI();
-				if (empty($redirectionURI) && $subRouteAttributes->hasAttribute(RedirectURI::class)) {
-					$redirectionURI = $subRouteAttributes->getAttributeValue(RedirectURI::class);
+				if (empty($redirectionURI) && $routerData->routeAttributes->hasAttribute(RedirectURI::class)) {
+					$redirectionURI = $routerData->routeAttributes->getAttributeValue(RedirectURI::class);
 				}
 				self::redirect($redirectionURI);
 				break;
 
 				// Asynchronous requests expecting JSON data
 			case SubRouteType::JSON:
-				self::outputJSON($reqResult, $subRouteAttributes, $twig);
+				self::outputJSON($reqResult, $routerData->routeAttributes, $twig);
 				break;
 
 				// Asynchronous requests expecting XML data
 			case SubRouteType::XML:
-				self::outputXML($reqResult, $subRouteAttributes, $twig);
+				self::outputXML($reqResult, $routerData->routeAttributes, $twig);
 				break;
 
 				// Status
@@ -378,23 +317,19 @@ final class CoreManager
 		// -- Starting output buffering to prevent unvolontury output during post-processing callback
 		ob_start();
 		// -- Subroute
-		if ($subRouteAttributes->hasAttribute(PostRouteCallback::class)) {
-			$callback = $subRouteAttributes->getAttributeValue(PostRouteCallback::class);
-			if (!empty($callback) && is_callable($callback)) {
-				call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
-			}
+		$callback = $routerData->routeAttributes->getAttributeValue(PostRouteCallback::class);
+		if (!empty($callback) && is_callable($callback)) {
+			call_user_func($callback, $routerData);
 		}
 		// -- Route
-		if ($routeAttributes->hasAttribute(PostRouteCallback::class)) {
-			$callback = $routeAttributes->getAttributeValue(PostRouteCallback::class);
-			if (!empty($callback) && is_callable($callback)) {
-				call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
-			}
+		$callback = $routerData->routeProviderAttributes->getAttributeValue(PostRouteCallback::class);
+		if (!empty($callback) && is_callable($callback)) {
+			call_user_func($callback, $routerData);
 		}
 		// -- Global
 		$callback = Config::get('request.post_route_callback');
 		if (!empty($callback) && is_callable($callback)) {
-			call_user_func($callback, $mainRoute, $subRoute, $routeAttributes, $subRouteAttributes, $routeParams);
+			call_user_func($callback, $routerData);
 		}
 		// -- Discarding output if any
 		ob_end_clean();
@@ -427,17 +362,6 @@ final class CoreManager
 			$d = $reqResult->data();
 			ErrorManager::flushToArrayOrObject($d);
 			echo XMLTools::build($reqResult->data());
-		}
-	}
-
-	/**
-	 * Checks if the request could be referring to a missing file and replies a 404 HTTP error code
-	 * @param array $routeParams Request route parameters
-	 */
-	private static function _check404file(array $routeParams)
-	{
-		if (!empty($routeParams) && preg_match('/\.[a-z0-9]+$/i', $routeParams[count($routeParams) - 1])) {
-			self::dieWithStatusCode(404);
 		}
 	}
 
@@ -554,7 +478,7 @@ final class CoreManager
 	/**
 	 * Sets the response Content-Type header from the sub-route documentation comment parameters
 	 *
-	 * @param RouteAttributesParser $subRouteAttributes Documentation comment parameters of the sub-route
+	 * @param RouteAttributesParser $routerData->routeAttributes Documentation comment parameters of the sub-route
 	 * @param string $default Content type to use if not provided by the sub-route.
 	 * @param string $defaultCharset Charset to use if not provided by the sub-route.
 	 */
