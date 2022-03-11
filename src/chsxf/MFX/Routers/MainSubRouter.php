@@ -44,27 +44,39 @@ class MainSubRouter implements IRouter
             self::check404file($routeParams);
             throw new \ErrorException("'{$route}' is not a valid route.");
         }
-        list($providerClass, $routeMethod) = explode('.', $route);
-        try {
-            $rc = new \ReflectionClass("\\{$providerClass}");
-        } catch (\ReflectionException $e) {
+        list($providerClassName, $routeMethodName) = explode('.', $route);
+
+        $routeNamespaces = Config::get('router.options.allowed_namespaces', array());
+        if (!in_array('', $routeNamespaces)) {
+            array_unshift($routeNamespaces, '');
+        }
+        $providerClass = NULL;
+        foreach ($routeNamespaces as $namespace) {
+            $namespace = rtrim($namespace, '\\');
+            $qualifiedClassName = empty($namespace) ? "\\{$providerClassName}" : "\\{$namespace}\\{$providerClassName}";
+
             try {
-                $rc = new \ReflectionClass(__NAMESPACE__ . "\\{$providerClass}");
+                $providerClass = new \ReflectionClass($qualifiedClassName);
+                break;
             } catch (\ReflectionException $e) {
-                self::check404file($routeParams);
-                throw $e;
+                $providerClass = NULL;
             }
         }
-        if (!$rc->implementsInterface(IRouteProvider::class)) {
-            throw new \ErrorException("'{$providerClass}' is not a valid route provider.");
+
+        if ($providerClass === NULL) {
+            self::check404file($routeParams);
         }
-        $providerAttributes = new RouteAttributesParser($rc);
+
+        if ($providerClass === NULL || !$providerClass->implementsInterface(IRouteProvider::class)) {
+            throw new \ErrorException("'{$providerClassName}' is not a valid route provider.");
+        }
+        $providerAttributes = new RouteAttributesParser($providerClass);
 
         // Checking subroute
-        $routeMethod = $rc->getMethod($routeMethod);
+        $routeMethod = $providerClass->getMethod($routeMethodName);
         $routeAttributes = self::isMethodValidRoute($routeMethod);
         if (false === $routeAttributes) {
-            throw new \ErrorException("'{$routeMethod}' is not a valid route of the '{$providerClass}' provider.");
+            throw new \ErrorException("'{$routeMethodName}' is not a valid route of the '{$providerClassName}' provider.");
         }
 
         $defaultTemplate = str_replace(array('_', '.'), '/', $route);
