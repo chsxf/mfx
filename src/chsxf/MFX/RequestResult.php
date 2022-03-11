@@ -164,7 +164,7 @@ final class RequestResult
 	/**
 	 * Helper function to build RequestResult instances for erroneous responses, providing the HTTP status code
 	 * @param int $statusCode HTTP status code of the response
-	 * @param string $message Message
+	 * @param ?string $message Message
 	 * @return RequestResult
 	 */
 	public static function buildStatusRequestResult(int $statusCode = 400, ?string $message = NULL): RequestResult

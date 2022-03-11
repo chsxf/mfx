@@ -428,9 +428,9 @@ final class CoreManager
 	/**
 	 * Emits a HTTP status code
 	 * @param int $code HTTP status code to emit (Defaults to 400 Bad Request)
-	 * @param string $message Custom message to output with status code
+	 * @param ?string $message Custom message to output with status code
 	 */
-	public static function outputStatusCode(int $code = 400, string $message = '')
+	public static function outputStatusCode(int $code = 400, ?string $message = NULL)
 	{
 		$code = self::_setStatusCode($code);
 
@@ -466,9 +466,9 @@ final class CoreManager
 	/**
 	 * Terminates the script and emits a HTTP status code
 	 * @param int $code HTTP status code to emit (Defaults to 400 Bad Request)
-	 * @param string $message Custom message to output with status code
+	 * @param ?string $message Custom message to output with status code
 	 */
-	public static function dieWithStatusCode(int $code = 400, string $message = '')
+	public static function dieWithStatusCode(int $code = 400, ?string $message = NULL)
 	{
 		self::outputStatusCode($code, $message);
 		ErrorManager::freeze();
