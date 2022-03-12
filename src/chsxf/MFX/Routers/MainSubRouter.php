@@ -47,6 +47,9 @@ class MainSubRouter implements IRouter
         list($providerClassName, $routeMethodName) = explode('.', $route);
 
         $routeNamespaces = Config::get('router.options.allowed_namespaces', array());
+        if (!in_array('chsxf\\MFX', $routeNamespaces)) {
+            array_unshift($routeNamespaces, 'chsxf\\MFX');
+        }
         if (!in_array('', $routeNamespaces)) {
             array_unshift($routeNamespaces, '');
         }
