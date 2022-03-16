@@ -40,8 +40,9 @@ function handleNotifs(notifs) {
 }
 
 $(function() {
-	if ($.ui)
+	if ($.ui) {
 		$('#mfx-profiler').removeClass('mfx-hcenter mfx-vcenter');
+	}
 	
 	$('#mfx-profiler-bar .mfx-profiler-toggle').unbind('click').click(function(event) {
 		event.preventDefault();
@@ -52,7 +53,9 @@ $(function() {
 				modal: true,
 				title: $(this).attr('mfx:dialog-title')
 			});
-		else
+		else {
 			$('#mfx-profiler').toggle();
+		}
+		loadProfilerGraph();
 	});
 });

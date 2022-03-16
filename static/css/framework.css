@@ -1,43 +1,59 @@
-@CHARSET "UTF-8";
+@charset "UTF-8";
 
-html, body {
-	height: 100%;
+html,
+body {
+  height: 100%;
 }
 
 #mfx-profiler-bar {
-	position: absolute;
-	
-	bottom: 0;
-	left: 0;
-	height: 40px;
+  position: fixed;
+
+  bottom: 0;
+  left: 0;
+  height: 40px;
 }
 
 #mfx-profiler-bar a {
-	position: absolute;
-	
-	top: 4px;
-	left: 4px;
-}
+  position: absolute;
 
-.ui-dialog #mfx-profiler {
-	background-color: transparent;
+  top: 4px;
+  left: 4px;
 }
 
 #mfx-profiler {
-	display: none;
+  display: none;
 
-	background-color: white;
-	padding: 0;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.9);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 #mfx-profiler pre {
-	margin: 10px;
+  position: fixed;
+  left: 50px;
+  right: 50px;
+  top: 50px;
+  bottom: 15vh;
+  color: white;
 }
 
-.mfx-hcenter, .mfx-vcenter {
-	position: absolute;
+#mfx-profiler-chart {
+  position: fixed;
+  left: 50px;
+  right: 50px;
+  bottom: 50px;
+  top: 20vh;
 }
 
-.mfx-invisible-at-start, .invisible {
-	display: none;
+.mfx-hcenter,
+.mfx-vcenter {
+  position: absolute;
+}
+
+.mfx-invisible-at-start,
+.invisible {
+  display: none;
 }

@@ -1,6 +1,6 @@
 Profiling results:
 	- {{ dgettext('mfx', 'PHP version') }}: {{ constant('PHP_VERSION') }}
-	- {{ dgettext('mfx', 'Duration') }}: {{ dgettext('mfx', '%d s')|format(duration) }}
+	- {{ dgettext('mfx', 'Duration') }}: {{ dgettext('mfx', '%0.4f s')|format(duration) }}
 	- {{ dgettext('mfx', 'Operation count') }}: {{ opCount|number_format(0) }}
 	- {{ dgettext('mfx', 'Memory peak usage') }}: {{ _d('mfx', '%s bytes')|format(memPeakUsage|number_format(0)) }} ({{ dgettext('mfx', '%s%% of allowed memory')|format((memPeakUsageRatio * 100)|number_format(3)) }})
 	- {{ dgettext('mfx', 'Memory real peak usage') }}: {{ _d('mfx', '%s bytes')|format(memRealPeakUsage|number_format(0)) }} ({{ dgettext('mfx', '%s%% of allowed memory')|format((memRealPeakUsageRatio * 100)|number_format(3)) }})

@@ -1,8 +1,8 @@
-<div id="mfx-profiler" class="mfx-hcenter mfx-vcenter">
+<div id="mfx-profiler">
 <pre>
 Profiling results:
 	- {{ dgettext('mfx', 'PHP version') }}: {{ constant('PHP_VERSION') }}
-	- {{ dgettext('mfx', 'Duration') }}: {{ dgettext('mfx', '%d s')|format(duration) }}
+	- {{ dgettext('mfx', 'Duration') }}: {{ dgettext('mfx', '%0.4f s')|format(duration) }}
 	- {{ dgettext('mfx', 'Operation count') }}: {{ opCount|number_format(0) }}
 	- {{ dgettext('mfx', 'Memory peak usage') }}: {{ _d('mfx', '%s bytes')|format(memPeakUsage|number_format(0)) }} ({{ dgettext('mfx', '%s%% of allowed memory')|format((memPeakUsageRatio * 100)|number_format(3)) }})
 	- {{ dgettext('mfx', 'Memory real peak usage') }}: {{ _d('mfx', '%s bytes')|format(memRealPeakUsage|number_format(0)) }} ({{ dgettext('mfx', '%s%% of allowed memory')|format((memRealPeakUsageRatio * 100)|number_format(3)) }})
@@ -10,6 +10,7 @@ Profiling results:
 
 <script type="text/javascript">
 /* <![CDATA[ */
+function loadProfilerGraph() {
 	google.load('visualization', '1', { packages: [ 'corechart' ] });
 	google.setOnLoadCallback(function() {
 		var data = new google.visualization.DataTable();
@@ -23,23 +24,26 @@ Profiling results:
 
 		data.addRows([
 		{% for row in data %}
-		[ {{ row[0] }}, {{ row[1] }}, {{ row[3]|raw }}, {{ row[4]|raw }}, {{ row[2] }}, "{{ row[3]|raw }}", "{{ row[4]|raw }}"],
+		[ {{ row[0] }}, {{ row[1] }}, {{ row[3]|raw }}, {{ row[4]|raw }}, {{ row[2] }}, {{ row[3]|raw }}, {{ row[4]|raw }} ],
 		{% endfor %}
 		]);
 
+		var element = $('#mfx-profiler-chart');
+		
 		var options = {
 			title: "{{ dgettext('mfx', 'Profiling timeline (bytes over milliseconds)')|e('js') }}",
-			width: 900,
-			height: 600,
-			backgroundColor: 'transparent'
+			width: element.width(),
+			height: element.height(),
+			backgroundColor: 'white'
 		};
 
-		var chart = new google.visualization.LineChart(document.getElementById('mfx_profiler_chart'));
+		var chart = new google.visualization.LineChart(document.getElementById('mfx-profiler-chart'));
 		chart.draw(data, options);
 	});
+}
 /* ]]> */
 </script>
-<div id="mfx_profiler_chart" style="width: 900px; height: 600px"></div>
+<div id="mfx-profiler-chart"></div>
 </div>
 
-<div id="mfx-profiler-bar"><a href="#" class="mfx-profiler-toggle" title="{{ dgettext('mfx', 'Show / hide profiler')|e }}" mfx:dialog-title="{{ dgettext('mfx', 'Profiling results')|e }}"><img src="mfx/static/img/icons/profiles.png" /></a></div>
+<div id="mfx-profiler-bar"><a href="#" class="mfx-profiler-toggle" title="{{ dgettext('mfx', 'Show / hide profiler')|e }}" mfx:dialog-title="{{ dgettext('mfx', 'Profiling results')|e }}"><img src="mfximg://icons/profiles.png" /></a></div>

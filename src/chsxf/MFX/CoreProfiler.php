@@ -60,8 +60,8 @@ class CoreProfiler
 				microtime(true) - $this->_profilingStartTime,
 				memory_get_usage(),
 				memory_get_usage(true),
-				empty($event) ? 'null' : sprintf('%d', ++$this->_lastAnnotation),
-				empty($event) ? 'null' : $event
+				empty($event) ? 'null' : sprintf('"%d"', ++$this->_lastAnnotation),
+				empty($event) ? 'null' : "\"$event\""
 			);
 		}
 	}
@@ -167,7 +167,7 @@ class CoreProfiler
 
 		// HTML
 		if ($contentType == 'text/html') {
-			$str = $GLOBALS['twig']->render('@mfx/Profiler_HTML.twig', $context);
+			$str = CoreManager::getTwig()->render('@mfx/Profiler_HTML.twig', $context);
 			echo preg_replace('/<!--\s+--MFX_PROFILING_OUTPUT--\s+-->/', $str, $buffer);
 		}
 		// JSON
@@ -205,7 +205,7 @@ class CoreProfiler
 		}
 		// Text plain
 		else if ($contentType == 'text/plain') {
-			$str = $GLOBALS['twig']->render('@mfx/Profiler_Plain.twig', $context);
+			$str = CoreManager::getTwig()->render('@mfx/Profiler_Plain.twig', $context);
 			echo "{$buffer}\n\n{$str}";
 		}
 		// Unsupported content-type
