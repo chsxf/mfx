@@ -11,6 +11,8 @@ body {
   bottom: 0;
   left: 0;
   height: 40px;
+
+  z-index: 10001;
 }
 
 #mfx-profiler-bar a {
@@ -29,6 +31,7 @@ body {
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: 10000;
 }
 
 #mfx-profiler pre {
