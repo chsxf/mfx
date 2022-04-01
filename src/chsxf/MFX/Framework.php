@@ -13,12 +13,11 @@ use Twig\Loader\FilesystemLoader;
 
 final class Framework
 {
-    public static function init()
+    public static function init(string $configFilePath)
     {
         CommandLine::handleInvocation();
 
         // Loading configuration
-        $configFilePath = defined('chsxf\MFX\CONFIG_FILE_PATH') ? constant('chsxf\MFX\CONFIG_FILE_PATH') : 'application/config/config.php';
         require_once($configFilePath);
 
         SessionManager::start();
