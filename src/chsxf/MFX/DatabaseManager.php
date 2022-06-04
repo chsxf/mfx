@@ -36,7 +36,7 @@ final class DatabaseManager extends PDODatabaseManager
 	 */
 	public function __construct(string $dsn, string $username, string $password, string $server = self::DEFAULT_CONNECTION)
 	{
-		parent::__construct($dsn, $username, $password, NULL, Config::get('database.error_logging', false));
+		parent::__construct($dsn, $username, $password, NULL, Config::get(ConfigConstants::DATABASE_ERROR_LOGGING, false));
 		$this->_serverConfigurationKey = $server;
 	}
 
@@ -54,13 +54,13 @@ final class DatabaseManager extends PDODatabaseManager
 			return self::$_openConnections[$server];
 		}
 
-		if (!Config::has('database.servers')) {
+		if (!Config::has(ConfigConstants::DATABASE_SERVERS)) {
 			throw new DatabaseManagerException("No database server configured.");
 		}
 
-		$serverConfig = Config::get("database.servers.{$server}");
+		$serverConfig = Config::get(ConfigConstants::DATABASE_SERVERS . ".{$server}");
 		if (is_string($serverConfig) && !empty($serverConfig)) {
-			$serverConfig = Config::get("database.servers.{$serverConfig}");
+			$serverConfig = Config::get(ConfigConstants::DATABASE_SERVERS . ".{$serverConfig}");
 		}
 		if (empty($serverConfig) || !is_array($serverConfig)) {
 			throw new DatabaseManagerException("No server can be found for the '{$server}' key.");

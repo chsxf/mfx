@@ -9,6 +9,7 @@
 namespace chsxf\MFX\L10n;
 
 use \chsxf\MFX\Config;
+use chsxf\MFX\ConfigConstants;
 use \chsxf\MFX\SessionManager;
 
 if (!defined('LC_MESSAGES')) {
@@ -58,7 +59,7 @@ class L10nManager
 
 		// Default locale from config
 		if (empty($locale)) {
-			$locale = Config::get('default_locale', 'en_US');
+			$locale = Config::get(ConfigConstants::DEFAULT_LOCALE, 'en_US');
 		}
 
 		return $locale;
@@ -80,7 +81,7 @@ class L10nManager
 
 		// Setting application specific text domains
 		$hasDefault = false;
-		$appTextDomains = Config::get('text_domains');
+		$appTextDomains = Config::get(ConfigConstants::TEXT_DOMAINS);
 		if (!empty($appTextDomains) && is_array($appTextDomains)) {
 			$hasDefault = array_key_exists('__default', $appTextDomains);
 			foreach ($appTextDomains as $k => $v)

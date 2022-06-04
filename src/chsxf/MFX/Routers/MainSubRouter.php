@@ -12,6 +12,7 @@ use chsxf\MFX\ArrayTools;
 use chsxf\MFX\Attributes\Route;
 use chsxf\MFX\Attributes\RouteAttributesParser;
 use chsxf\MFX\Config;
+use chsxf\MFX\ConfigConstants;
 use chsxf\MFX\CoreManager;
 
 class MainSubRouter implements IRouter
@@ -32,7 +33,7 @@ class MainSubRouter implements IRouter
             $chunks = explode('/', $filteredPathInfo, 2);
             $route = $chunks[0];
             $firstRouteParam = 1;
-            if (!preg_match(self::ROUTE_REGEXP, $route) && Config::get('router.options.allow_default_route_substitution', false)) {
+            if (!preg_match(self::ROUTE_REGEXP, $route) && Config::get(ConfigConstants::ROUTER_OPTIONS_ALLOW_DEFAULT_ROUTE_SUBSTITUTION, false)) {
                 $route = $defaultRoute;
                 $firstRouteParam = 0;
             }
@@ -46,7 +47,7 @@ class MainSubRouter implements IRouter
         }
         list($providerClassName, $routeMethodName) = explode('.', $route);
 
-        $routeNamespaces = Config::get('router.options.allowed_namespaces', array());
+        $routeNamespaces = Config::get(ConfigConstants::ROUTER_OPTIONS_ALLOWED_NAMESPACES, array());
         if (!in_array('chsxf\\MFX', $routeNamespaces)) {
             array_unshift($routeNamespaces, 'chsxf\\MFX');
         }

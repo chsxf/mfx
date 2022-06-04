@@ -24,11 +24,11 @@ final class Framework
         ErrorManager::unfreeze();
 
         $iniTimezone = ini_get('date.timezone');
-        if (Config::has('timezone') || empty($iniTimezone)) {
-            date_default_timezone_set(Config::get('timezone', 'UTC'));
+        if (Config::has(ConfigConstants::TIMEZONE) || empty($iniTimezone)) {
+            date_default_timezone_set(Config::get(ConfigConstants::TIMEZONE, 'UTC'));
         }
 
-        if (Config::get('profiling', false)) {
+        if (Config::get(ConfigConstants::PROFILING, false)) {
             CoreProfiler::init();
         }
 
@@ -39,10 +39,10 @@ final class Framework
 
         // Initializing Twig
         CoreProfiler::pushEvent('Loading Twig');
-        $fsLoader = new FilesystemLoader(Config::get('twig.templates', array()));
+        $fsLoader = new FilesystemLoader(Config::get(ConfigConstants::TWIG_TEMPLATES, array()));
         $fsLoader->addPath("{$srcPath}/templates", 'mfx');
         $twig = new Environment($fsLoader, [
-            'cache' => Config::get('twig.cache', 'tmp/twig_cache'),
+            'cache' => Config::get(ConfigConstants::TWIG_CACHE, 'tmp/twig_cache'),
             'debug' => true,
             'strict_variables' => true,
             'autoescape' => false
@@ -52,7 +52,7 @@ final class Framework
         $twig->addExtension(new Gettext());
         $twig->addExtension(new SwitchCase());
         $twig->addExtension(new Extension());
-        $customTwigExtensions = Config::get('twig.extensions', array());
+        $customTwigExtensions = Config::get(ConfigConstants::TWIG_EXTENSIONS, array());
         foreach ($customTwigExtensions as $ext) {
             $twig->addExtension(new $ext());
         }
@@ -61,7 +61,7 @@ final class Framework
         User::validate();
 
         CoreProfiler::pushEvent('Processing request');
-        CoreManager::handleRequest($twig, Config::get('request.default_route', 'none'));
+        CoreManager::handleRequest($twig, Config::get(ConfigConstants::REQUEST_DEFAULT_ROUTE, 'none'));
 
         ErrorManager::freeze();
         CoreProfiler::stop();

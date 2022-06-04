@@ -112,7 +112,7 @@ final class CoreManager
 			self::$_singleInstance = new CoreManager();
 
 			// Fake protocols
-			$mfxRelativeBaseHREF = Config::get('mfx_relative_base_href', 'vendor/chsxf/mfx/static');
+			$mfxRelativeBaseHREF = Config::get(ConfigConstants::RELATIVE_BASE_HREF, 'vendor/chsxf/mfx/static');
 			if ('/' !== $mfxRelativeBaseHREF) {
 				$mfxRelativeBaseHREF = rtrim($mfxRelativeBaseHREF, '/');
 			}
@@ -121,7 +121,7 @@ final class CoreManager
 				'mfxcss' => "{$mfxRelativeBaseHREF}/css/",
 				'mfximg' => "{$mfxRelativeBaseHREF}/img/"
 			);
-			$fakeProtocols = Config::get('fake_protocols', array());
+			$fakeProtocols = Config::get(ConfigConstants::FAKE_PROTOCOLS, array());
 			if (is_array($fakeProtocols)) {
 				$definedWrappers = stream_get_wrappers();
 				foreach ($fakeProtocols as $k => $v) {
@@ -139,14 +139,14 @@ final class CoreManager
 			}
 			ob_start(array(__CLASS__, 'convertFakeProtocols'));
 
-			if (Config::get('response.default_content_type', 'text/html') == 'text/html') {
+			if (Config::get(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/html') == 'text/html') {
 				// Adding scripts
 				Scripts::add('mfxjs://jquery.min.js');
 				Scripts::add('mfxjs://layout.js');
 				Scripts::add('mfxjs://ui.js');
 				Scripts::add('mfxjs://mainObserver.js');
 				Scripts::add('mfxjs://string.js');
-				$userScripts = Config::get('scripts', array());
+				$userScripts = Config::get(ConfigConstants::SCRIPTS, array());
 				if (is_array($userScripts)) {
 					foreach ($userScripts as $s)
 						Scripts::add($s);
@@ -154,7 +154,7 @@ final class CoreManager
 
 				// Adding stylesheets
 				StyleSheets::add('mfxcss://framework.css');
-				$userSheets = Config::get('stylesheets', array());
+				$userSheets = Config::get(ConfigConstants::STYLESHEETS, array());
 				if (is_array($userSheets)) {
 					foreach ($userSheets as $s)
 						StyleSheets::add($s);
@@ -209,7 +209,7 @@ final class CoreManager
 		if (!preg_match('#/$#', $prefix)) {
 			$prefix .= '/';
 		}
-		$prefix .= Config::get('request.prefix', '');
+		$prefix .= Config::get(ConfigConstants::REQUEST_PREFIX, '');
 		if (!preg_match('#/$#', $prefix)) {
 			$prefix .= '/';
 		}
@@ -218,7 +218,7 @@ final class CoreManager
 		$routePathInfo = ltrim($routePathInfo[0], '/');
 
 		// Parsing through the router
-		$routerClass = Config::get('router.class', MainSubRouter::class);
+		$routerClass = Config::get(ConfigConstants::ROUTER_CLASS, MainSubRouter::class);
 		if (!class_exists($routerClass) || !is_subclass_of($routerClass, IRouter::class)) {
 			throw new \ErrorException("Invalid router class '{$routerClass}'");
 		}
@@ -245,7 +245,7 @@ final class CoreManager
 
 		// Pre-processing callbacks
 		// -- Global
-		$callback = Config::get('request.pre_route_callback');
+		$callback = Config::get(ConfigConstants::REQUEST_PRE_ROUTE_CALLBACK);
 		if (!empty($callback) && is_callable($callback)) {
 			call_user_func($callback, $routerData);
 		}
@@ -271,7 +271,7 @@ final class CoreManager
 				}
 
 				CoreProfiler::pushEvent('Building response');
-				self::_setResponseContentType($routerData->routeAttributes, Config::get('response.default_content_type', 'text/html'), Config::get('response.default_charset', 'UTF-8'));
+				self::_setResponseContentType($routerData->routeAttributes, Config::get(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/html'), Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
 				$template = $reqResult->template(($routeProvidedTemplate === NULL) ? $routerData->defaultTemplate : $routeProvidedTemplate);
 
 				$context = array_merge(RequestResult::getViewGlobals(), $reqResult->data(), array(
@@ -327,7 +327,7 @@ final class CoreManager
 			call_user_func($callback, $routerData);
 		}
 		// -- Global
-		$callback = Config::get('request.post_route_callback');
+		$callback = Config::get(ConfigConstants::REQUEST_POST_ROUTE_CALLBACK);
 		if (!empty($callback) && is_callable($callback)) {
 			call_user_func($callback, $routerData);
 		}
@@ -338,7 +338,7 @@ final class CoreManager
 	private static function outputJSON(RequestResult $reqResult, ?RouteAttributesParser $subRouteAttributes = NULL, Environment $twig = NULL)
 	{
 		self::_setStatusCode($reqResult->statusCode());
-		self::_setResponseContentType($subRouteAttributes, 'application/json', Config::get('response.default_charset', 'UTF-8'));
+		self::_setResponseContentType($subRouteAttributes, 'application/json', Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
 		if ($twig != NULL && $reqResult->preformatted()) {
 			ErrorManager::flush();
 			$template = $twig->createTemplate($reqResult->data());
@@ -353,7 +353,7 @@ final class CoreManager
 	private static function outputXML(RequestResult $reqResult, ?RouteAttributesParser $subRouteAttributes = NULL, Environment $twig = NULL)
 	{
 		self::_setStatusCode($reqResult->statusCode());
-		self::_setResponseContentType($subRouteAttributes, 'application/xml', Config::get('response.default_charset', 'UTF-8'));
+		self::_setResponseContentType($subRouteAttributes, 'application/xml', Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
 		if ($twig != NULL && $reqResult->preformatted()) {
 			ErrorManager::flush();
 			$template = $twig->createTemplate($reqResult->data());
@@ -373,7 +373,7 @@ final class CoreManager
 	{
 		$inst = self::_ensureInit();
 		if (NULL === $inst->_rootURI) {
-			$inst->_rootURI = Config::get('base_href', false);
+			$inst->_rootURI = Config::get(ConfigConstants::BASE_HREF, false);
 			if (false === $inst->_rootURI) {
 				if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
 					$protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
@@ -434,8 +434,8 @@ final class CoreManager
 	{
 		$code = self::_setStatusCode($code);
 
-		$contentType = Config::get('response.default_content_type', 'text/plain');
-		$charset = Config::get('response.default_charset', 'UTF-8');
+		$contentType = Config::get(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/plain');
+		$charset = Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8');
 
 		$data = array(
 			'code' => $code,

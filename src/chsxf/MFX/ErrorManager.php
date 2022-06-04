@@ -95,7 +95,7 @@ class ErrorManager
 					'errstr' => $errstr,
 					'errnoconstant' => $constant
 				);
-				if (Config::get('response.full_errors', false)) {
+				if (Config::get(ConfigConstants::RESPONSE_FULL_ERRORS, false)) {
 					$errdata['errfile'] = $errfile;
 					$errdata['errline'] = $errline;
 				}
@@ -152,7 +152,7 @@ class ErrorManager
 	public static function flush(?Environment $twig = NULL): string
 	{
 		if ($twig !== null) {
-			$str = $twig->render('@mfx/ErrorManager.twig', array('errors' => self::$_errors, 'notifs' => self::$_notifs, 'debug' => Config::get('response.full_errors', false)));
+			$str = $twig->render('@mfx/ErrorManager.twig', array('errors' => self::$_errors, 'notifs' => self::$_notifs, 'debug' => Config::get(ConfigConstants::RESPONSE_FULL_ERRORS, false)));
 		} else {
 			$str = '';
 		}

@@ -18,17 +18,17 @@ class SessionManager
 	 */
 	public static function start()
 	{
-		if (empty(Config::get('session.enabled', true))) {
+		if (empty(Config::get(ConfigConstants::SESSION_ENABLED, true))) {
 			return;
 		}
 
 		// Setting session parameters
-		session_name(Config::get('session.name', 'MFXSESSION'));
-		if (Config::get('session.use_cookies', true)) {
+		session_name(Config::get(ConfigConstants::SESSION_NAME, 'MFXSESSION'));
+		if (Config::get(ConfigConstants::SESSION_USE_COOKIES, true)) {
 			ini_set('session.use_cookies', '1');
 			ini_set('session.use_trans_id', '0');
 			$defaultSessionPath = self::getDefaultCookiePath();
-			session_set_cookie_params(Config::get('session.lifetime', 0), Config::get('session.path', $defaultSessionPath), Config::get('session.domain', ''));
+			session_set_cookie_params(Config::get(ConfigConstants::SESSION_LIFETIME, 0), Config::get(ConfigConstants::SESSION_PATH, $defaultSessionPath), Config::get(ConfigConstants::SESSION_DOMAIN, ''));
 			session_start();
 		} else {
 			ini_set('session.use_cookies', '0');

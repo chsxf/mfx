@@ -16,13 +16,13 @@ final class DatabaseUpdater implements IRouteProvider
 	#[AnonymousRoute]
 	public static function update(): RequestResult|false
 	{
-		$updaters = array_merge(array(FrameworkDatabaseUpdater::class), Config::get('database.updaters.classes', array()));
+		$updaters = array_merge(array(FrameworkDatabaseUpdater::class), Config::get(ConfigConstants::DATABASE_UPDATERS_CLASSES, array()));
 		if (!is_array($updaters) || empty($updaters)) {
 			return false;
 		}
 
 		// Retrieving updaters domain
-		self::$_updatersDomain = Config::get('database.updaters.domain', NULL);
+		self::$_updatersDomain = Config::get(ConfigConstants::DATABASE_UPDATERS_DOMAIN, NULL);
 		if (!preg_match('/^[[:alnum:]_-]+$/', self::$_updatersDomain)) {
 			self::$_updatersDomain = null;
 		}
@@ -104,7 +104,7 @@ final class DatabaseUpdater implements IRouteProvider
 
 				$chunk = str_replace(
 					array('__MFX_USER_ID_FIELD_NAME__', '__MFX_USERS_TABLE_NAME__'),
-					array(Config::get('user_management.key_field', 'user_id'), Config::get('user_management.table', 'mfx_users')),
+					array(Config::get(ConfigConstants::USER_MANAGEMENT_KEY_FIELD, 'user_id'), Config::get(ConfigConstants::USER_MANAGEMENT_TABLE, 'mfx_users')),
 					$chunk
 				);
 

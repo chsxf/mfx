@@ -45,7 +45,7 @@ class User
 	public static function validate()
 	{
 		// Authenticator class
-		$rc = new \ReflectionClass(Config::get('user_management.class', __CLASS__));
+		$rc = new \ReflectionClass(Config::get(ConfigConstants::USER_MANAGEMENT_CLASS, __CLASS__));
 		self::$_currentUser = $rc->newInstance();
 
 		// Validating
@@ -130,7 +130,7 @@ class User
 	 */
 	public static function getKeyField(): string
 	{
-		$keyFieldName = Config::get('user_management.key_field', 'user_id');
+		$keyFieldName = Config::get(ConfigConstants::USER_MANAGEMENT_KEY_FIELD, 'user_id');
 		if (!is_string($keyFieldName)) {
 			throw new \InvalidArgumentException("Users management key field name is not a string.");
 		}
@@ -148,7 +148,7 @@ class User
 	 */
 	public static function getTableName(): string
 	{
-		$tableName = Config::get('user_management.table', 'mfx_users');
+		$tableName = Config::get(ConfigConstants::USER_MANAGEMENT_TABLE, 'mfx_users');
 		if (!is_string($tableName)) {
 			throw new \InvalidArgumentException("Users management table name is not a string.");
 		}
