@@ -76,7 +76,7 @@ class MainSubRouter implements IRouter
         }
         $providerAttributes = new RouteAttributesParser($providerClass);
 
-        // Checking subroute
+        // Checking sub-route
         $routeMethod = $providerClass->getMethod($routeMethodName);
         $routeAttributes = self::isMethodValidRoute($routeMethod);
         if (false === $routeAttributes) {
@@ -100,7 +100,7 @@ class MainSubRouter implements IRouter
     }
 
     /**
-     * Checks if a specific method is a valid sub-route
+     * Checks if a specific method is a valid route
      * @param \ReflectionMethod $method Method to inspect
      * @return RouteAttributesParser|false The route's attributes parser or false in case of an error
      */

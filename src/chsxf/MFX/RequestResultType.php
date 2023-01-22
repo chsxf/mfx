@@ -1,7 +1,7 @@
 <?php
 
 /**
- * SubrouteType enum
+ * RequestResultType enum
  * 
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
@@ -9,9 +9,9 @@
 namespace chsxf\MFX;
 
 /**
- * Enum used to identify sub-routes type for request responses
+ * Enum used to identify the type of request results
  */
-enum SubRouteType: int
+enum RequestResultType: int
 {
 	case VIEW = 1;
 	case REDIRECT = 2;

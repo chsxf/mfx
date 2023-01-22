@@ -249,12 +249,12 @@ final class CoreManager
 		if (!empty($callback) && is_callable($callback)) {
 			call_user_func($callback, $routerData);
 		}
-		// -- Route
+		// -- Route Provider
 		$callback = $routerData->routeProviderAttributes->getAttributeValue(PreRouteCallback::class);
 		if (!empty($callback) && is_callable($callback)) {
 			call_user_func($callback, $routerData);
 		}
-		// -- Subroute
+		// -- Route
 		$callback = $routerData->routeAttributes->getAttributeValue(PreRouteCallback::class);
 		if (!empty($callback) && is_callable($callback)) {
 			call_user_func($callback, $routerData);
@@ -263,9 +263,9 @@ final class CoreManager
 		// Processing route
 		$reqResult = $routerData->routeMethod->invoke(NULL, $routerData->routeParams);
 		$routeProvidedTemplate = $routerData->routeAttributes->hasAttribute(Template::class) ? $routerData->routeAttributes->getAttributeValue(Template::class) : NULL;
-		switch ($reqResult->subRouteType()) {
+		switch ($reqResult->type()) {
 				// Views
-			case SubRouteType::VIEW:
+			case RequestResultType::VIEW:
 				if ($reqResult->statusCode() != 200) {
 					self::dieWithStatusCode($reqResult->statusCode());
 				}
@@ -289,7 +289,7 @@ final class CoreManager
 				break;
 
 				// Edit requests - Mostly requests with POST data
-			case SubRouteType::REDIRECT:
+			case RequestResultType::REDIRECT:
 				$redirectionURI = $reqResult->redirectURI();
 				if (empty($redirectionURI) && $routerData->routeAttributes->hasAttribute(RedirectURI::class)) {
 					$redirectionURI = $routerData->routeAttributes->getAttributeValue(RedirectURI::class);
@@ -298,17 +298,17 @@ final class CoreManager
 				break;
 
 				// Asynchronous requests expecting JSON data
-			case SubRouteType::JSON:
+			case RequestResultType::JSON:
 				self::outputJSON($reqResult, $routerData->routeAttributes, $twig);
 				break;
 
 				// Asynchronous requests expecting XML data
-			case SubRouteType::XML:
+			case RequestResultType::XML:
 				self::outputXML($reqResult, $routerData->routeAttributes, $twig);
 				break;
 
 				// Status
-			case SubRouteType::STATUS:
+			case RequestResultType::STATUS:
 				self::outputStatusCode($reqResult->statusCode(), $reqResult->data());
 				break;
 		}
@@ -316,12 +316,12 @@ final class CoreManager
 		// Post-processing callback
 		// -- Starting output buffering to prevent unvolontury output during post-processing callback
 		ob_start();
-		// -- Subroute
+		// -- Route
 		$callback = $routerData->routeAttributes->getAttributeValue(PostRouteCallback::class);
 		if (!empty($callback) && is_callable($callback)) {
 			call_user_func($callback, $routerData);
 		}
-		// -- Route
+		// -- Route provider
 		$callback = $routerData->routeProviderAttributes->getAttributeValue(PostRouteCallback::class);
 		if (!empty($callback) && is_callable($callback)) {
 			call_user_func($callback, $routerData);
@@ -335,10 +335,10 @@ final class CoreManager
 		ob_end_clean();
 	}
 
-	private static function outputJSON(RequestResult $reqResult, ?RouteAttributesParser $subRouteAttributes = NULL, Environment $twig = NULL)
+	private static function outputJSON(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = NULL, Environment $twig = NULL)
 	{
 		self::_setStatusCode($reqResult->statusCode());
-		self::_setResponseContentType($subRouteAttributes, 'application/json', Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
+		self::_setResponseContentType($routeAttributes, 'application/json', Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
 		if ($twig != NULL && $reqResult->preformatted()) {
 			ErrorManager::flush();
 			$template = $twig->createTemplate($reqResult->data());
@@ -350,10 +350,10 @@ final class CoreManager
 		}
 	}
 
-	private static function outputXML(RequestResult $reqResult, ?RouteAttributesParser $subRouteAttributes = NULL, Environment $twig = NULL)
+	private static function outputXML(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = NULL, Environment $twig = NULL)
 	{
 		self::_setStatusCode($reqResult->statusCode());
-		self::_setResponseContentType($subRouteAttributes, 'application/xml', Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
+		self::_setResponseContentType($routeAttributes, 'application/xml', Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
 		if ($twig != NULL && $reqResult->preformatted()) {
 			ErrorManager::flush();
 			$template = $twig->createTemplate($reqResult->data());
@@ -476,15 +476,15 @@ final class CoreManager
 	}
 
 	/**
-	 * Sets the response Content-Type header from the sub-route documentation comment parameters
+	 * Sets the response Content-Type header from the route attributes
 	 *
-	 * @param RouteAttributesParser $routerData->routeAttributes Documentation comment parameters of the sub-route
-	 * @param string $default Content type to use if not provided by the sub-route.
-	 * @param string $defaultCharset Charset to use if not provided by the sub-route.
+	 * @param RouteAttributesParser $routerData->routeAttributes Attributes of the route
+	 * @param string $default Content type to use if not provided by the route.
+	 * @param string $defaultCharset Charset to use if not provided by the route.
 	 */
-	private static function _setResponseContentType(?RouteAttributesParser $subRouteAttributes, string $default, string $defaultCharset)
+	private static function _setResponseContentType(?RouteAttributesParser $routeAttributes, string $default, string $defaultCharset)
 	{
-		$ct = ($subRouteAttributes !== NULL && $subRouteAttributes->hasAttribute(ContentType::class)) ? $subRouteAttributes->getAttributeValue(ContentType::class) : $default;
+		$ct = ($routeAttributes !== NULL && $routeAttributes->hasAttribute(ContentType::class)) ? $routeAttributes->getAttributeValue(ContentType::class) : $default;
 		if (!preg_match('/;\s+charset=.+$/', $ct)) {
 			$ct .= "; charset={$defaultCharset}";
 		}

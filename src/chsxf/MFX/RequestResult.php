@@ -19,9 +19,9 @@ final class RequestResult
 	private static array $_viewGlobalData = array();
 
 	/**
-	 * @var SubRouteType Sub-route response type
+	 * @var RequestResultType Request result type
 	 */
-	private SubRouteType $_type;
+	private RequestResultType $_type;
 	/**
 	 * @var string Template to use as the response renderer.
 	 */
@@ -46,33 +46,33 @@ final class RequestResult
 	/**
 	 * Constructor
 	 * 
-	 * Some parameter, such as $template, may be automatically defined in the sub-route function documentation comment
+	 * Some parameters, such as $template, may be automatically defined in the route function attributes
 	 * but can be overridden through this constructor if needed.
 	 * 
-	 * @param SubRouteType $type Sub-route response type. If NULL, the type defaults to VIEW. (Defaults to NULL)
+	 * @param RequestResultType $type Request result type. If NULL, the type defaults to VIEW. (Defaults to NULL)
 	 * @param mixed $data Response data. If a view, $data must be an array. (Defaults to NULL)
 	 * @param string $template Template to use as the response renderer. Don't add the .twig extension. Should be NULL if not a view. (Defaults to NULL)
 	 * @param string $redirectURI Target URI to which redirect the user (Defaults to NULL)
 	 * @param int $statusCode HTTP status code of the response (Defaults to 200 - OK).
 	 * @param boolean $preformatted If set, this flag indicates that $data is preformatted for XML and JSON responses. (Defaults to false)
 	 * 
-	 * @see SubRouteType
+	 * @see RequestResultType
 	 */
-	public function __construct(?SubRouteType $type = NULL, mixed $data = NULL, ?string $template = NULL, ?string $redirectURI = NULL, int $statusCode = 200, bool $preformatted = false)
+	public function __construct(?RequestResultType $type = NULL, mixed $data = NULL, ?string $template = NULL, ?string $redirectURI = NULL, int $statusCode = 200, bool $preformatted = false)
 	{
-		$this->_type = ($type ?? SubRouteType::VIEW);
+		$this->_type = ($type ?? RequestResultType::VIEW);
 		$this->_template = $template;
-		$this->_data = ($this->_type === SubRouteType::VIEW && !is_array($data)) ? array() : $data;
+		$this->_data = ($this->_type === RequestResultType::VIEW && !is_array($data)) ? array() : $data;
 		$this->_redirectURI = $redirectURI;
 		$this->_statusCode = $statusCode;
 		$this->_preformatted = !empty($preformatted);
 	}
 
 	/**
-	 * Gets the sub-route response type
-	 * @return SubRouteType
+	 * Gets the request result type
+	 * @return RequestResultType
 	 */
-	public function subRouteType(): SubRouteType
+	public function type(): RequestResultType
 	{
 		return $this->_type;
 	}
@@ -152,13 +152,13 @@ final class RequestResult
 	}
 
 	/**
-	 * Helper function to build RequestResult instances for REDIRECT sub-routes
+	 * Helper function to build RequestResult instances for REDIRECT request results
 	 * @param string $redirectURI Target URI to which redirect the user (Defaults to NULL)
 	 * @return RequestResult
 	 */
 	public static function buildRedirectRequestResult(?string $redirectURI = NULL): RequestResult
 	{
-		return new RequestResult(SubRouteType::REDIRECT, NULL, NULL, $redirectURI);
+		return new RequestResult(RequestResultType::REDIRECT, NULL, NULL, $redirectURI);
 	}
 
 	/**
@@ -169,7 +169,7 @@ final class RequestResult
 	 */
 	public static function buildStatusRequestResult(int $statusCode = 400, ?string $message = NULL): RequestResult
 	{
-		return new RequestResult(SubRouteType::STATUS, $message, NULL, NULL, $statusCode, true);
+		return new RequestResult(RequestResultType::STATUS, $message, NULL, NULL, $statusCode, true);
 	}
 
 	/**
@@ -181,7 +181,7 @@ final class RequestResult
 	 */
 	public static function buildJSONRequestResult(mixed $data, bool $preformatted = false, int $statusCode = 200): RequestResult
 	{
-		return new RequestResult(SubRouteType::JSON, $data, NULL, NULL, $statusCode, $preformatted);
+		return new RequestResult(RequestResultType::JSON, $data, NULL, NULL, $statusCode, $preformatted);
 	}
 
 	/**
@@ -193,6 +193,6 @@ final class RequestResult
 	 */
 	public static function buildXMLRequestResult(mixed $data, bool $preformatted = false, int $statusCode = 200): RequestResult
 	{
-		return new RequestResult(SubRouteType::XML, $data, NULL, NULL, $statusCode, $preformatted);
+		return new RequestResult(RequestResultType::XML, $data, NULL, NULL, $statusCode, $preformatted);
 	}
 }
