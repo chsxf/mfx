@@ -31,9 +31,9 @@ final class RequestResult
 	 */
 	private mixed $_data;
 	/**
-	 * @var string Redirection target URI container
+	 * @var string Redirection target URL container
 	 */
-	private ?string $_redirectURI;
+	private ?string $_redirectURL;
 	/**
 	 * @var int HTTP status code of the response
 	 */
@@ -52,18 +52,18 @@ final class RequestResult
 	 * @param RequestResultType $type Request result type. If NULL, the type defaults to VIEW. (Defaults to NULL)
 	 * @param mixed $data Response data. If a view, $data must be an array. (Defaults to NULL)
 	 * @param string $template Template to use as the response renderer. Don't add the .twig extension. Should be NULL if not a view. (Defaults to NULL)
-	 * @param string $redirectURI Target URI to which redirect the user (Defaults to NULL)
+	 * @param string $redirectURL Target URL to which redirect the user (Defaults to NULL)
 	 * @param int $statusCode HTTP status code of the response (Defaults to 200 - OK).
 	 * @param boolean $preformatted If set, this flag indicates that $data is preformatted for XML and JSON responses. (Defaults to false)
 	 * 
 	 * @see RequestResultType
 	 */
-	public function __construct(?RequestResultType $type = NULL, mixed $data = NULL, ?string $template = NULL, ?string $redirectURI = NULL, int $statusCode = 200, bool $preformatted = false)
+	public function __construct(?RequestResultType $type = NULL, mixed $data = NULL, ?string $template = NULL, ?string $redirectURL = NULL, int $statusCode = 200, bool $preformatted = false)
 	{
 		$this->_type = ($type ?? RequestResultType::VIEW);
 		$this->_template = $template;
 		$this->_data = ($this->_type === RequestResultType::VIEW && !is_array($data)) ? array() : $data;
-		$this->_redirectURI = $redirectURI;
+		$this->_redirectURL = $redirectURL;
 		$this->_statusCode = $statusCode;
 		$this->_preformatted = !empty($preformatted);
 	}
@@ -97,12 +97,12 @@ final class RequestResult
 	}
 
 	/**
-	 * Gets the redirection URI if existing
+	 * Gets the redirection URL if existing
 	 * @return string
 	 */
-	public function redirectURI(): ?string
+	public function redirectURL(): ?string
 	{
-		return $this->_redirectURI;
+		return $this->_redirectURL;
 	}
 
 	/**
@@ -153,12 +153,12 @@ final class RequestResult
 
 	/**
 	 * Helper function to build RequestResult instances for REDIRECT request results
-	 * @param string $redirectURI Target URI to which redirect the user (Defaults to NULL)
+	 * @param string $redirectURL Target URL to which redirect the user (Defaults to NULL)
 	 * @return RequestResult
 	 */
-	public static function buildRedirectRequestResult(?string $redirectURI = NULL): RequestResult
+	public static function buildRedirectRequestResult(?string $redirectURL = NULL): RequestResult
 	{
-		return new RequestResult(RequestResultType::REDIRECT, NULL, NULL, $redirectURI);
+		return new RequestResult(RequestResultType::REDIRECT, NULL, NULL, $redirectURL);
 	}
 
 	/**

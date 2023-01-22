@@ -11,7 +11,7 @@ namespace chsxf\MFX;
 use chsxf\MFX\Attributes\ContentType;
 use chsxf\MFX\Attributes\PreRouteCallback;
 use chsxf\MFX\Attributes\PostRouteCallback;
-use chsxf\MFX\Attributes\RedirectURI;
+use chsxf\MFX\Attributes\RedirectURL;
 use chsxf\MFX\Attributes\RequiredContentType;
 use chsxf\MFX\Attributes\RequiredRequestMethod;
 use chsxf\MFX\Attributes\RouteAttributesParser;
@@ -93,9 +93,9 @@ final class CoreManager
 	private array $_fakeProtocols = array();
 
 	/**
-	 * @var string Root URI container (as built from server information)
+	 * @var string Root URL container (as built from server information)
 	 */
-	private ?string $_rootURI = NULL;
+	private ?string $_rootURL = NULL;
 
 	/**
 	 * @var \Twig\Environment Twig environment for the current request
@@ -277,7 +277,7 @@ final class CoreManager
 				$context = array_merge(RequestResult::getViewGlobals(), $reqResult->data(), array(
 					'mfx_scripts' => Scripts::export($twig),
 					'mfx_stylesheets' => StyleSheets::export($twig),
-					'mfx_root_url' => self::getRootURI(),
+					'mfx_root_url' => self::getRootURL(),
 					'mfx_errors_and_notifs' => ErrorManager::flush($twig),
 					'mfx_current_user' => User::currentUser(),
 					'mfx_locale' => L10nManager::getLocale(),
@@ -290,11 +290,11 @@ final class CoreManager
 
 				// Edit requests - Mostly requests with POST data
 			case RequestResultType::REDIRECT:
-				$redirectionURI = $reqResult->redirectURI();
-				if (empty($redirectionURI) && $routerData->routeAttributes->hasAttribute(RedirectURI::class)) {
-					$redirectionURI = $routerData->routeAttributes->getAttributeValue(RedirectURI::class);
+				$redirectionURL = $reqResult->redirectURL();
+				if (empty($redirectionURL) && $routerData->routeAttributes->hasAttribute(RedirectURL::class)) {
+					$redirectionURL = $routerData->routeAttributes->getAttributeValue(RedirectURL::class);
 				}
-				self::redirect($redirectionURI);
+				self::redirect($redirectionURL);
 				break;
 
 				// Asynchronous requests expecting JSON data
@@ -366,46 +366,46 @@ final class CoreManager
 	}
 
 	/**
-	 * Builds the root URI from server information (protocol, host and PHP_SELF)
+	 * Builds the root URL from server information (protocol, host and PHP_SELF)
 	 * @return string
 	 */
-	public static function getRootURI(): string
+	public static function getRootURL(): string
 	{
 		$inst = self::_ensureInit();
-		if (NULL === $inst->_rootURI) {
-			$inst->_rootURI = Config::get(ConfigConstants::BASE_HREF, false);
-			if (false === $inst->_rootURI) {
+		if (NULL === $inst->_rootURL) {
+			$inst->_rootURL = Config::get(ConfigConstants::BASE_HREF, false);
+			if (false === $inst->_rootURL) {
 				if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
 					$protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
 				} else {
 					$protocol = (empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off') ? 'http' : 'https';
 				}
-				$inst->_rootURI = "{$protocol}://{$_SERVER['HTTP_HOST']}" . preg_replace('#/mfx$#', '/', dirname($_SERVER['PHP_SELF']));
-				if (!preg_match('#/$#', $inst->_rootURI)) {
-					$inst->_rootURI .= '/';
+				$inst->_rootURL = "{$protocol}://{$_SERVER['HTTP_HOST']}" . preg_replace('#/mfx$#', '/', dirname($_SERVER['PHP_SELF']));
+				if (!preg_match('#/$#', $inst->_rootURL)) {
+					$inst->_rootURL .= '/';
 				}
 			}
 		}
-		return $inst->_rootURI;
+		return $inst->_rootURL;
 	}
 
 	/**
-	 * Redirects the user the specified URI, the HTTP referer if defined and same host or the website root
-	 * @param string $redirectURI Target redirection URI (Defaults to NULL)
+	 * Redirects the user the specified URL, the HTTP referer if defined and same host or the website root
+	 * @param string $redirectURL Target redirection URL (Defaults to NULL)
 	 */
-	public static function redirect(string $redirectURI = NULL)
+	public static function redirect(string $redirectURL = NULL)
 	{
-		if (empty($redirectURI) && !empty($_SERVER['HTTP_REFERER']) && preg_match("#https?://{$_SERVER['HTTP_HOST']}#", $_SERVER['HTTP_REFERER'])) {
-			$redirectURI = $_SERVER['HTTP_REFERER'];
+		if (empty($redirectURL) && !empty($_SERVER['HTTP_REFERER']) && preg_match("#https?://{$_SERVER['HTTP_HOST']}#", $_SERVER['HTTP_REFERER'])) {
+			$redirectURL = $_SERVER['HTTP_REFERER'];
 		}
 
-		if (empty($redirectURI) || !preg_match('#^https?://#', $redirectURI)) {
-			// Building URI
-			$r = self::getRootURI();
-			if (!empty($redirectURI))
-				$r .= ltrim($redirectURI, '/');
+		if (empty($redirectURL) || !preg_match('#^https?://#', $redirectURL)) {
+			// Building URL
+			$r = self::getRootURL();
+			if (!empty($redirectURL))
+				$r .= ltrim($redirectURL, '/');
 		} else {
-			$r = $redirectURI;
+			$r = $redirectURL;
 		}
 		header("Location: $r");
 		ErrorManager::freeze();
