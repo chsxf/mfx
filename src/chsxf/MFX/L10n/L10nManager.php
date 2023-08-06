@@ -72,8 +72,10 @@ class L10nManager
 	{
 		$locale = self::getLocale();
 
-		putenv("LANGUAGE={$locale}");
-		putenv("LANG={$locale}");
+		if (PHP_OS_FAMILY == 'Windows') {
+			putenv("LANGUAGE={$locale}");
+			putenv("LANG={$locale}");
+		}
 
 		$locale = array("{$locale}.utf8", "{$locale}.UTF8", "{$locale}.utf-8", "{$locale}.UTF-8", $locale);
 		setlocale(LC_MESSAGES, $locale);
