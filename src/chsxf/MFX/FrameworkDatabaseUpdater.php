@@ -4,7 +4,6 @@ namespace chsxf\MFX;
 
 final class FrameworkDatabaseUpdater implements IDatabaseUpdater
 {
-
 	/**
 	 * {@inheritDoc}
 	 * @see \chsxf\MFX\DatabaseUpdater::key()
@@ -20,7 +19,7 @@ final class FrameworkDatabaseUpdater implements IDatabaseUpdater
 	 */
 	public function pathToSQLFile(): string
 	{
-		$root = constant('chsxf\MFX\ROOT') ?? '';
-		return "{$root}/mfx.sql";
+		$root = constant('chsxf\MFX\ROOT');
+		return "{$root}/sql/mfx.sql";
 	}
 }

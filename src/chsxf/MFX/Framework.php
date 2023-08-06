@@ -11,6 +11,8 @@ use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
+define('chsxf\MFX\ROOT', dirname(dirname(dirname(__FILE__))));
+
 final class Framework
 {
     public static function init(string $configFilePath)
