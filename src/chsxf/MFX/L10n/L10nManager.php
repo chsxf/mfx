@@ -72,7 +72,7 @@ class L10nManager
 	{
 		$locale = self::getLocale();
 
-		if (PHP_OS_FAMILY == 'Windows') {
+		if (PHP_OS_FAMILY == 'Windows' || PHP_OS_FAMILY == 'Darwin') {
 			putenv("LANGUAGE={$locale}");
 			putenv("LANG={$locale}");
 		}
