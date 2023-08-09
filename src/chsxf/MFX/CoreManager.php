@@ -15,11 +15,11 @@ use chsxf\MFX\Attributes\RedirectURL;
 use chsxf\MFX\Attributes\RequiredContentType;
 use chsxf\MFX\Attributes\RequiredRequestMethod;
 use chsxf\MFX\Attributes\RouteAttributesParser;
+use chsxf\MFX\Attributes\Template;
 use chsxf\MFX\L10n\L10nManager;
 use chsxf\MFX\Routers\IRouter;
 use chsxf\MFX\Routers\MainSubRouter;
 use Twig\Environment;
-use Twig\Template;
 
 /**
  * Core manager singleton class
