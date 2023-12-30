@@ -21,10 +21,10 @@ MFX is released under the [MIT license](LICENSE).
   https://twig.symfony.com/
 - **PDO database manager**\
   PDO extended with some nice utility functions\
-  https://packagist.org/packages/chsxf/pdo-database-manager
+  https://github.com/chsxf/pdo-database-manager
 - **Twig Tools**\
   Set of useful extensions for Twig (switch blocks, lazy blocks, support for gettext inside the templates)\
-  https://packagist.org/packages/chsxf/twig-tools
+  https://github.com/chsxf/TwigTools
 
 # 🚀 Getting Started
 
