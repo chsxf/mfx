@@ -104,7 +104,7 @@ class CommandLine
 	 */
 	private static function _dieUsage()
 	{
-		printf("Usage: php -f /path/to/mfx/entrypoint.php [-- [options] [route]]\n\n");
+		printf("Usage: php /path/to/mfx/entrypoint.php [options] [route]\n\n");
 		printf("\t--config <file>\t\tPath to custom config file\n");
 		printf("\n");
 		exit();
