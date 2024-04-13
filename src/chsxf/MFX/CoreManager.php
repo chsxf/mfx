@@ -200,22 +200,30 @@ final class CoreManager
 
 		$inst->_currentTwigEnvironment = $twig;
 
-		// Finding route path info from REQUEST_URI
-		$scriptPath = dirname($_SERVER['SCRIPT_NAME']);
-		if (PHP_OS_FAMILY == 'Windows' && $scriptPath == '\\') {
-			$scriptPath = '/';
+		if (CommandLine::isCLI()) {
+			$routePathInfo = $_SERVER['REQUEST_URI'];
+			$lastForwardSlashIndex = strrpos($routePathInfo, '/');
+			if ($lastForwardSlashIndex !== false) {
+				$routePathInfo = substr($routePathInfo, $lastForwardSlashIndex + 1);
+			}
+		} else {
+			// Finding route path info from REQUEST_URI
+			$scriptPath = dirname($_SERVER['SCRIPT_NAME']);
+			if (PHP_OS_FAMILY == 'Windows' && $scriptPath == '\\') {
+				$scriptPath = '/';
+			}
+			$prefix = preg_replace('#/mfx$#', '/', $scriptPath);
+			if (!preg_match('#/$#', $prefix)) {
+				$prefix .= '/';
+			}
+			$prefix .= Config::get(ConfigConstants::REQUEST_PREFIX, '');
+			if (!preg_match('#/$#', $prefix)) {
+				$prefix .= '/';
+			}
+			$routePathInfo = substr($_SERVER['REQUEST_URI'], strlen($prefix));
+			$routePathInfo = explode('?', $routePathInfo, 2);
+			$routePathInfo = ltrim($routePathInfo[0], '/');
 		}
-		$prefix = preg_replace('#/mfx$#', '/', $scriptPath);
-		if (!preg_match('#/$#', $prefix)) {
-			$prefix .= '/';
-		}
-		$prefix .= Config::get(ConfigConstants::REQUEST_PREFIX, '');
-		if (!preg_match('#/$#', $prefix)) {
-			$prefix .= '/';
-		}
-		$routePathInfo = substr($_SERVER['REQUEST_URI'], strlen($prefix));
-		$routePathInfo = explode('?', $routePathInfo, 2);
-		$routePathInfo = ltrim($routePathInfo[0], '/');
 
 		// Parsing through the router
 		$routerClass = Config::get(ConfigConstants::ROUTER_CLASS, MainSubRouter::class);
