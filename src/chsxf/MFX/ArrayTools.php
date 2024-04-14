@@ -93,7 +93,7 @@ class ArrayTools
 	/**
 	 * Checks if the parameter is an array or a union type accepting an array
 	 * 
-	 * @param \RefelctionParameter $parameter The parameter to investigate
+	 * @param \ReflectionParameter $parameter The parameter to investigate
 	 * @return bool
 	 */
 	public static function isParameterArray(\ReflectionParameter $parameter): bool
