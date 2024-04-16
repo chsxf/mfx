@@ -35,3 +35,9 @@ Go to [this page](https://github.com/chsxf/mfx/wiki/Getting-Started) to start us
 # Complete documentation
 
 To access a deeper and more complete documentation on the design and usage of MFX, go to the [Framework Reference](https://github.com/chsxf/mfx/wiki/Framework-Reference).
+
+# Support
+
+Developement on MFX is still active. Even though the project is production-ready, new features and bugfixes will come eventually.
+
+However, support is not guaranteed in any way. Pull requests or issues are welcomed but you may wait for some time before getting any answer.
