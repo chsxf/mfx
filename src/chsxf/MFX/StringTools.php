@@ -31,7 +31,7 @@ class StringTools
 	 */
 	public static function isValidEmailAddress(string $address): bool
 	{
-		return (bool) preg_match("/^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])+$/", $address);
+		return (bool) preg_match("/^(?:[a-z0-9!#$%&'*+\/=?^_`{|}~“”-]+|“.+”)(?:\.(?:[a-z0-9!#$%&'*+\/=?^_`{|}~“”-]+|“.+”))*@(?:\[?(?:[1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(?:\.(?:[1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}\]?|(?:[a-z](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z](?:[a-z0-9-]*[a-z0-9])+)$/", $address);
 	}
 
 	/**
@@ -61,7 +61,7 @@ class StringTools
 	public static function isNegativeInteger(string $str, bool $canBeZero = false): bool
 	{
 		if ($canBeZero) {
-			$res = preg_match('/^\-(0|[1-9]\d*)$/', $str);
+			$res = preg_match('/^(\-?0|\-[1-9]\d*)$/', $str);
 		} else {
 			$res = preg_match('/^\-[1-9]\d*$/', $str);
 		}
@@ -164,10 +164,14 @@ class StringTools
 	 */
 	public static function toSnakeCase(string $_str, bool $_upperCase = false): string
 	{
-		$snake = preg_replace([
+		$patterns = [
 			'/([a-z\d])([A-Z])/',
-			'/([^_])([A-Z][a-z])/'
-		], '$1_$2', $_str);
+			'/([^_])([A-Z][a-z])/',
+			'/\s([a-z])/i'
+		];
+		$replacements = ['$1_$2', '_$2', '_$1'];
+
+		$snake = preg_replace($patterns, $replacements, $_str);
 		return $_upperCase ? strtoupper($snake) : strtolower($snake);
 	}
 

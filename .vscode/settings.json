@@ -1,8 +1,10 @@
 {
-    "intelephense.environment.phpVersion": "8.1.0",
-    "editor.formatOnSave": true,
-    "[php]": {
-        "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
-    },
-    "formatFiles.extensionsToInclude": "php"
+  "intelephense.environment.phpVersion": "8.1.0",
+  "editor.formatOnSave": true,
+  "[php]": {
+    "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+  },
+  "formatFiles.extensionsToInclude": "php",
+  "phpunit.args": ["--testdox"],
+  "phpunit.phpunit": "vendor/bin/phpunit"
 }

@@ -20,10 +20,11 @@ class FileTools
 	 */
 	public static function mimeTypeFromExtension(string $ext): string
 	{
-		switch (strtolower($ext)) {
+		$lowercaseExt = strtolower($ext);
+		switch ($lowercaseExt) {
 			case 'zip':
 			case 'pdf':
-				return "application/{$ext}";
+				return "application/{$lowercaseExt}";
 
 			case 'jpg':
 				return 'image/jpeg';
