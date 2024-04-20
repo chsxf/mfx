@@ -15,6 +15,8 @@ use ErrorException;
  */
 class Config
 {
+	private const DOMAIN_NAME_REGEX = '/^[a-z0-9_]+$/i';
+	private const PROPERTY_PATH_REGEX = '/^[a-z0-9_]+(?:\.[a-z0-9_]+)*$/i';
 
 	/**
 	 * @var Config Singleton reference
@@ -57,7 +59,14 @@ class Config
 		} else if (self::$nextLoadDomain !== NULL) {
 			$nextDomain = self::$nextLoadDomain;
 			self::$nextLoadDomain = NULL;
+
+			if (array_key_exists($nextDomain, self::$singleInstance->configData)) {
+				throw new ErrorException("The domain '{$nextDomain}' already exists");
+			}
+
 			self::$singleInstance->configData[$nextDomain] = $configData;
+		} else {
+			throw new ErrorException("The main configuration file has already been loaded");
 		}
 	}
 
@@ -69,6 +78,10 @@ class Config
 	 */
 	public static function loadOnDomain(string $_domain, string $_path)
 	{
+		if (!preg_match(self::DOMAIN_NAME_REGEX, $_domain)) {
+			throw new ErrorException("'{$_domain}' is not a valid domain name");
+		}
+
 		self::$nextLoadDomain = $_domain;
 		require($_path);
 	}
@@ -113,9 +126,8 @@ class Config
 	 */
 	private function getProperty(string $property, mixed $default = NULL): mixed
 	{
-		$property = trim($property);
-		if (empty($property)) {
-			return false;
+		if (!preg_match(self::PROPERTY_PATH_REGEX, $property)) {
+			throw new ErrorException("'{$property}' is not a valid property path");
 		}
 
 		$members = explode('.', $property);
@@ -137,9 +149,8 @@ class Config
 	 */
 	private function hasProperty(string $property): bool
 	{
-		$property = trim($property);
-		if (empty($property)) {
-			return false;
+		if (!preg_match(self::PROPERTY_PATH_REGEX, $property)) {
+			throw new ErrorException("'{$property}' is not a valid property path");
 		}
 
 		$members = explode('.', $property);
