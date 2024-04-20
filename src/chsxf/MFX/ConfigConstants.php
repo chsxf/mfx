@@ -4,38 +4,45 @@ namespace chsxf\MFX;
 
 final class ConfigConstants
 {
-    public const DATABASE_ERROR_LOGGING = 'database.error_logging';
-    public const DATABASE_SERVERS = 'database.servers';
-    public const DATABASE_UPDATERS_CLASSES = 'database.updaters.classes';
-    public const DATABASE_UPDATERS_DOMAIN = 'database.updaters.domain';
+    public const DATABASE = 'database';
+    public const DATABASE_ERROR_LOGGING = self::DATABASE . '.error_logging';
+    public const DATABASE_SERVERS = self::DATABASE . '.servers';
+    public const DATABASE_UPDATERS_CLASSES = self::DATABASE . '.updaters.classes';
+    public const DATABASE_UPDATERS_DOMAIN = self::DATABASE . '.updaters.domain';
 
-    public const REQUEST_DEFAULT_ROUTE = 'request.default_route';
-    public const REQUEST_POST_ROUTE_CALLBACK = 'request.post_route_callback';
-    public const REQUEST_PRE_ROUTE_CALLBACK = 'request.pre_route_callback';
-    public const REQUEST_PREFIX = 'request.prefix';
+    public const REQUEST = 'request';
+    public const REQUEST_DEFAULT_ROUTE = self::REQUEST . '.default_route';
+    public const REQUEST_POST_ROUTE_CALLBACK = self::REQUEST . '.post_route_callback';
+    public const REQUEST_PRE_ROUTE_CALLBACK = self::REQUEST . '.pre_route_callback';
+    public const REQUEST_PREFIX = self::REQUEST . '.prefix';
 
-    public const RESPONSE_DEFAULT_CHARSET = 'response.default_charset';
-    public const RESPONSE_DEFAULT_CONTENT_TYPE = 'response.default_content_type';
-    public const RESPONSE_FULL_ERRORS = 'response.full_errors';
+    public const RESPONSE = 'response';
+    public const RESPONSE_DEFAULT_CHARSET = self::RESPONSE . '.default_charset';
+    public const RESPONSE_DEFAULT_CONTENT_TYPE = self::RESPONSE . '.default_content_type';
+    public const RESPONSE_FULL_ERRORS = self::RESPONSE . '.full_errors';
 
-    public const ROUTER_CLASS = 'router.class';
-    public const ROUTER_OPTIONS_ALLOW_DEFAULT_ROUTE_SUBSTITUTION = 'router.options.allow_default_route_substitution';
-    public const ROUTER_OPTIONS_ALLOWED_NAMESPACES = 'router.options.allowed_namespaces';
+    public const ROUTER = 'router';
+    public const ROUTER_CLASS = self::ROUTER . '.class';
+    public const ROUTER_OPTIONS_ALLOW_DEFAULT_ROUTE_SUBSTITUTION = self::ROUTER . '.options.allow_default_route_substitution';
+    public const ROUTER_OPTIONS_ALLOWED_NAMESPACES = self::ROUTER . '.options.allowed_namespaces';
 
-    public const SESSION_DOMAIN = 'session.domain';
-    public const SESSION_ENABLED = 'session.enabled';
-    public const SESSION_LIFETIME = 'session.lifetime';
-    public const SESSION_NAME = 'session.name';
-    public const SESSION_PATH = 'session.path';
-    public const SESSION_USE_COOKIES = 'session.use_cookies';
+    public const SESSION = 'session';
+    public const SESSION_DOMAIN = self::SESSION . '.domain';
+    public const SESSION_ENABLED = self::SESSION . '.enabled';
+    public const SESSION_LIFETIME = self::SESSION . '.lifetime';
+    public const SESSION_NAME = self::SESSION . '.name';
+    public const SESSION_PATH = self::SESSION . '.path';
+    public const SESSION_USE_COOKIES = self::SESSION . '.use_cookies';
 
-    public const TWIG_CACHE = 'twig.cache';
-    public const TWIG_EXTENSIONS = 'twig.extensions';
-    public const TWIG_TEMPLATES = 'twig.templates';
+    public const TWIG = 'twig';
+    public const TWIG_CACHE = self::TWIG . '.cache';
+    public const TWIG_EXTENSIONS = self::TWIG . '.extensions';
+    public const TWIG_TEMPLATES = self::TWIG . '.templates';
 
-    public const USER_MANAGEMENT_CLASS = 'user_management.class';
-    public const USER_MANAGEMENT_KEY_FIELD = 'user_management.key_field';
-    public const USER_MANAGEMENT_TABLE = 'user_management.table';
+    public const USER_MANAGEMENT = 'user_management';
+    public const USER_MANAGEMENT_CLASS = self::USER_MANAGEMENT . '.class';
+    public const USER_MANAGEMENT_KEY_FIELD = self::USER_MANAGEMENT . '.key_field';
+    public const USER_MANAGEMENT_TABLE = self::USER_MANAGEMENT . '.table';
 
     public const BASE_HREF = 'base_href';
     public const DEFAULT_LOCALE = 'default_locale';

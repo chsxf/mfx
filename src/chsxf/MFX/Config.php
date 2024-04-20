@@ -36,7 +36,7 @@ class Config
 	 *
 	 * @param array $configData Config data
 	 */
-	public function __construct(array $configData = array())
+	private function __construct(array $configData = array())
 	{
 		$this->configData = $configData;
 	}
@@ -49,6 +49,10 @@ class Config
 	public static function load(array $configData = array())
 	{
 		if (self::$singleInstance === NULL) {
+			if (self::$nextLoadDomain !== NULL) {
+				throw new ErrorException("You can't load a config file on a domain before the main configuration file");
+			}
+
 			self::$singleInstance = new Config($configData);
 		} else if (self::$nextLoadDomain !== NULL) {
 			$nextDomain = self::$nextLoadDomain;
@@ -107,7 +111,7 @@ class Config
 	 * @param mixed $default Default value if the property has not been provided (Defaults to NULL)
 	 * @return mixed
 	 */
-	public function getProperty(string $property, mixed $default = NULL): mixed
+	private function getProperty(string $property, mixed $default = NULL): mixed
 	{
 		$property = trim($property);
 		if (empty($property)) {
@@ -131,7 +135,7 @@ class Config
 	 * @param string $property Name of the propery
 	 * @return boolean true if the property has been provided, false either
 	 */
-	public function hasProperty(string $property): bool
+	private function hasProperty(string $property): bool
 	{
 		$property = trim($property);
 		if (empty($property)) {
