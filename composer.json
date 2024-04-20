@@ -13,7 +13,7 @@
   },
   "autoload": {
     "psr-4": {
-      "": "src/"
+      "chsxf\\MFX\\": "src/chsxf/MFX/"
     },
     "files": [
       "src/error_functions.php"
