@@ -6,12 +6,12 @@
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
 
-namespace chsxf\MFX\DataValidator\Field;
+namespace chsxf\MFX\DataValidator\Fields;
 
 use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\FieldType;
 use chsxf\MFX\DataValidator\FieldTypeRegistry;
-use chsxf\MFX\DataValidator\Filter\RegExp;
+use chsxf\MFX\DataValidator\Filters\RegExp;
 
 /**
  * Descriptor of a Word field type
@@ -42,8 +42,6 @@ class Word extends Field
 				$this->addFilter(RegExp::word());
 				break;
 		}
-
-		$this->_lastLengthFilter = NULL;
 	}
 
 	/**

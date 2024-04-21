@@ -6,10 +6,9 @@
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
 
-namespace chsxf\MFX\DataValidator\Filter;
+namespace chsxf\MFX\DataValidator\Filters;
 
 use chsxf\MFX\DatabaseManager;
-use chsxf\MFX\DataValidator\AbstractFilter;
 
 /**
  * Description of a filter validating if the specified value exists in a database table

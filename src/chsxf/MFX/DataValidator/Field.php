@@ -582,13 +582,13 @@ class Field
 	}
 }
 
-$fieldFolder = dirname(__FILE__) . '/Field';
-require_once("{$fieldFolder}/Email.php");
-require_once("{$fieldFolder}/Word.php");
-require_once("{$fieldFolder}/Integer.php");
-require_once("{$fieldFolder}/WithOptions.php");
-require_once("{$fieldFolder}/TextArea.php");
+$fieldFolder = dirname(__FILE__) . '/Fields';
 require_once("{$fieldFolder}/CheckBox.php");
 require_once("{$fieldFolder}/DateTime.php");
-require_once("{$fieldFolder}/Password.php");
+require_once("{$fieldFolder}/Email.php");
 require_once("{$fieldFolder}/File.php");
+require_once("{$fieldFolder}/Integer.php");
+require_once("{$fieldFolder}/Password.php");
+require_once("{$fieldFolder}/TextArea.php");
+require_once("{$fieldFolder}/WithOptions.php");
+require_once("{$fieldFolder}/Word.php");

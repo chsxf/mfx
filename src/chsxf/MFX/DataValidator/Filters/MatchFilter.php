@@ -1,23 +1,22 @@
 <?php
 
 /**
- * Data validation dependent-requirement filter class
+ * Data validation field-matching filter class
  * 
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
 
-namespace chsxf\MFX\DataValidator\Filter;
+namespace chsxf\MFX\DataValidator\Filters;
 
 use chsxf\MFX\DataValidator\AbstractOtherFieldFilter;
 use chsxf\MFX\StringTools;
-use chsxf\MFX\DataValidator\Field\CheckBox;
 use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\AbstractFilter;
 
 /**
- * Description of a filter validating when provided along with other fields.
+ * Description of a filter validating when the field's matched another field's one
  */
-class RequiredIfNotEmpty extends AbstractOtherFieldFilter
+class MatchFilter extends AbstractOtherFieldFilter
 {
 	/**
 	 * Constructor
@@ -31,7 +30,7 @@ class RequiredIfNotEmpty extends AbstractOtherFieldFilter
 		if (empty($message)) {
 			$of = $this->getOtherFields();
 			if (count($of) == 1) {
-				$message = sprintf(dgettext('mfx', "The field '%%s' is required when the field '%s' is provided."), $of[0]->getName());
+				$message = sprintf(dgettext('mfx', "The field '%%s' must match the value of the field '%s'."), $of[0]->getName());
 			} else {
 				$names = array();
 				foreach ($of as $f) {
@@ -41,7 +40,7 @@ class RequiredIfNotEmpty extends AbstractOtherFieldFilter
 					$item = sprintf("'%s'", $item);
 				});
 				$names = StringTools::implode(dgettext('mfx', ', '), $names, dgettext('mfx', ' and '));
-				$message = sprintf(dgettext('mfx', "The field '%%s' is required when the fields %s are provided."), $names);
+				$message = sprintf(dgettext('mfx', "The field '%%s' must match the value of the fields %s."), $names);
 			}
 			$this->setMessage($message);
 		}
@@ -61,19 +60,14 @@ class RequiredIfNotEmpty extends AbstractOtherFieldFilter
 		$otherFields = $this->getOtherFields();
 		foreach ($otherFields as $f) {
 			$matchingValue = ($atIndex < 0) ? $f->getValue() : $f->getIndexedValue($atIndex);
-			if ($matchingValue === null || $matchingValue === '' || ($f instanceof CheckBox && $matchingValue === 0)) {
-				return true;
+			if ($value != $matchingValue) {
+				if (!$silent) {
+					$this->emitMessage($fieldName);
+				}
+				return false;
 			}
 		}
-
-		if ($value !== null && $value !== '') {
-			return true;
-		} else {
-			if (!$silent) {
-				$this->emitMessage($fieldName);
-			}
-			return false;
-		}
+		return true;
 	}
 
 	/**
@@ -86,7 +80,7 @@ class RequiredIfNotEmpty extends AbstractOtherFieldFilter
 	{
 		$otherFields = $this->getOtherFields();
 		foreach ($otherFields as $f) {
-			$v = ($atIndex === NULL) ? $f->getValue() : $f->getIndexedValue($atIndex);
+			$v = ($atIndex < 0) ? $f->getValue() : $f->getIndexedValue($atIndex);
 			if ($v !== null) {
 				return false;
 			}

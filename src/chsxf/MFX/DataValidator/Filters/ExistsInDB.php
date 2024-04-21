@@ -6,7 +6,7 @@
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
 
-namespace chsxf\MFX\DataValidator\Filter;
+namespace chsxf\MFX\DataValidator\Filters;
 
 use chsxf\MFX\DataValidator\AbstractFilter;
 use chsxf\MFX\DatabaseManager;

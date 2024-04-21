@@ -1,6 +1,6 @@
 <?php
 
-namespace chsxf\MFX\DataValidator\Field;
+namespace chsxf\MFX\DataValidator\Fields;
 
 use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\FieldType;
