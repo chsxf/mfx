@@ -10,6 +10,7 @@ namespace chsxf\MFX;
 
 /**
  * Class containing utility functions for encoding data in XML
+ * @since 1.0
  */
 class XMLTools
 {
@@ -30,7 +31,7 @@ class XMLTools
 	 * Write XML tree from a variable
 	 *
 	 * For objects, the function iterates only on public properties.
-	 *
+	 * 
 	 * @param mixed $var Value to write as XML
 	 * @param boolean $filterStrings If set, the strings are filtered to the native primitive type if applying. (Defaults to true)
 	 *
@@ -125,6 +126,7 @@ class XMLTools
 
 	/**
 	 * Build XML tree from a variable
+	 * @since 1.0
 	 * @param mixed $var Variable from which building the XML tree
 	 * @param string $encoding Encoding charset (Defaults to UTF-8). 
 	 * @return string the XML tree string

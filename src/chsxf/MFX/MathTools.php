@@ -10,6 +10,7 @@ namespace chsxf\MFX;
 
 /**
  * Math helper class
+ * @since 1.0
  */
 final class MathTools
 {
@@ -17,7 +18,7 @@ final class MathTools
 	/**
 	 * Generates a randomly-generated float number
 	 * comprised between 0.0 (inclusive) and 1.0 (inclusive)
-	 *
+	 * @since 1.0
 	 * @return float
 	 */
 	public static function randomFloat(): float

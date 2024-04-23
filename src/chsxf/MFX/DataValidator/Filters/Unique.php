@@ -12,11 +12,13 @@ use chsxf\MFX\DataValidator\AbstractFilter;
 
 /**
  * Description of a filter validating when a repeatable field contains only unique values.
+ * @since 1.0
  */
 class Unique extends AbstractFilter
 {
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param string $message Error message
 	 */
 	public function __construct(?string $message = NULL)
@@ -29,6 +31,7 @@ class Unique extends AbstractFilter
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see AbstractFilter::appliesToField()
 	 */
 	public function appliesToField(): bool
@@ -38,6 +41,7 @@ class Unique extends AbstractFilter
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see AbstractFilter::validate()
 	 * 
 	 * @param string $fieldName Field name

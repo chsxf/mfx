@@ -18,11 +18,13 @@ use Twig\TwigFunction;
 
 /**
  * Data validator Twig extension class
+ * @since 1.0
  */
 class Extension extends AbstractExtension
 {
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \Twig_ExtensionInterface::getName()
 	 */
 	public function getName()
@@ -32,6 +34,7 @@ class Extension extends AbstractExtension
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \Twig_Extension::getFunctions()
 	 */
 	public function getFunctions()
@@ -44,6 +47,7 @@ class Extension extends AbstractExtension
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \Twig_Extension::getTokenParsers()
 	 */
 	public function getTokenParsers()
@@ -57,6 +61,7 @@ class Extension extends AbstractExtension
 
 	/**
 	 * Gets a field's value from a DataValidator
+	 * @since 1.0
 	 * @param DataValidator $validator
 	 * @param string $fieldName
 	 * @return mixed
@@ -68,6 +73,7 @@ class Extension extends AbstractExtension
 
 	/**
 	 * Gets a field's value at index from a DataValidator
+	 * @since 1.0
 	 * @param DataValidator $validator
 	 * @param string $fieldName
 	 * @param int $index
@@ -81,11 +87,13 @@ class Extension extends AbstractExtension
 
 /**
  * Data validator reset counters Twig token parser
+ * @since 1.0
  */
 class DataValidator_ResetCountersTokenParser extends AbstractTokenParser
 {
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \Twig_TokenParserInterface::parse()
 	 */
 	public function parse(Token $token)
@@ -100,6 +108,7 @@ class DataValidator_ResetCountersTokenParser extends AbstractTokenParser
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \Twig_TokenParserInterface::getTag()
 	 */
 	public function getTag()
@@ -110,11 +119,13 @@ class DataValidator_ResetCountersTokenParser extends AbstractTokenParser
 
 /**
  * Data validator reset counters Twig token
+ * @since 1.0
  */
 class DataValidator_ResetCountersToken extends Node
 {
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param string $validatorName Validator's name in Twig context
 	 * @param int $line Line number of this node
 	 * @param string $tag Tag for this node
@@ -126,6 +137,7 @@ class DataValidator_ResetCountersToken extends Node
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \Twig_Node::compile()
 	 */
 	public function compile(Compiler $compiler)
@@ -141,11 +153,13 @@ class DataValidator_ResetCountersToken extends Node
 
 /**
  * Data validator field Twig token parser
+ * @since 1.0
  */
 class DataValidator_FieldTokenParser extends AbstractTokenParser
 {
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \Twig_TokenParserInterface::parse()
 	 * 
 	 * @param \Twig_Token $token
@@ -188,6 +202,7 @@ class DataValidator_FieldTokenParser extends AbstractTokenParser
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \Twig_TokenParserInterface::getTag()
 	 */
 	public function getTag()
@@ -198,11 +213,13 @@ class DataValidator_FieldTokenParser extends AbstractTokenParser
 
 /**
  * Data validator field group Twig token parser
+ * @since 1.0
  */
 class DataValidator_FieldGroupTokenParser extends AbstractTokenParser
 {
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \Twig_TokenParserInterface::parse()
 	 * @param \Twig_Token $token
 	 */
@@ -235,6 +252,7 @@ class DataValidator_FieldGroupTokenParser extends AbstractTokenParser
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \Twig_TokenParserInterface::getTag()
 	 */
 	public function getTag()
@@ -244,6 +262,7 @@ class DataValidator_FieldGroupTokenParser extends AbstractTokenParser
 
 	/**
 	 * Tells if the current token is 
+	 * @since 1.0
 	 * @param \Twig_Token $token
 	 * @return boolean
 	 */
@@ -255,11 +274,13 @@ class DataValidator_FieldGroupTokenParser extends AbstractTokenParser
 
 /**
  * Data validator field Twig node
+ * @since 1.0
  */
 class DataValidator_FieldNode extends Node
 {
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param string $validatorName Validator's name in Twig context
 	 * @param string $fieldName Field's name
 	 * @param string $id Field's ID for the HTML output
@@ -281,6 +302,7 @@ class DataValidator_FieldNode extends Node
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \Twig_Node::compile()
 	 */
 	public function compile(Compiler $compiler)
@@ -327,11 +349,13 @@ class DataValidator_FieldNode extends Node
 
 /**
  * Data validator field group Twig node
+ * @since 1.0
  */
 class DataValidator_FieldGroupNode extends Node
 {
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param string $validatorName Validator's name in Twig context
 	 * @param string $groupName Group's name
 	 * @param bool $nameIsString If set, the group name is stored as a raw string
@@ -350,6 +374,7 @@ class DataValidator_FieldGroupNode extends Node
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \Twig_Node::compile()
 	 */
 	public function compile(Compiler $compiler)

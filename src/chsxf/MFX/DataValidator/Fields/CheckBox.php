@@ -14,6 +14,8 @@ use chsxf\MFX\DataValidator\FieldTypeRegistry;
 
 /**
  * Descriptor of a checkbox field type
+ * 
+ * @since 1.0
  */
 class CheckBox extends Field
 {
@@ -21,6 +23,8 @@ class CheckBox extends Field
 	/**
 	 * (non-PHPdoc)
 	 *
+	 * @ignore
+	 * 
 	 * @see Field::generate()
 	 * @param array $containingGroups
 	 * @param FieldType $type_override
@@ -37,6 +41,8 @@ class CheckBox extends Field
 	/**
 	 * (non-PHPdoc)
 	 *
+	 * @ignore
+	 * 
 	 * @see Field::revertToDefaultIfNotPopulated()
 	 */
 	public function revertToDefaultIfNotPopulated(): bool

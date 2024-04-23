@@ -6,12 +6,19 @@ use chsxf\MFX\Attributes\AnonymousRoute;
 use chsxf\MFX\Attributes\Route;
 use chsxf\MFX\Routers\IRouteProvider;
 
+/**
+ * @since 1.0
+ */
 final class DatabaseUpdater implements IRouteProvider
 {
 
 	private static ?array $_updatersData = NULL;
 	private static ?string $_updatersDomain = NULL;
 
+	/**
+	 * @since 1.0
+	 * @return RequestResult|false 
+	 */
 	#[Route]
 	#[AnonymousRoute]
 	public static function update(): RequestResult|false

@@ -6,11 +6,15 @@ use chsxf\MFX\DataValidator\Field;
 use chsxf\MFX\DataValidator\FieldType;
 use chsxf\MFX\DataValidator\FieldTypeRegistry;
 
+/**
+ * @since 1.0
+ */
 class DateTime extends Field
 {
 
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param string $name Field's name
 	 * @param FieldType $type Field's type
 	 * @param mixed $defaultValue Field's default value
@@ -23,6 +27,7 @@ class DateTime extends Field
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see Field::validate()
 	 */
 	public function validate(bool $silent = false): bool
@@ -67,6 +72,7 @@ class DateTime extends Field
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see Field::generate()
 	 * @param array $containingGroups
 	 * @param FieldType $type_override
@@ -80,6 +86,7 @@ class DateTime extends Field
 
 	/**
 	 * Gets the pattern to use with the date() function
+	 * @since 1.0
 	 * @param FieldType $type Type of the field
 	 * @return string
 	 */
@@ -90,6 +97,7 @@ class DateTime extends Field
 
 	/**
 	 * Gets the pattern as humanly readable
+	 * @since 1.0
 	 * @param FieldType $type Type of the field
 	 * @return string
 	 */
@@ -100,6 +108,7 @@ class DateTime extends Field
 
 	/**
 	 * Gets the pattern as a regular expression
+	 * @since 1.0
 	 * @param FieldType $type Type of the field
 	 * @param boolean $withBackReferences If set, the function should return a regular expression pattern containing name back references
 	 * @return string

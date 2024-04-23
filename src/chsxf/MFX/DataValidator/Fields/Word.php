@@ -17,11 +17,14 @@ use chsxf\MFX\DataValidator\Filters\RegExp;
  * Descriptor of a Word field type
  * 
  * A "word" character is any letter or digit or the underscore character, that is, any character which can be part of a Perl "word".
+ * 
+ * @since 1.0
  */
 class Word extends Field
 {
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param string $name Field's name
 	 * @param FieldType $type Field's type
 	 * @param mixed $defaultValue Field's default value
@@ -46,6 +49,7 @@ class Word extends Field
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see Field::getHTMLType()
 	 * @param FieldType $type_override
 	 */

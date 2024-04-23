@@ -2,6 +2,9 @@
 
 namespace chsxf\MFX\DataValidator;
 
+/**
+ * @since 1.0
+ */
 final class FieldTypeRegistry
 {
 	/**
@@ -11,6 +14,7 @@ final class FieldTypeRegistry
 
 	/**
 	 * Registers a class name for a specific field type
+	 * @since 1.0
 	 * @param FieldType $type Field type
 	 * @param string $className Class name
 	 * @throws DataValidatorException If a class is already registered for this type
@@ -25,6 +29,7 @@ final class FieldTypeRegistry
 
 	/**
 	 * Gets the class name registered for a specific type, of the default Field if none is provided
+	 * @ignore
 	 * @param FieldType $type Field type
 	 * @return string
 	 */

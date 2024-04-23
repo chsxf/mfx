@@ -10,11 +10,13 @@ namespace chsxf\MFX;
 
 /**
  * Session management class
+ * @since 1.0
  */
 class SessionManager
 {
 	/**
 	 * Starts and sets up the PHP session
+	 * @since 1.0
 	 */
 	public static function start()
 	{
@@ -43,6 +45,7 @@ class SessionManager
 
 	/**
 	 * Retrieves the default cookie path based on current script and framework location
+	 * @since 1.0
 	 * @return string
 	 */
 	public static function getDefaultCookiePath(): string

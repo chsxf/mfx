@@ -10,11 +10,13 @@ namespace chsxf\MFX;
 
 /**
  * File management helper class
+ * @since 1.0
  */
 class FileTools
 {
 	/**
 	 * Get file MIME type
+	 * @since 1.0
 	 * @param string $ext File extension
 	 * @return string
 	 */

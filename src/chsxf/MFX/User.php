@@ -10,6 +10,7 @@ namespace chsxf\MFX;
 
 /**
  * User description class
+ * @since 1.0
  */
 class User
 {
@@ -41,6 +42,7 @@ class User
 
 	/**
 	 * Validates user session
+	 * @since 1.0
 	 */
 	public static function validate()
 	{
@@ -60,7 +62,7 @@ class User
 
 	/**
 	 * Validates a user session using database fields
-	 *
+	 * @since 1.0
 	 * @param array $fields Key-value pairs for database validation
 	 * @return boolean true if the session has been validated, false either
 	 */
@@ -75,7 +77,7 @@ class User
 
 	/**
 	 * Sets in session the current user's key if not already set
-	 *
+	 * @since 1.0
 	 * @param string $key Current user's key
 	 */
 	protected static function setSessionWithUserKey(string $key)
@@ -88,6 +90,7 @@ class User
 	/**
 	 * Invalidates user session.
 	 * Logs out the current valid user if existing
+	 * @since 1.0
 	 */
 	public static function invalidate()
 	{
@@ -96,7 +99,7 @@ class User
 
 	/**
 	 * Gets the current user reference
-	 *
+	 * @since 1.0
 	 * @return User
 	 */
 	public static function currentUser(): ?User
@@ -106,7 +109,7 @@ class User
 
 	/**
 	 * Constructor
-	 *
+	 * @since 1.0
 	 * @param string $key User key
 	 */
 	public function __construct(string $key = NULL)
@@ -124,7 +127,7 @@ class User
 
 	/**
 	 * Retrieves users management key field name
-	 *
+	 * @since 1.0
 	 * @throws \InvalidArgumentException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
 	 * @return string
 	 */
@@ -142,7 +145,7 @@ class User
 
 	/**
 	 * Retrieves users management table name
-	 *
+	 * @since 1.0
 	 * @throws \InvalidArgumentException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
 	 * @return string
 	 */
@@ -160,7 +163,7 @@ class User
 
 	/**
 	 * Register a user from database fields
-	 *
+	 * @since 1.0
 	 * @param array $fields Database fields used to identify the user
 	 * @return boolean true if the user is valid, false either
 	 */
@@ -225,7 +228,7 @@ class User
 
 	/**
 	 * Validates the user key
-	 *
+	 * @since 1.0
 	 * @param string $key User key to validate
 	 * @return boolean true if the user key is valid, false either
 	 * @used-by User::registerFromKey()
@@ -239,7 +242,7 @@ class User
 
 	/**
 	 * Validates the user
-	 *
+	 * @since 1.0
 	 * @return boolean true if the user is valid, false either
 	 */
 	protected function validateUser(): bool
@@ -249,7 +252,7 @@ class User
 
 	/**
 	 * Register a user from its key
-	 *
+	 * @since 1.0
 	 * @param string $key User key
 	 * @return boolean true is the key is valid, false either
 	 * @uses User::_validateKey()
@@ -266,7 +269,7 @@ class User
 
 	/**
 	 * Gets the current user key
-	 *
+	 * @since 1.0
 	 * @return string The function returns NULL if no valid user is currently registered
 	 */
 	public function getKey(): string
@@ -276,7 +279,7 @@ class User
 
 	/**
 	 * Gets the current user status.
-	 *
+	 * @since 1.0
 	 * @return boolean true if the current user is valid, false for guests
 	 */
 	public function isValid(): bool
@@ -286,7 +289,7 @@ class User
 
 	/**
 	 * Fetches user data from the database
-	 *
+	 * @since 1.0
 	 * @return boolean true if data has been successfully fetched, false either
 	 */
 	protected final function fetch(): bool
@@ -311,7 +314,7 @@ class User
 	/**
 	 * Fetches user data from the database.
 	 * This function can be overridden.
-	 *
+	 * @since 1.0
 	 * @return mixed An associative array if data could be fetched, false either.
 	 */
 	protected function fetchData(): mixed
@@ -324,7 +327,7 @@ class User
 
 	/**
 	 * Builds the user data's fetch query
-	 *
+	 * @since 1.0
 	 * @return string
 	 */
 	protected function getFetchDataQuery(): string
@@ -334,7 +337,7 @@ class User
 
 	/**
 	 * Tells if data has been fetched and is ready to use
-	 *
+	 * @since 1.0
 	 * @return boolean true if data is ready to use, false either.
 	 */
 	protected final function isDataReady(): bool
@@ -345,6 +348,8 @@ class User
 	/**
 	 * PHP magic method
 	 *
+	 * @ignore
+	 * 
 	 * @param string $name Variable name
 	 * @return mixed
 	 *
@@ -361,6 +366,8 @@ class User
 	/**
 	 * PHP magic method
 	 *
+	 * @ignore
+	 * 
 	 * @param string $name Varible name
 	 * @return boolean
 	 *

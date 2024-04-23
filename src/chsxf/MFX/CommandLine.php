@@ -11,6 +11,8 @@ namespace chsxf\MFX;
 /**
  * Command-line invocation handling class.
  * Eases the use of the framework with command-line scripts
+ * 
+ * @since 1.0
  */
 class CommandLine
 {
@@ -28,7 +30,10 @@ class CommandLine
 	private static int $_argi;
 
 	/**
-	 * Tells if PHP is running on the command-line interface server API
+	 * Tells if PHP is running on the command-line interface (CLI) server API
+	 * 
+	 * @since 1.0
+	 * 
 	 * @return boolean true is the current server API is the command-line interface, false either
 	 */
 	public static function isCLI(): bool
@@ -38,6 +43,7 @@ class CommandLine
 
 	/**
 	 * Handles command-line invocation and the parsing of MicroFX specific options from the arguments list
+	 * @ignore
 	 */
 	public static function handleInvocation()
 	{

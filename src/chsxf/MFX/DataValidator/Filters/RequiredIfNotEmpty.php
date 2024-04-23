@@ -15,11 +15,13 @@ use chsxf\MFX\DataValidator\Field;
 
 /**
  * Description of a filter validating when provided along with other fields.
+ * @since 1.0
  */
 class RequiredIfNotEmpty extends AbstractOtherFieldFilter
 {
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param Field|array $otherFields One or more references to the matching fields
 	 * @param string $message Error message
 	 */
@@ -48,6 +50,7 @@ class RequiredIfNotEmpty extends AbstractOtherFieldFilter
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see AbstractFilter::validate()
 	 * 
 	 * @param string $fieldName Field's name
@@ -77,6 +80,7 @@ class RequiredIfNotEmpty extends AbstractOtherFieldFilter
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see AbstractFilter::mayBeSkipped()
 	 * 
 	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)

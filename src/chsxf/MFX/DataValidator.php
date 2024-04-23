@@ -16,6 +16,8 @@ use chsxf\MFX\DataValidator\FieldType;
  * Data validator class
  * 
  * Instances of this class are used as a entry point for data validation procedures.
+ * 
+ * @since 1.0
  */
 final class DataValidator implements \ArrayAccess
 {
@@ -30,6 +32,7 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param array $fields Pre-allocated data validation fields
 	 */
 	public function __construct(array $fields = NULL)
@@ -47,9 +50,10 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * Adds a field to the data validator
-	 * @param Field $field
-	 * @throws DataValidatorException If a field with the same name already exists
-	 * @return Field The added field
+	 * @since 1.0
+	 * @param \chsxf\MFX\DataValidator\Field $field
+	 * @throws \chsxf\MFX\DataValidator\DataValidatorException If a field with the same name already exists
+	 * @return \chsxf\MFX\DataValidator\Field The added field
 	 */
 	public function addField(Field $field): Field
 	{
@@ -62,16 +66,17 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * Creates and add a field to the data validator
+	 * @since 1.0
 	 * @param string $name Field's name
-	 * @param FieldType $type Field's type
+	 * @param \chsxf\MFX\DataValidator\FieldType $type Field's type
 	 * @param mixed $defaultValue Field's default value (Defaults to NULL)
 	 * @param boolean $required If set, the field will be required. (Defaults to true)
 	 * @param array $extras Extra options
-	 * @return Field
+	 * @return \chsxf\MFX\DataValidator\Field
 	 * 
 	 * @see Field::addField()
 	 */
-	public function createField(string $name, FieldType $type, mixed $defaultValue = NULL, bool $required = true, array $extras = array())
+	public function createField(string $name, FieldType $type, mixed $defaultValue = NULL, bool $required = true, array $extras = array()): Field
 	{
 		$f = $this->addField(Field::create($name, $type, $defaultValue, $required));
 		$f->addExtras($extras);
@@ -80,10 +85,11 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * Gets the value of a field
+	 * @since 1.0
 	 * @param string $name Field name
 	 * @param boolean $returnDefaultIfNotSet If set, the default value of the field is returned is none has been provided (Defaults to false)
 	 * @param boolean $makeEmptyStringsNull If set, all empty string values will be set to NULL. (Defaults to false)
-	 * @throws DataValidatorException If no field exists with this name
+	 * @throws \chsxf\MFX\DataValidator\DataValidatorException If no field exists with this name
 	 */
 	public function getFieldValue(string $name, bool $returnDefaultIfNotSet = false, bool $makeEmptyStringsNull = false): mixed
 	{
@@ -99,11 +105,12 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * Gets the value of a field
+	 * @since 1.0
 	 * @param string $name Field name
 	 * @param int $index Index of the value to retrieve
 	 * @param boolean $returnDefaultIfNotSet If set, the default value of the field is returned is none has been provided (Defaults to false)
 	 * @param boolean $makeEmptyStringsNull If set, all empty string values will be set to NULL. (Defaults to false)
-	 * @throws DataValidatorException If no field exists with this name
+	 * @throws \chsxf\MFX\DataValidator\DataValidatorException If no field exists with this name
 	 */
 	public function getIndexedFieldValue(string $name, int $index, bool $returnDefaultIfNotSet = false, bool $makeEmptyStringsNull = false): mixed
 	{
@@ -119,6 +126,7 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * Gets values for all fields
+	 * @since 1.0
 	 * @param string $prefix Prefix to use for all field name in the resulting array (Defaults to no prefix)
 	 * @param array $excludes List of fields to exclude from the resulting array (Defaults to an empty array)
 	 * @param string $returnDefaultIfNotSet If set, the default value of the field is returned if none has been provided (Defaults to false)
@@ -145,6 +153,7 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * Gets indexed values for all fields
+	 * @since 1.0
 	 * @param int $index Index of the values in fields
 	 * @param string $name Field name
 	 * @param string $prefix Prefix to use for all field name in the resulting array (Defaults to no prefix)
@@ -173,6 +182,7 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * Resets the repeat counters for all fields
+	 * @since 1.0
 	 */
 	public function resetRepeatCounters()
 	{
@@ -183,6 +193,7 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * Validates data based on field descriptors
+	 * @since 1.0
 	 * @param array|\Traversable $data Data to validate
 	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * @return boolean true if data is valid, false either
@@ -214,9 +225,10 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * Generates the HTML representation of a field
+	 * @since 1.0
 	 * @param string $name Field's name to generate
-	 * @param FieldType $type_override Type to use to override original field type. If NULL, no override. (Defaults to NULL)
-	 * @throws DataValidatorException If no field exists with this name
+	 * @param \chsxf\MFX\DataValidator\FieldType $type_override Type to use to override original field type. If NULL, no override. (Defaults to NULL)
+	 * @throws \chsxf\MFX\DataValidator\DataValidatorException If no field exists with this name
 	 */
 	public function generate(string $name, FieldType $type_override = NULL)
 	{
@@ -228,6 +240,7 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * Pushes a generation group name
+	 * @since 1.0
 	 * @param string $name
 	 */
 	public function pushGenerationGroup(string $name)
@@ -239,6 +252,7 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * Pops a generation group name
+	 * @since 1.0
 	 */
 	public function popGenerationGroup()
 	{
@@ -249,6 +263,7 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \ArrayAccess::offsetExists()
 	 * @param mixed $offset
 	 */
@@ -259,6 +274,7 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \ArrayAccess::offsetGet()
 	 * @param mixed $offset
 	 */
@@ -269,6 +285,7 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \ArrayAccess::offsetSet()
 	 * @param mixed $offset
 	 * @param mixed $value
@@ -280,11 +297,13 @@ final class DataValidator implements \ArrayAccess
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see \ArrayAccess::offsetUnset()
 	 * @param mixed $offset
+	 * @throws \chsxf\MFX\DataValidator\DataValidatorException
 	 */
 	public function offsetUnset(mixed $offset): void
 	{
-		throw new DataValidatorException(dgettext('mfx', "Field values cannot be altered."));
+		throw new DataValidatorException(dgettext('mfx', "Field values cannot be removed."));
 	}
 }

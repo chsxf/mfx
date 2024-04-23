@@ -10,10 +10,12 @@ namespace chsxf\MFX\L10n;
 
 /**
  * Class containing ISO 639-1 alpha-2 language codes
+ * @since 1.0
  */
 class Languages
 {
 	/**
+	 * @since 1.0
 	 * @var array Language codes container
 	 */
 	public static array $MAP = array(

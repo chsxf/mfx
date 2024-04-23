@@ -14,6 +14,7 @@ use chsxf\MFX\DataValidator\FieldTypeRegistry;
 
 /**
  * Descriptor of a checkbox field type
+ * @since 1.0
  */
 class File extends Field
 {
@@ -28,7 +29,7 @@ class File extends Field
 
 	/**
 	 * (non-PHPdoc)
-	 *
+	 * @ignore
 	 * @see Field::validate()
 	 */
 	public function validate(bool $silent = false): bool
@@ -85,6 +86,7 @@ class File extends Field
 
 	/**
 	 * {@inheritdoc}
+	 * @ignore
 	 * @see \chsxf\MFX\DataValidator\Field::setValue()
 	 */
 	public function setValue(mixed $value)
@@ -105,7 +107,7 @@ class File extends Field
 
 	/**
 	 * (non-PHPdoc)
-	 *
+	 * @ignore
 	 * @see Field::revertToDefaultIfNotPopulated()
 	 */
 	public function revertToDefaultIfNotPopulated(): bool

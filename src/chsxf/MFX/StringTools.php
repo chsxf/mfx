@@ -12,20 +12,28 @@ use chsxf\MFX\L10n\L10nManager;
 
 /**
  * String management helper class
+ * @since 1.0
  */
 class StringTools
 {
+	/** @since 1.0 */
 	const CHARSET_ALPHA_LC = 'abcdefghijklmnopqrstuvwxyz';
+	/** @since 1.0 */
 	const CHARSET_ALPHA_UC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	/** @since 1.0 */
 	const CHARSET_ALPHA_CI = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	/** @since 1.0 */
 	const CHARSET_NUMERIC = '0123456789';
+	/** @since 1.0 */
 	const CHARSET_ALPHANUMERIC_LC = 'abcdefghijklmnopqrstuvwxyz0123456789';
+	/** @since 1.0 */
 	const CHARSET_ALPHANUMERIC_UC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+	/** @since 1.0 */
 	const CHARSET_ALPHANUMERIC_CI = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
 	/**
 	 * Checks if the specified address is a valid email address
-	 *
+	 * @since 1.0
 	 * @param string $address The email address string to check
 	 * @return boolean true if the address is valid, false either
 	 */
@@ -36,7 +44,7 @@ class StringTools
 
 	/**
 	 * Checks if the specified string contains a positive integer, optionnaly equals to zero
-	 *
+	 * @since 1.0
 	 * @param string $str String to evaluate
 	 * @param boolean $canBeZero If set, the string can be evaluated to zero. If not, the integer must be positive. (Defaults to false)
 	 * @return boolean
@@ -53,7 +61,7 @@ class StringTools
 
 	/**
 	 * Checks if the specified string contains a negative integer, optionnaly equals to zero
-	 *
+	 * @since 1.0
 	 * @param string $str String to evaluate
 	 * @param boolean $canBeZero If set, the string can be evaluated to zero. If not, the integer must be negative. (Defaults to false)
 	 * @return boolean
@@ -70,7 +78,7 @@ class StringTools
 
 	/**
 	 * Checks if the specified string contains an integer
-	 *
+	 * @since 1.0
 	 * @param string $str String to evaluate
 	 * @return boolean
 	 */
@@ -82,7 +90,7 @@ class StringTools
 
 	/**
 	 * Generates a random string based on the specified character set
-	 *
+	 * @since 1.0
 	 * @param int $length Length of the resulting string
 	 * @param string $charset Character set (Defaults to alphanumeric lower case characters)
 	 * @return boolean|string Returns false if length is zero or negative or charset is not a non-empty string. Returns the generated string either.
@@ -104,7 +112,7 @@ class StringTools
 
 	/**
 	 * Joins array elements with a separator string, eventually replacing the first and last separators with specific ones.
-	 *
+	 * @since 1.0
 	 * @param string $separator Separator string
 	 * @param array $elements Elements to join. If $elements is empty, the function returns an empty string. If $elements contains only one element, function returns this element.
 	 * @param string $lastSeparator Separator to use between the two last elements. If NULL, the general separator is used. (Defaults to NULL)
@@ -135,7 +143,7 @@ class StringTools
 
 	/**
 	 * Converts a string in snake case to the same string in camel case
-	 *
+	 * @since 1.0
 	 * @param string $_str Input string
 	 * @return string Resulting string in camel case
 	 */
@@ -146,7 +154,7 @@ class StringTools
 
 	/**
 	 * Converts a string in snake case to the same string in Pascal case
-	 *
+	 * @since 1.0
 	 * @param string $_str Input string
 	 * @return string Resulting string in Pascal case
 	 */
@@ -157,7 +165,7 @@ class StringTools
 
 	/**
 	 * Converts a string in snake case
-	 *
+	 * @since 1.0
 	 * @param string $_str Input string
 	 * @param bool $_upperCase If set, returns the string in upper snake case.
 	 * @return string Resulting string in snake case
@@ -181,7 +189,7 @@ class StringTools
 	 * then removing consecutive multiple place holders.
 	 * Note:
 	 * Result string may start or end with the place holder.
-	 *
+	 * @since 1.0
 	 * @param string $string Source string
 	 * @param string $placeholder Placeholder text (Defaults to '-')
 	 * @return string
@@ -200,7 +208,7 @@ class StringTools
 
 	/**
 	 * Removes accents from accented characters
-	 *
+	 * @since 1.0
 	 * @param string $string Source string
 	 * @return string
 	 */

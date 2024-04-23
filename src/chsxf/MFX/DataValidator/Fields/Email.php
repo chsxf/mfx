@@ -15,13 +15,14 @@ use chsxf\MFX\StringTools;
 
 /**
  * Descriptor of an email field type
+ * @since 1.0
  */
 class Email extends Field
 {
 
 	/**
 	 * (non-PHPdoc)
-	 *
+	 * @ignore
 	 * @see Field::validate()
 	 */
 	public function validate(bool $silent = false): bool

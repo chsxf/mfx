@@ -12,6 +12,7 @@ use chsxf\MFX\DataValidator\FieldType;
 
 /**
  * Helper class for managing pagination
+ * @since 1.0
  */
 final class PaginationManager
 {
@@ -39,6 +40,7 @@ final class PaginationManager
 
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param IPaginationProvider $provider Pagination information provider
 	 * @param array $extraParams Extra parameter keys for further requests
 	 */
@@ -86,6 +88,7 @@ final class PaginationManager
 
 	/**
 	 * Sets a registered extra parameter's value
+	 * @since 1.0
 	 * @param string $key Extra parameter's key
 	 * @param mixed $value A scalar value
 	 */
@@ -98,6 +101,7 @@ final class PaginationManager
 
 	/**
 	 * Generates a SQL LIMIT clause based on current page information
+	 * @since 1.0
 	 * @return string
 	 */
 	public function sqlLimit(): string
@@ -107,6 +111,7 @@ final class PaginationManager
 
 	/**
 	 * Tells how many pages exists
+	 * @since 1.0
 	 * @return int
 	 */
 	public function getPagesCount(): int
@@ -116,6 +121,7 @@ final class PaginationManager
 
 	/**
 	 * Tells how many items should be displayed per page
+	 * @since 1.0
 	 * @return int
 	 */
 	public function getItemCountPerPage(): int
@@ -125,6 +131,7 @@ final class PaginationManager
 
 	/**
 	 * Computes the 0-based current page index
+	 * @since 1.0
 	 * @return int
 	 */
 	public function getCurrentPageIndex(): int
@@ -134,6 +141,7 @@ final class PaginationManager
 
 	/**
 	 * Tells the total count of items
+	 * @since 1.0
 	 * @return int
 	 */
 	public function getTotalItemCount(): int
@@ -143,6 +151,7 @@ final class PaginationManager
 
 	/**
 	 * Tells the start index for the current page
+	 * @since 1.0
 	 * @return int
 	 */
 	public function getCurrentPageStart(): int
@@ -152,6 +161,7 @@ final class PaginationManager
 
 	/**
 	 * Gets the URL parameters for the current page
+	 * @since 1.0
 	 * @param boolean $includeExtraParameters If set, includes the extra parameters in the URL params
 	 * @return string
 	 */
@@ -162,6 +172,7 @@ final class PaginationManager
 
 	/**
 	 * Tells if a previous page exists
+	 * @since 1.0
 	 * @return boolean
 	 */
 	public function hasPrevPage(): bool
@@ -171,6 +182,7 @@ final class PaginationManager
 
 	/**
 	 * Gets the previous page start index
+	 * @since 1.0
 	 * @return int
 	 */
 	public function prevPageStart(): int
@@ -180,6 +192,7 @@ final class PaginationManager
 
 	/**
 	 * Gets the previous page URL parameters
+	 * @since 1.0
 	 * @param boolean $includeExtraParameters If set, includes the extra parameters in the URL params
 	 * @return string
 	 */
@@ -197,6 +210,7 @@ final class PaginationManager
 
 	/**
 	 * Tells if a next page exists
+	 * @since 1.0
 	 * @return boolean
 	 */
 	public function hasNextPage(): bool
@@ -206,6 +220,7 @@ final class PaginationManager
 
 	/**
 	 * Gets the next page start index
+	 * @since 1.0
 	 * @return int
 	 */
 	public function nextPageStart(): int
@@ -215,6 +230,7 @@ final class PaginationManager
 
 	/**
 	 * Gets the next page URL parameters
+	 * @since 1.0
 	 * @param boolean $includeExtraParameters If set, includes the extra parameters in the URL params
 	 * @return string
 	 */
@@ -232,6 +248,7 @@ final class PaginationManager
 
 	/**
 	 * Gets the start index of the specified page
+	 * @since 1.0
 	 * @param int $pageIndex Page index
 	 * @return int
 	 */
@@ -243,6 +260,7 @@ final class PaginationManager
 
 	/**
 	 * Get the URL parameters of the specified page
+	 * @since 1.0
 	 * @param int $pageIndex Page index
 	 * @param bool $includeExtraParameters If set, includes the extra parameters in the URL params
 	 * @return string
@@ -261,6 +279,7 @@ final class PaginationManager
 
 	/**
 	 * Adds current page parameters to the specified DataValidator instance
+	 * @since 1.0
 	 * @param DataValidator $validator
 	 */
 	public function addCurrentPageDataValidatorFields(DataValidator $validator)

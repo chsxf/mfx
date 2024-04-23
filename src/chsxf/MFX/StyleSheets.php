@@ -12,6 +12,7 @@ use Twig\Environment;
 
 /**
  * Exceptions dispatched by the StyleSheets class
+ * @since 1.0
  */
 class StyleSheetException extends \Exception
 {
@@ -19,6 +20,7 @@ class StyleSheetException extends \Exception
 
 /**
  * Helper class for managing style sheets
+ * @since 1.0
  */
 class StyleSheets
 {
@@ -29,6 +31,7 @@ class StyleSheets
 
 	/**
 	 * Adds a style sheets to the document
+	 * @since 1.0
 	 * @param string $url Style sheet URL or path for inline sheets
 	 * @param string $media Media type (Defaults to screen)
 	 * @param bool $inline If set, the style sheet is included inline in the response (Defaults to false).
@@ -66,7 +69,8 @@ class StyleSheets
 	}
 
 	/**
-	 * Exports the HTML output for inclusion is the response <head> tag
+	 * Exports the HTML output for inclusion in the response `<head>` tag
+	 * @since 1.0
 	 * @param \Twig_Environment $twig Twig environnement used for rendering HTML
 	 * @return string
 	 */

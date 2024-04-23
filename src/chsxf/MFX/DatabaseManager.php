@@ -13,6 +13,7 @@ use chsxf\PDO\DatabaseManagerException;
 
 /**
  * Database manager class
+ * @since 1.0
  */
 final class DatabaseManager extends PDODatabaseManager
 {
@@ -27,7 +28,7 @@ final class DatabaseManager extends PDODatabaseManager
 
 	/**
 	 * Constructor
-	 *
+	 * @since 1.0
 	 * @param string $dsn Data Source Name (ie mysql:host=localhost;dbname=mydb)
 	 * @param string $username Username
 	 * @param string $password Password
@@ -42,7 +43,7 @@ final class DatabaseManager extends PDODatabaseManager
 
 	/**
 	 * Opens a connection to a database server, or returns the currently active connection to this server
-	 *
+	 * @since 1.0
 	 * @param string $server Server configuration key (Defaults to __default).
 	 * @param bool $forceNew If set, a new connection is open even if a previous similar one exists in the cache (Defaults to false)
 	 * @throws DatabaseManagerException If no configuration is available nor valid for this server key
@@ -84,6 +85,10 @@ final class DatabaseManager extends PDODatabaseManager
 		return $dbm;
 	}
 
+	/**
+	 * @since 1.0
+	 * @param DatabaseManager $_manager 
+	 */
 	public static function close(DatabaseManager &$_manager)
 	{
 		unset(self::$_openConnections[$_manager->_serverConfigurationKey]);

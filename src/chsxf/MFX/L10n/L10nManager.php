@@ -18,6 +18,7 @@ if (!defined('LC_MESSAGES')) {
 
 /**
  * Helper class for managing localization
+ * @since 1.0
  */
 class L10nManager
 {
@@ -67,6 +68,7 @@ class L10nManager
 
 	/**
 	 * Initializes the localization manager
+	 * @ignore
 	 */
 	public static function init()
 	{
@@ -96,6 +98,7 @@ class L10nManager
 
 	/**
 	 * Binds a new text domain
+	 * @since 1.0
 	 * @param string $key Text domain key
 	 * @param string $path Text domain path
 	 * @param string $charset Text domain charset (Defaults to UTF-8)
@@ -108,6 +111,7 @@ class L10nManager
 
 	/**
 	 * Gets the current locale from environment
+	 * @since 1.0
 	 * @return string
 	 */
 	public static function getLocale(): string
@@ -118,6 +122,7 @@ class L10nManager
 
 	/**
 	 * Gets the current language from the current locale
+	 * @since 1.0
 	 * @return string
 	 */
 	public static function getLanguage(): string

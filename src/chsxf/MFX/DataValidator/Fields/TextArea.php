@@ -14,11 +14,13 @@ use chsxf\MFX\DataValidator\FieldTypeRegistry;
 
 /**
  * Descriptor of a text area field type
+ * @since 1.0
  */
 class TextArea extends Field
 {
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see Field::generate()
 	 * @param array $containingGroups
 	 * @param FieldType $type_override

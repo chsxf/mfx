@@ -10,6 +10,7 @@ namespace chsxf\MFX;
 
 /**
  * Class containing utility functions for encoding data in JSON
+ * @since 1.0
  */
 class JSONTools
 {
@@ -30,7 +31,9 @@ class JSONTools
 	 * Filter string values recursively in order to use the proper primitive type if applying.
 	 * 
 	 * For objects, the function proceeds to a clone and iterates only on public properties. 
-	 *  
+	 * 
+	 * @since 1.0
+	 * 
 	 * @param mixed $var Value to filter
 	 * @return mixed The filtered value, or the original value if no filtering is applying
 	 * 
@@ -112,6 +115,9 @@ class JSONTools
 
 	/**
 	 * Filter the specified value and encode it in JSON
+	 * 
+	 * @since 1.0
+	 * 
 	 * @param mixed $var Value to filter and encode
 	 * @return string A JSON-encoded string representing the specified value
 	 * 

@@ -10,8 +10,9 @@ namespace chsxf\MFX;
 
 /**
  * Core profiler class
+ * @since 1.0
  */
-class CoreProfiler
+final class CoreProfiler
 {
 	/**
 	 * @var CoreProfiler Singleton instance
@@ -51,6 +52,9 @@ class CoreProfiler
 
 	/**
 	 * Tick handler used for gathering profiling data
+	 * 
+	 * @ignore
+	 * 
 	 * @param string $event Custom event annotation to identify event times during profiling. If NULL, no event is provided (Defaults to NULL).
 	 */
 	public function tickHandler(?string $event = NULL)
@@ -70,6 +74,8 @@ class CoreProfiler
 	 * Initiliases profiling
 	 * 
 	 * This function enables output buffering.
+	 * 
+	 * @since 1.0
 	 */
 	public static function init()
 	{
@@ -87,6 +93,7 @@ class CoreProfiler
 
 	/**
 	 * Push a custom event into profiling data
+	 * @since 1.0
 	 * @param string $event Name of the even
 	 */
 	public static function pushEvent(string $event)
@@ -104,6 +111,7 @@ class CoreProfiler
 
 	/**
 	 * Terminates profiling and output buffering and echoes the result
+	 * @since 1.0
 	 */
 	public static function stop()
 	{
@@ -147,7 +155,6 @@ class CoreProfiler
 
 		$headers = headers_list();
 		$contentType = NULL;
-		$charset = NULL;
 		foreach ($headers as $header) {
 			if (preg_match('/^Content-Type: ([^;]+)/', $header, $contentType)) {
 				$contentType = $contentType[1];
@@ -216,6 +223,7 @@ class CoreProfiler
 
 	/**
 	 * Evaluates how long was the profiling
+	 * @since 1.0
 	 * @return boolean|float false if profiling is not initialized or complete, or the duration in milliseconds
 	 */
 	public static function getProfilingDuration(): float|false

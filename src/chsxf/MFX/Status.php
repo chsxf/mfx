@@ -7,8 +7,16 @@ use chsxf\MFX\Attributes\Route;
 use chsxf\MFX\RequestResult;
 use chsxf\MFX\Routers\IRouteProvider;
 
+/**
+ * @since 1.0
+ * @package chsxf\MFX
+ */
 final class Status implements IRouteProvider
 {
+	/**
+	 * @since 1.0
+	 * @return RequestResult 
+	 */
 	#[Route]
 	#[AnonymousRoute]
 	public static function ping(): RequestResult

@@ -12,6 +12,7 @@ use chsxf\MFX\DataValidator\AbstractFilter;
 
 /**
  * Descriptor of a filter field based on regular expressions
+ * @since 1.0
  */
 class RegExp extends AbstractFilter
 {
@@ -32,7 +33,7 @@ class RegExp extends AbstractFilter
 
 	/**
 	 * Constructor
-	 *
+	 * @since 1.0
 	 * @param string $regexp Perl-Compatible regular expression (PCRE)
 	 * @param string $message Error message
 	 * @see preg_match()
@@ -49,7 +50,7 @@ class RegExp extends AbstractFilter
 
 	/**
 	 * (non-PHPdoc)
-	 *
+	 * @ignore
 	 * @see AbstractFilter::validate()
 	 *
 	 * @param string $fieldName Field's name
@@ -71,7 +72,7 @@ class RegExp extends AbstractFilter
 
 	/**
 	 * Helper function to build string length validation filters
-	 *
+	 * @since 1.0
 	 * @param int $min Minimum required length. If empty or negative, no minimum is required. (Defaults to NULL)
 	 * @param int $max Maximum required length. If empty or negative, no maximum is required. (Defaults to NULL)
 	 * @return RegExp
@@ -106,7 +107,7 @@ class RegExp extends AbstractFilter
 
 	/**
 	 * Helper function to build case-insensitive word validation filter
-	 *
+	 * @since 1.0
 	 * @return RegExp
 	 */
 	public static function word(): RegExp
@@ -116,7 +117,7 @@ class RegExp extends AbstractFilter
 
 	/**
 	 * Helper function to build lower case validation filter
-	 *
+	 * @since 1.0
 	 * @return RegExp
 	 */
 	public static function lowerCaseWord(): RegExp
@@ -126,7 +127,7 @@ class RegExp extends AbstractFilter
 
 	/**
 	 * Helper function to build upper case validation filter
-	 *
+	 * @since 1.0
 	 * @return RegExp
 	 */
 	public static function upperCaseWord(): RegExp
@@ -136,7 +137,7 @@ class RegExp extends AbstractFilter
 
 	/**
 	 * Helper function to build variable bit-length hexadecimal key validation filter
-	 *
+	 * @since 1.0
 	 * @param int $_bitLength Bit-length of the key (must be a multiple of 8)
 	 * @param bool $_ignoreCase If set, produces a case-insensitive validation filter
 	 * @param bool $_lowerCase If set and case is not ignored, the validation filter will constrain to lower case. If not set and case is not ignored, the validation filter will constrain to upper case.
@@ -164,7 +165,7 @@ class RegExp extends AbstractFilter
 
 	/**
 	 * Helper function to build a equality validation filter
-	 *
+	 * @since 1.0
 	 * @param string $value Exact value to match
 	 * @return RegExp
 	 */

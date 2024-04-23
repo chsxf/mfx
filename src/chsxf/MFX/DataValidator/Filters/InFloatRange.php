@@ -12,6 +12,7 @@ use chsxf\MFX\DataValidator\AbstractFilter;
 
 /**
  * Descriptor of a filter field checking presence of the value in a Min Max range
+ * @since 1.0
  */
 class InFloatRange extends AbstractFilter
 {
@@ -24,7 +25,7 @@ class InFloatRange extends AbstractFilter
 
 	/**
 	 * Constructor
-	 *
+	 * @since 1.0
 	 * @param float $min the minimum value
 	 * @param float $max the maximum value
 	 * @param bool $includeMax If set, includes the max value. If not, the max value is not part of the range.
@@ -47,6 +48,7 @@ class InFloatRange extends AbstractFilter
 
 	/**
 	 * {@inheritdoc}
+	 * @ignore
 	 * @see AbstractFilter::validate()
 	 */
 	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool

@@ -12,6 +12,7 @@ use Twig\Environment;
 
 /**
  * Exceptions dispatched by the Scripts class
+ * @since 1.0
  */
 class ScriptException extends \Exception
 {
@@ -19,6 +20,7 @@ class ScriptException extends \Exception
 
 /**
  * Helper class for managing scripts
+ * @since 1.0
  */
 class Scripts
 {
@@ -29,6 +31,7 @@ class Scripts
 
 	/**
 	 * Adds a script to the document
+	 * @since 1.0
 	 * @param string $url Script URL or path for inline scripts
 	 * @param string $inline If set, the script is included inline in the response (Defaults to false).
 	 * @param string $prepend If set, the script is added before any other (Defaults to false).
@@ -68,7 +71,8 @@ class Scripts
 	}
 
 	/**
-	 * Exports the HTML output for inclusion is the response <head> tag
+	 * Exports the HTML output for inclusion in the response `<head>` tag
+	 * @since 1.0
 	 * @param \Twig_Environment $twig Twig environnement used for rendering HTML
 	 * @return string
 	 */

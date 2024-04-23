@@ -25,6 +25,8 @@ use Twig\Environment;
  * Core manager singleton class
  *
  * Handles all requests and responses.
+ * 
+ * @since 1.0
  */
 final class CoreManager
 {
@@ -166,6 +168,9 @@ final class CoreManager
 
 	/**
 	 * Converts the fake protocols in the input strings
+	 * 
+	 * @since 1.0
+	 * 
 	 * @param string $str Input string
 	 *
 	 * @return string
@@ -182,6 +187,9 @@ final class CoreManager
 
 	/**
 	 * Gets the Twig environment for the current request
+	 * 
+	 * @since 1.0
+	 * 
 	 * @return \Twig\Environment
 	 */
 	public static function getTwig(): ?Environment
@@ -192,6 +200,8 @@ final class CoreManager
 	/**
 	 * Handles the request sent to the server
 	 *
+	 * @ignore
+	 * 
 	 * @param string $defaultRoute Route to use if none can be guessed from request
 	 */
 	public static function handleRequest(Environment $twig, string $defaultRoute)
@@ -375,6 +385,9 @@ final class CoreManager
 
 	/**
 	 * Builds the root URL from server information (protocol, host and PHP_SELF)
+	 * 
+	 * @since 1.0
+	 * 
 	 * @return string
 	 */
 	public static function getRootURL(): string
@@ -399,6 +412,9 @@ final class CoreManager
 
 	/**
 	 * Redirects the user the specified URL, the HTTP referer if defined and same host or the website root
+	 * 
+	 * @since 1.0
+	 * 
 	 * @param string $redirectURL Target redirection URL (Defaults to NULL)
 	 */
 	public static function redirect(string $redirectURL = NULL)
@@ -438,7 +454,7 @@ final class CoreManager
 	 * @param int $code HTTP status code to emit (Defaults to 400 Bad Request)
 	 * @param ?string $message Custom message to output with status code
 	 */
-	public static function outputStatusCode(int $code = 400, ?string $message = NULL)
+	private static function outputStatusCode(int $code = 400, ?string $message = NULL)
 	{
 		$code = self::_setStatusCode($code);
 
@@ -473,6 +489,9 @@ final class CoreManager
 
 	/**
 	 * Terminates the script and emits a HTTP status code
+	 * 
+	 * @since 1.0
+	 * 
 	 * @param int $code HTTP status code to emit (Defaults to 400 Bad Request)
 	 * @param ?string $message Custom message to output with status code
 	 */
@@ -501,6 +520,9 @@ final class CoreManager
 
 	/**
 	 * Sets attachment headers for file downloads
+	 * 
+	 * @since 1.0
+	 * 
 	 * @param string $filename Downlaoded file name
 	 * @param string $mimeType Attachment MIME type. This parameter is ignored if $addContentType is not set.
 	 * @param string $charset Attachment charset. If NULL, no charset is provided. This parameter is ignored if $addContentType is not set. (Defaults to UTF-8)
@@ -520,6 +542,8 @@ final class CoreManager
 
 	/**
 	 * Flushes all output buffers
+	 * 
+	 * @since 1.0
 	 */
 	public static function flushAllOutputBuffers()
 	{
@@ -531,6 +555,9 @@ final class CoreManager
 
 	/**
 	 * Uncaught exception handler
+	 * 
+	 * @ignore
+	 * 
 	 * @param \Throwable $exception Uncaught exception
 	 */
 	public static function exceptionHandler(\Throwable $exception)

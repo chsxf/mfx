@@ -2,10 +2,21 @@
 
 namespace chsxf\MFX\Attributes;
 
+use ErrorException;
+use ReflectionClass;
+use ReflectionMethod;
+
+/**
+ * @since 1.0
+ */
 class RouteAttributesParser
 {
     private array $attributes = array();
 
+    /**
+     * @since 1.0
+     * @param ReflectionClass|ReflectionMethod $reflectedElement 
+     */
     public function __construct(\ReflectionClass|\ReflectionMethod $reflectedElement)
     {
         $baseAttributeClass = new \ReflectionClass(AbstractRouteAttribute::class);
@@ -21,6 +32,11 @@ class RouteAttributesParser
         }
     }
 
+    /**
+     * @since 1.0
+     * @param string $class 
+     * @return bool 
+     */
     public function hasAttribute(string $class)
     {
         foreach ($this->attributes as $attr) {
@@ -31,6 +47,13 @@ class RouteAttributesParser
         return false;
     }
 
+    /**
+     * @since 1.0
+     * @param string $class 
+     * @param null|string $defaultValue 
+     * @return null|string 
+     * @throws ErrorException 
+     */
     public function getAttributeValue(string $class, ?string $defaultValue = null): ?string
     {
         if (!is_subclass_of($class, AbstractRouteStringAttribute::class)) {

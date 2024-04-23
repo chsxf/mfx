@@ -10,6 +10,7 @@ namespace chsxf\MFX\DataValidator;
 
 /**
  * Descriptor of a data validator field
+ * @since 1.0
  */
 class Field
 {
@@ -81,7 +82,7 @@ class Field
 
 	/**
 	 * Constructor
-	 *
+	 * @since 1.0
 	 * @param String $name Field's name
 	 * @param FieldType $type Field's type
 	 * @param mixed $defaultValue Field's default value
@@ -119,7 +120,7 @@ class Field
 
 	/**
 	 * Helper function to create fields
-	 *
+	 * @since 1.0
 	 * @param string $name Field's name
 	 * @param FieldType $type Field's type
 	 * @param mixed $defaultValue Field's default value (Defaults to NULL)
@@ -134,7 +135,7 @@ class Field
 
 	/**
 	 * Gets the name of this field
-	 *
+	 * @since 1.0
 	 * @return string
 	 */
 	public function getName(): string
@@ -144,7 +145,7 @@ class Field
 
 	/**
 	 * Gets the type of this field
-	 *
+	 * @since 1.0
 	 * @return FieldType
 	 */
 	public function getType(): FieldType
@@ -154,7 +155,7 @@ class Field
 
 	/**
 	 * Gets the HTML type of this field
-	 *
+	 * @since 1.0
 	 * @param FieldType $type_override Type to use to override original field type. If NULL, no override. (Defaults to NULL)
 	 * @return string
 	 */
@@ -165,7 +166,7 @@ class Field
 
 	/**
 	 * Tells if this field is required or not
-	 *
+	 * @since 1.0
 	 * @return boolean
 	 */
 	public function isRequired(): bool
@@ -175,7 +176,7 @@ class Field
 
 	/**
 	 * Tells if this field as a default value or not
-	 *
+	 * @since 1.0
 	 * @return boolean
 	 */
 	public function hasDefaultValue(): bool
@@ -185,7 +186,7 @@ class Field
 
 	/**
 	 * Get this field's default value
-	 *
+	 * @since 1.0
 	 * @return mixed
 	 */
 	public function getDefaultValue(): mixed
@@ -195,7 +196,7 @@ class Field
 
 	/**
 	 * Sets this field's value
-	 *
+	 * @since 1.0
 	 * @param mixed $value
 	 */
 	public function setValue(mixed $value)
@@ -216,7 +217,7 @@ class Field
 
 	/**
 	 * Gets this field's value
-	 *
+	 * @since 1.0
 	 * @param boolean $returnDefaultIfNotSet If set, the function returns the default value if the field has not been populated yet.
 	 * @return mixed
 	 */
@@ -231,7 +232,7 @@ class Field
 
 	/**
 	 * Get a indexed value from this field if repeatable
-	 *
+	 * @since 1.0
 	 * @param int $index Index of the value to retrieve
 	 * @param bool $returnDefaultIfNotSet If set, the function returns the default value if the field has not been populated yet.
 	 * @return mixed the indexed value or the field's value if the field is not repeatable.
@@ -262,7 +263,7 @@ class Field
 
 	/**
 	 * Adds a validation filter to this field
-	 *
+	 * @since 1.0
 	 * @param AbstractFilter $filter
 	 */
 	public final function addFilter(AbstractFilter $filter)
@@ -272,7 +273,7 @@ class Field
 
 	/**
 	 * Removes a validation filter from this field
-	 *
+	 * @since 1.0
 	 * @param AbstractFilter $filter
 	 */
 	public final function removeFilter(AbstractFilter $filter)
@@ -287,7 +288,7 @@ class Field
 
 	/**
 	 * Sets or unsets the field as repeatable
-	 *
+	 * @since 1.0
 	 * @param bool $isRepeatable If set, the field becomes repeatable
 	 * @param int $upTo Maximum number of iteration. If 0 or negative, no limit is applied. (Defaults to -1)
 	 */
@@ -303,7 +304,7 @@ class Field
 
 	/**
 	 * Tells if this field is repeatable
-	 *
+	 * @since 1.0
 	 * @return boolean
 	 */
 	public final function isRepeatable(): bool
@@ -313,7 +314,7 @@ class Field
 
 	/**
 	 * Tells the maximum number of iterations for this repeatable field
-	 *
+	 * @since 1.0
 	 * @return int The maximum number of iterations or -1 if no limit.
 	 */
 	public final function repeatableUpTo(): int
@@ -323,6 +324,7 @@ class Field
 
 	/**
 	 * Resets this field's repeat counter
+	 * @since 1.0
 	 */
 	public final function resetRepeatCounter()
 	{
@@ -331,7 +333,7 @@ class Field
 
 	/**
 	 * Retrieves the maximal defined repeat index for a repeatable field.
-	 *
+	 * @since 1.0
 	 * @return number -1 if no maximal index can be guessed or the actual value
 	 */
 	public final function getMaxRepeatIndex(): int
@@ -350,7 +352,7 @@ class Field
 
 	/**
 	 * Sets or unsets the field as read only
-	 *
+	 * @since 1.0
 	 * @param bool $readOnly
 	 */
 	public final function setReadOnly(bool $readOnly)
@@ -360,7 +362,7 @@ class Field
 
 	/**
 	 * Tells if the field is read only
-	 *
+	 * @since 1.0
 	 * @return boolean
 	 */
 	public final function isReadOnly(): bool
@@ -370,7 +372,7 @@ class Field
 
 	/**
 	 * Enables or disables this field
-	 *
+	 * @since 1.0
 	 * @param bool $enabled
 	 */
 	public final function setEnabled(bool $enabled)
@@ -380,7 +382,7 @@ class Field
 
 	/**
 	 * Tells if the field is enabled
-	 *
+	 * @since 1.0
 	 * @return boolean
 	 */
 	public final function isEnabled(): bool
@@ -390,7 +392,7 @@ class Field
 
 	/**
 	 * Enables of disables value population during field generation
-	 *
+	 * @since 1.0
 	 * @param boolean $enabled
 	 */
 	public final function setGenerationWithValue(bool $enabled)
@@ -400,7 +402,7 @@ class Field
 
 	/**
 	 * Tells if the field should be populated with its value when generated
-	 *
+	 * @since 1.0
 	 * @return boolean
 	 */
 	public final function shouldGenerateWithValue(): bool
@@ -410,7 +412,7 @@ class Field
 
 	/**
 	 * Adds extra option to field
-	 *
+	 * @since 1.0
 	 * @param string $name Option name
 	 * @param string $value Option value
 	 */
@@ -421,7 +423,7 @@ class Field
 
 	/**
 	 * Adds extra options to field
-	 *
+	 * @since 1.0
 	 * @param array $extras Associative array whose keys are option names and values are option values
 	 */
 	public final function addExtras(array $extras)
@@ -433,7 +435,7 @@ class Field
 
 	/**
 	 * Tells if the field should be reverted to its default value if it is not populated during validation
-	 *
+	 * @since 1.0
 	 * @return boolean
 	 */
 	public function revertToDefaultIfNotPopulated(): bool
@@ -443,7 +445,7 @@ class Field
 
 	/**
 	 * Validates the field's value based on the required flag and the provided filters
-	 *
+	 * @since 1.0
 	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * @return boolean
 	 */
@@ -502,7 +504,7 @@ class Field
 
 	/**
 	 * Applies applicable field's filters to itself
-	 *
+	 * @since 1.0
 	 * @param boolean $silent If set, no error is triggered (defaults to false)
 	 * @return boolean true if the field qualifies for all filters, false either.
 	 *         Note:
@@ -524,7 +526,7 @@ class Field
 
 	/**
 	 * Applies field's filters to the specified value
-	 *
+	 * @since 1.0
 	 * @param mixed $value Value to validate
 	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)
 	 * @param boolean $silent If set, no error is triggered (defaults to false)
@@ -548,7 +550,7 @@ class Field
 
 	/**
 	 * Generates the HTML representation of this field
-	 *
+	 * @since 1.0
 	 * @param array $containingGroups Containing groups
 	 * @param FieldType $type_override Type to use to override original field type. If NULL, no override. (Defaults to NULL)
 	 * @return array

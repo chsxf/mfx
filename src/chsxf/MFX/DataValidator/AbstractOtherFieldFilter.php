@@ -10,6 +10,7 @@ namespace chsxf\MFX\DataValidator;
 
 /**
  * Description of a filter validating when the field's matched another field's one
+ * @since 1.0
  */
 abstract class AbstractOtherFieldFilter extends AbstractFilter
 {
@@ -20,6 +21,7 @@ abstract class AbstractOtherFieldFilter extends AbstractFilter
 
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param Field|array $otherFields One or more references to the matching fields
 	 * @param string $message Error message
 	 */
@@ -49,6 +51,7 @@ abstract class AbstractOtherFieldFilter extends AbstractFilter
 
 	/**
 	 * Gets the references to the matching fields
+	 * @since 1.0
 	 * @return array
 	 */
 	protected function getOtherFields(): array

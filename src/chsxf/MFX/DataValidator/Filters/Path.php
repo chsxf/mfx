@@ -12,6 +12,7 @@ use chsxf\MFX\DataValidator\AbstractFilter;
 
 /**
  * Descriptor of a field filter based on file path
+ * @since 1.0
  */
 class Path extends AbstractFilter
 {
@@ -23,6 +24,7 @@ class Path extends AbstractFilter
 
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param string $root Root path to look file into. Defaults to current working directory.
 	 * @param string $message Error message
 	 */
@@ -38,6 +40,7 @@ class Path extends AbstractFilter
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see AbstractFilter::validate()
 	 * 
 	 * @param string $fieldName Field's name

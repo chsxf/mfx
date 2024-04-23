@@ -12,6 +12,8 @@ use ErrorException;
 
 /**
  * Singleton configuration management helper class
+ * 
+ * @since 1.0
  */
 class Config
 {
@@ -35,7 +37,7 @@ class Config
 
 	/**
 	 * Constructor
-	 *
+	 * 
 	 * @param array $configData Config data
 	 */
 	private function __construct(array $configData = array())
@@ -46,6 +48,8 @@ class Config
 	/**
 	 * Loads configuration properties
 	 *
+	 * @since 1.0
+	 * 
 	 * @param array $configData Config data
 	 */
 	public static function load(array $configData = array())
@@ -73,6 +77,8 @@ class Config
 	/**
 	 * Loads configuration properties from a second configuration file into the specific domain
 	 *
+	 * @since 1.0
+	 * 
 	 * @param string $_domain Domain under which configuration properties will be set
 	 * @param string $_path Path of the configuration file to load
 	 */
@@ -89,6 +95,8 @@ class Config
 	/**
 	 * Gets the value of a configuration property
 	 *
+	 * @since 1.0
+	 * 
 	 * @param string $property Name of the propery
 	 * @param mixed $default Default value if the property has not been provided (Defaults to NULL)
 	 * @throws ErrorException If the Config::load() function has not been executed at least once before
@@ -105,6 +113,8 @@ class Config
 	/**
 	 * Determines if a configuration property has been provided in the configuration file
 	 *
+	 * @since 1.0
+	 * 
 	 * @param string $property Name of the propery
 	 * @throws ErrorException If the Config::load() function has not been executed at least once before
 	 * @return boolean true if the property has been provided, false either

@@ -12,6 +12,7 @@ use chsxf\MFX\DataValidator\AbstractFilter;
 
 /**
  * Descriptor of a filter field checking presence of the value in a list
+ * @since 1.0
  */
 class In extends AbstractFilter
 {
@@ -22,6 +23,7 @@ class In extends AbstractFilter
 
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param array $options List of options
 	 * @param string $message Error message
 	 */
@@ -37,6 +39,7 @@ class In extends AbstractFilter
 
 	/**
 	 * {@inheritDoc}
+	 * @ignore
 	 * @see AbstractFilter::validate()
 	 */
 	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool

@@ -11,8 +11,20 @@ namespace chsxf\MFX\Routers;
 use chsxf\MFX\Attributes\RouteAttributesParser;
 use ReflectionMethod;
 
+/**
+ * @since 1.0
+ */
 final class RouterData
 {
+    /**
+     * @since 1.0
+     * @param string $route 
+     * @param RouteAttributesParser $routeProviderAttributes 
+     * @param RouteAttributesParser $routeAttributes 
+     * @param array $routeParams 
+     * @param ReflectionMethod $routeMethod 
+     * @param string $defaultTemplate 
+     */
     function __construct(
         public readonly string $route,
         public readonly RouteAttributesParser $routeProviderAttributes,

@@ -15,6 +15,8 @@ use chsxf\MFX\DataValidator\IMessageDispatcher;
  * Descriptor of a field filter applying a basic "OR" logic operation on other filters
  * 
  * This filter validates as soon as a contained filter validates.
+ * 
+ * @since 1.0
  */
 class LogicOr extends AbstractFilter implements IMessageDispatcher
 {
@@ -39,6 +41,7 @@ class LogicOr extends AbstractFilter implements IMessageDispatcher
 
 	/**
 	 * Constructor
+	 * @since 1.0
 	 */
 	public function __construct()
 	{
@@ -47,6 +50,7 @@ class LogicOr extends AbstractFilter implements IMessageDispatcher
 
 	/**
 	 * Adds a filter
+	 * @since 1.0
 	 * @param AbstractFilter $filter
 	 */
 	public function addFilter(AbstractFilter $filter)
@@ -57,6 +61,7 @@ class LogicOr extends AbstractFilter implements IMessageDispatcher
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see AbstractFilter::validate()
 	 */
 	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool
@@ -76,6 +81,7 @@ class LogicOr extends AbstractFilter implements IMessageDispatcher
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see IMessageDispatcher::dispatchMessage()
 	 */
 	public function dispatchMessage(string $message, int $level)

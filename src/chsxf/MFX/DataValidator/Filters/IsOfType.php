@@ -12,6 +12,7 @@ use chsxf\MFX\DataValidator\AbstractFilter;
 
 /**
  * Description of a filter validating if the specified value is of a specific type
+ * @since 1.0
  */
 class IsOfType extends AbstractFilter
 {
@@ -23,6 +24,7 @@ class IsOfType extends AbstractFilter
 
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param string $type Variable type
 	 * @param string $message Error message (Defaults to NULL)
 	 * @throws \InvalidArgumentException
@@ -42,6 +44,7 @@ class IsOfType extends AbstractFilter
 
 	/**
 	 * {@inheritDoc}
+	 * @ignore
 	 * @see \chsxf\MFX\DataValidator\AbstractFilter::validate()
 	 */
 	public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool

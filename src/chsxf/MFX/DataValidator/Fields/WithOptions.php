@@ -14,6 +14,7 @@ use chsxf\MFX\DataValidator\FieldTypeRegistry;
 
 /**
  * Descriptor of a field type with multiple options (such as 'select' or 'radio' types)
+ * @since 1.0
  */
 class WithOptions extends Field
 {
@@ -24,6 +25,7 @@ class WithOptions extends Field
 
 	/**
 	 * Add an option to the list
+	 * @since 1.0
 	 * @param string $label Option label
 	 * @param string $value Option value. Equals to label if NULL. (Defaults to NULL)
 	 * @param string $group Option group. If set, the option will be added to the corresponding group. (Defaults to NULL)
@@ -39,6 +41,7 @@ class WithOptions extends Field
 
 	/**
 	 * Add options to the list
+	 * @since 1.0
 	 * @param array $options Options array. Items may be mixed scalar values and arrays. If an item is an array, it should have keys 'value' and 'label'.
 	 * @param bool $useAsKeyValueStore If set, items for the $options array that are not arrays themselves will be considered as key/value pairs. If not set, item value will be used for label and value. (Defaults to false)
 	 * @param string $group Options group. If set, the options will be added to the corresponding group. (Defaults to NULL)
@@ -57,6 +60,7 @@ class WithOptions extends Field
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see Field::validate()
 	 */
 	public function validate(bool $silent = false): bool
@@ -148,6 +152,7 @@ class WithOptions extends Field
 
 	/**
 	 * Tells if the specified value is a valid option, based on the list.
+	 * @since 1.0
 	 * @param mixed $value
 	 * @return boolean true if the value is a valid option, false either.
 	 */
@@ -163,6 +168,7 @@ class WithOptions extends Field
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see Field::getHTMLType()
 	 * @param FieldType $type_override
 	 */
@@ -173,6 +179,7 @@ class WithOptions extends Field
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see Field::generate()
 	 * @param array $containingGroups
 	 * @param FieldType $type_override

@@ -15,13 +15,14 @@ use chsxf\MFX\StringTools;
 
 /**
  * Descriptor of an integer field type
+ * @since 1.0
  */
 class Integer extends Field
 {
 
 	/**
 	 * Constructor
-	 *
+	 * @since 1.0
 	 * @param string $name Field's name
 	 * @param FieldType $type Field's type
 	 * @param mixed $defaultValue Field's default value
@@ -49,7 +50,7 @@ class Integer extends Field
 
 	/**
 	 * (non-PHPdoc)
-	 *
+	 * @ignore
 	 * @see Field::validate()
 	 */
 	public function validate(bool $silent = false): bool
@@ -167,7 +168,7 @@ class Integer extends Field
 
 	/**
 	 * (non-PHPdoc)
-	 *
+	 * @ignore
 	 * @see Field::getHTMLType()
 	 * @param FieldType $type_override
 	 */

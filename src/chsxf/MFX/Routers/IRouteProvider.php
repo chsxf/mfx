@@ -10,6 +10,7 @@ namespace chsxf\MFX\Routers;
 
 /**
  * Interface that route provider class must implement
+ * @since 1.0
  */
 interface IRouteProvider
 {

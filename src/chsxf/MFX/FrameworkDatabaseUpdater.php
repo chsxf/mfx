@@ -2,6 +2,9 @@
 
 namespace chsxf\MFX;
 
+/**
+ * @ignore
+ */
 final class FrameworkDatabaseUpdater implements IDatabaseUpdater
 {
 	/**

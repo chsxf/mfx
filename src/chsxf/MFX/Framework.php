@@ -13,8 +13,15 @@ use Twig\Loader\FilesystemLoader;
 
 define('chsxf\MFX\ROOT', dirname(dirname(dirname(__FILE__))));
 
+/**
+ * @since 1.0
+ */
 final class Framework
 {
+    /**
+     * @since 1.0
+     * @param string $configFilePath 
+     */
     public static function init(string $configFilePath)
     {
         CommandLine::handleInvocation();

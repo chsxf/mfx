@@ -10,10 +10,11 @@ namespace chsxf\MFX;
 
 /**
  * Network management helper class
+ * @since 1.0
  */
 final class NetworkTools
 {
-	const LOOKUP_TABLE = array(
+	private const LOOKUP_TABLE = array(
 		'HTTP_CLIENT_IP',
 		'HTTP_X_FORWARDED_FOR',
 		'HTTP_X_FORWARDED',
@@ -21,11 +22,12 @@ final class NetworkTools
 		'HTTP_FORWARDED',
 		'REMOTE_ADDR'
 	);
-	const DEFAUL_IP = '::1';
+
+	private const DEFAUL_IP = '::1';
 
 	/**
 	 * Retrieves the remote IP address based on the environment variables
-	 *
+	 * @since 1.0
 	 * @return string the remote IP address or IPv6 localhost if not found
 	 */
 	public static function getRemoteIP(): string

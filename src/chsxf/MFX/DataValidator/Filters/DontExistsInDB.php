@@ -12,13 +12,14 @@ use chsxf\MFX\DatabaseManager;
 
 /**
  * Description of a filter validating if the specified value exists in a database table
+ * @since 1.0
  */
 class DontExistsInDB extends ExistsInDB
 {
 
 	/**
 	 * Constructor
-	 *
+	 * @since 1.0
 	 * @param string $table Database table name
 	 * @param string $field Database field name
 	 * @param string $message Error message (Defaults to NULL)
@@ -34,7 +35,7 @@ class DontExistsInDB extends ExistsInDB
 
 	/**
 	 * (non-PHPdoc)
-	 *
+	 * @ignore
 	 * @see AbstractFilter::validate()
 	 *
 	 * @param string $fieldName Field's name

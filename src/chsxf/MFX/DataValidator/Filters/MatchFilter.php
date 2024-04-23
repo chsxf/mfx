@@ -11,15 +11,16 @@ namespace chsxf\MFX\DataValidator\Filters;
 use chsxf\MFX\DataValidator\AbstractOtherFieldFilter;
 use chsxf\MFX\StringTools;
 use chsxf\MFX\DataValidator\Field;
-use chsxf\MFX\DataValidator\AbstractFilter;
 
 /**
  * Description of a filter validating when the field's matched another field's one
+ * @since 1.0
  */
 class MatchFilter extends AbstractOtherFieldFilter
 {
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param Field|array $otherFields One or more references to the matching fields
 	 * @param string $message Error message
 	 */
@@ -48,6 +49,7 @@ class MatchFilter extends AbstractOtherFieldFilter
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see AbstractFilter::validate()
 	 * 
 	 * @param string $fieldName Field's name
@@ -72,6 +74,7 @@ class MatchFilter extends AbstractOtherFieldFilter
 
 	/**
 	 * (non-PHPdoc)
+	 * @ignore
 	 * @see AbstractFilter::mayBeSkipped()
 	 * 
 	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)

@@ -12,6 +12,7 @@ use Twig\Environment;
 
 /**
  * Integrated error management class
+ * @since 1.0
  */
 class ErrorManager
 {
@@ -60,6 +61,7 @@ class ErrorManager
 
 	/**
 	 * Tells if the manager holds at least one error.
+	 * @since 1.0
 	 * @return boolean
 	 */
 	public static function hasError(): bool
@@ -69,6 +71,7 @@ class ErrorManager
 
 	/**
 	 * Tells if the manager holds at least one notification.
+	 * @since 1.0
 	 * @return boolean
 	 */
 	public static function hasNotif(): bool
@@ -78,13 +81,16 @@ class ErrorManager
 
 	/**
 	 * Handles errors
+	 * 
+	 * @ignore
+	 * 
 	 * @param int $errno Error number/level
 	 * @param string $errstr Error message
 	 * @param string $errfile Filename from which the error was raised
 	 * @param int $errline Line number from which the error was raised
 	 * @return boolean
 	 *
-	 * @link http://php.net/manual/en/function.set-error-handler.php
+	 * @see http://php.net/manual/en/function.set-error-handler.php
 	 */
 	public static function handleError(int $errno, string $errstr, string $errfile, int $errline): bool
 	{
@@ -108,6 +114,9 @@ class ErrorManager
 
 	/**
 	 * Handle notifications
+	 * 
+	 * @ignore
+	 * 
 	 * @param string $message Notification message
 	 *
 	 * @used-by trigger_notif()
@@ -119,6 +128,7 @@ class ErrorManager
 
 	/**
 	 * Freezes the error manager state into session data
+	 * @since 1.0
 	 * @param bool $flush If set, flushes error containers. (Defaults to false)
 	 */
 	public static function freeze(bool $flush = false)
@@ -131,6 +141,7 @@ class ErrorManager
 
 	/**
 	 * Unfreezes the error manager state from session data if applying
+	 * @since 1.0
 	 */
 	public static function unfreeze()
 	{
@@ -146,6 +157,7 @@ class ErrorManager
 
 	/**
 	 * Flushes error and notification messages for template display
+	 * @since 1.0
 	 * @param \Twig_Environment $twig Twig environment. If NULL, the function flushes containers only and returns an empty string
 	 * @return string
 	 */
@@ -163,6 +175,7 @@ class ErrorManager
 
 	/**
 	 * Flushes error and notification messages to an array or an object
+	 * @since 1.0
 	 * @param array|object $arrOrObject Array or object to modify
 	 */
 	public static function flushToArrayOrObject(array|object &$arrOrObject)
@@ -176,6 +189,7 @@ class ErrorManager
 
 	/**
 	 * Flushes error and notification messages to an array
+	 * @since 1.0
 	 * @param array $arr
 	 */
 	public static function flushToArray(array &$arr)
@@ -191,6 +205,7 @@ class ErrorManager
 
 	/**
 	 * Flushes error and notification messages to an object
+	 * @since 1.0
 	 * @param object $object
 	 */
 	public static function flushToObject(object $object)

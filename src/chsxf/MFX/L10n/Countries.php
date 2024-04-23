@@ -10,10 +10,12 @@ namespace chsxf\MFX\L10n;
 
 /**
  * Class containing ISO 3166-1 alpha-2 country codes
+ * @since 1.0
  */
 class Countries
 {
 	/**
+	 * @since 1.0
 	 * @var array Country codes container
 	 */
 	public static array $MAP = array(

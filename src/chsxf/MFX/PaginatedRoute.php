@@ -12,6 +12,7 @@ use chsxf\MFX\Routers\IRouteProvider;
 
 /**
  * Paginated route helper class
+ * @since 1.0
  */
 abstract class PaginatedRoute implements IRouteProvider
 {

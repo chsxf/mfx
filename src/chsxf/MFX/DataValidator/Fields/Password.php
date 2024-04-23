@@ -14,13 +14,14 @@ use chsxf\MFX\DataValidator\FieldTypeRegistry;
 
 /**
  * Descriptor of a password field type
+ * @since 1.0
  */
 class Password extends Field
 {
 
 	/**
 	 * Constructor
-	 *
+	 * @since 1.0
 	 * @param string $name Field's name
 	 * @param FieldType $type Field's type
 	 * @param mixed $defaultValue Field's default value

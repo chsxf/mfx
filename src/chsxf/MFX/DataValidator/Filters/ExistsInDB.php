@@ -13,6 +13,7 @@ use chsxf\MFX\DatabaseManager;
 
 /**
  * Description of a filter validating if the specified value exists in a database table
+ * @since 1.0
  */
 class ExistsInDB extends AbstractFilter
 {
@@ -34,7 +35,7 @@ class ExistsInDB extends AbstractFilter
 
 	/**
 	 * Constructor
-	 *
+	 * @since 1.0
 	 * @param string $table Database table name
 	 * @param string $field Database field name
 	 * @param string $message Error message (Defaults to NULL)
@@ -55,6 +56,7 @@ class ExistsInDB extends AbstractFilter
 	/**
 	 * (non-PHPdoc)
 	 *
+	 * @ignore
 	 * @see AbstractFilter::validate()
 	 *
 	 * @param string $fieldName Field's name
@@ -77,7 +79,7 @@ class ExistsInDB extends AbstractFilter
 
 	/**
 	 * Gets a database manager instance based on provided connection name or instance
-	 *
+	 * @since 1.0
 	 * @return DatabaseManager
 	 */
 	protected final function getConnection(): DatabaseManager
@@ -90,7 +92,7 @@ class ExistsInDB extends AbstractFilter
 
 	/**
 	 * Gets the table name
-	 *
+	 * @since 1.0
 	 * @return string
 	 */
 	protected final function getTable(): string
@@ -100,7 +102,7 @@ class ExistsInDB extends AbstractFilter
 
 	/**
 	 * Gets the field name
-	 *
+	 * @since 1.0
 	 * @return string
 	 */
 	protected final function getField(): string
@@ -110,7 +112,7 @@ class ExistsInDB extends AbstractFilter
 
 	/**
 	 * Gets the SQL query
-	 *
+	 * @since 1.0
 	 * @return string
 	 */
 	protected function getSQLQuery(): string
@@ -120,7 +122,7 @@ class ExistsInDB extends AbstractFilter
 
 	/**
 	 * Gets the SQL query values
-	 *
+	 * @since 1.0
 	 * @param mixed $_value Field's value
 	 * @return array
 	 */

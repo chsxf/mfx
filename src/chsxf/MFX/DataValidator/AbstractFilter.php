@@ -12,6 +12,8 @@ namespace chsxf\MFX\DataValidator;
  * Abstract data validation filter class
  * 
  * All filters must inherit from this class.
+ * 
+ * @since 1.0
  */
 abstract class AbstractFilter
 {
@@ -27,6 +29,7 @@ abstract class AbstractFilter
 
 	/**
 	 * Constructor
+	 * @since 1.0
 	 * @param string $message Error message
 	 */
 	public function __construct(string $message = NULL)
@@ -38,6 +41,7 @@ abstract class AbstractFilter
 	 * Dispatches the error message on demand
 	 * 
 	 * The message string should contain a string placeholder %s so the function can replace it at runtime.
+	 * @since 1.0
 	 * @see sprintf()
 	 * 
 	 * @param string $fieldName Field name to which this message applies
@@ -60,6 +64,7 @@ abstract class AbstractFilter
 	 * 
 	 * If empty or not a string, no message will be dispatched.
 	 * 
+	 * @since 1.0
 	 * @param string $message
 	 */
 	protected final function setMessage(string $message)
@@ -73,7 +78,8 @@ abstract class AbstractFilter
 
 	/**
 	 * Overriddes the default message dispatcher
-	 * @param IMessageDispatcher $dispatcher
+	 * @since 1.0
+	 * @param chsxf\MFX\DataValidator\IMessageDispatcher $dispatcher
 	 */
 	public final function setMessageDispatcher(IMessageDispatcher $dispatcher)
 	{
@@ -82,6 +88,7 @@ abstract class AbstractFilter
 
 	/**
 	 * Tells if this filter can be skipped during the validation process if the field is not required and has no value.
+	 * @since 1.0
 	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)
 	 * @return boolean
 	 * 
@@ -95,6 +102,7 @@ abstract class AbstractFilter
 
 	/**
 	 * Tells if this filter must be applied to the field's values or to the field instance only
+	 * @since 1.0
 	 * @return boolean
 	 */
 	public function appliesToField(): bool
@@ -104,6 +112,7 @@ abstract class AbstractFilter
 
 	/**
 	 * Validates value
+	 * @since 1.0
 	 * @param string $fieldName Field name
 	 * @param mixed $value Value to validate
 	 * @param int $atIndex Index for repeatable fields. If -1, no index is provided. (Defaults to -1)

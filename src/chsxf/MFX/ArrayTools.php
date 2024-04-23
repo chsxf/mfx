@@ -10,6 +10,8 @@ namespace chsxf\MFX;
 
 /**
  * Array management helper class
+ * 
+ * @since 1.0
  */
 class ArrayTools
 {
@@ -24,6 +26,8 @@ class ArrayTools
 	 * Note:
 	 * It is assumed that all contained arrays use the same keys.
 	 *
+	 * @since 1.0
+	 * 
 	 * @param array $store Source array
 	 * @return array
 	 */
@@ -56,6 +60,8 @@ class ArrayTools
 	 * The function accepts unlimited arguments.
 	 * However, if a single array argument is passed, it is used as an array of arguments, thus its content will be concatenated and the array itself.
 	 *
+	 * @since 1.0
+	 * 
 	 * @return array
 	 */
 	public static function concatArrays(mixed ...$arguments): array
@@ -81,6 +87,8 @@ class ArrayTools
 	/**
 	 * Shuffles the content of an array
 	 * 
+	 * @since 1.0
+	 * 
 	 * @param array $arr
 	 */
 	public static function shuffle(array &$arr)
@@ -92,6 +100,8 @@ class ArrayTools
 
 	/**
 	 * Checks if the parameter is an array or a union type accepting an array
+	 * 
+	 * @since 1.0
 	 * 
 	 * @param \ReflectionParameter $parameter The parameter to investigate
 	 * @return bool

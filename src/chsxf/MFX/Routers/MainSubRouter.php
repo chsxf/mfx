@@ -14,11 +14,24 @@ use chsxf\MFX\Attributes\RouteAttributesParser;
 use chsxf\MFX\Config;
 use chsxf\MFX\ConfigConstants;
 use chsxf\MFX\CoreManager;
+use ErrorException;
+use ReflectionException;
 
+/**
+ * @since 1.0
+ */
 class MainSubRouter implements IRouter
 {
     private const ROUTE_REGEXP = '/^[[:alnum:]_]+\.[[:alnum:]_]+?$/';
 
+    /**
+     * @since 1.0
+     * @param string $filteredPathInfo 
+     * @param string $defaultRoute 
+     * @return RouterData 
+     * @throws ErrorException 
+     * @throws ReflectionException 
+     */
     public function parseRoute(string $filteredPathInfo, string $defaultRoute): RouterData
     {
         // Guessing route from path info
