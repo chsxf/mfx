@@ -284,7 +284,7 @@ final class CoreManager
 		switch ($reqResult->type()) {
 				// Views
 			case RequestResultType::VIEW:
-				if ($reqResult->statusCode() != 200) {
+				if (!in_array($reqResult->statusCode(), [200, 201, 206])) {
 					self::dieWithStatusCode($reqResult->statusCode());
 				}
 
