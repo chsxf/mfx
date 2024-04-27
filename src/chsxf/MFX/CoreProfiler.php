@@ -104,7 +104,7 @@ final class CoreProfiler
 
 		self::$_singleInstance->_ticking = false;
 		if (self::$_singleInstance !== null) {
-			self::$_singleInstance->tickHandler($event, true);
+			self::$_singleInstance->tickHandler($event);
 		}
 		self::$_singleInstance->_ticking = true;
 	}
