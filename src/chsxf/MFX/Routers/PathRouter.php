@@ -52,7 +52,7 @@ class PathRouter implements IRouter
 
         // Checking route
         if (!preg_match(self::ROUTE_REGEXP, $route)) {
-            RouterHelpers::check404file($routeParams);
+            RouterHelpers::check404file(array_merge([$route], $routeParams));
             throw new \ErrorException("'{$route}' is not a valid route.");
         }
         list($providerClassName, $routeMethodName) = explode('/', $route);
