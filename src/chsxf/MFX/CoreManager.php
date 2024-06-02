@@ -18,7 +18,7 @@ use chsxf\MFX\Attributes\RouteAttributesParser;
 use chsxf\MFX\Attributes\Template;
 use chsxf\MFX\L10n\L10nManager;
 use chsxf\MFX\Routers\IRouter;
-use chsxf\MFX\Routers\MainSubRouter;
+use chsxf\MFX\Routers\PathRouter;
 use Twig\Environment;
 
 /**
@@ -236,7 +236,7 @@ final class CoreManager
 		}
 
 		// Parsing through the router
-		$routerClass = Config::get(ConfigConstants::ROUTER_CLASS, MainSubRouter::class);
+		$routerClass = Config::get(ConfigConstants::ROUTER_CLASS, PathRouter::class);
 		if (!class_exists($routerClass) || !is_subclass_of($routerClass, IRouter::class)) {
 			throw new \ErrorException("Invalid router class '{$routerClass}'");
 		}
@@ -394,8 +394,8 @@ final class CoreManager
 	{
 		$inst = self::_ensureInit();
 		if (NULL === $inst->_rootURL) {
-			$inst->_rootURL = Config::get(ConfigConstants::BASE_HREF, false);
-			if (false === $inst->_rootURL) {
+			$inst->_rootURL = Config::get(ConfigConstants::BASE_HREF, NULL);
+			if (NULL === $inst->_rootURL) {
 				if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
 					$protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
 				} else {
@@ -426,8 +426,9 @@ final class CoreManager
 		if (empty($redirectURL) || !preg_match('#^https?://#', $redirectURL)) {
 			// Building URL
 			$r = self::getRootURL();
-			if (!empty($redirectURL))
+			if (!empty($redirectURL)) {
 				$r .= ltrim($redirectURL, '/');
+			}
 		} else {
 			$r = $redirectURL;
 		}

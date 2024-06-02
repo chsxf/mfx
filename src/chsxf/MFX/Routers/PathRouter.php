@@ -1,7 +1,7 @@
 <?php
 
 /**
- * MainSub (RouteProvider.Route) Router Implementation
+ * PathRouter (route_provider/route) Router Implementation
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
@@ -9,18 +9,14 @@
 namespace chsxf\MFX\Routers;
 
 use chsxf\MFX\Attributes\RouteAttributesParser;
-use chsxf\MFX\Config;
-use chsxf\MFX\ConfigConstants;
 use chsxf\MFX\CoreManager;
-use ErrorException;
-use ReflectionException;
 
 /**
  * @since 1.0
  */
-class MainSubRouter implements IRouter
+class PathRouter implements IRouter
 {
-    private const ROUTE_REGEXP = '/^[[:alnum:]_]+\.[[:alnum:]_]+?$/';
+    private const ROUTE_REGEXP = '#^[[:alnum:]_]+/[[:alnum:]_]+?$#';
 
     /**
      * @since 1.0
@@ -32,23 +28,26 @@ class MainSubRouter implements IRouter
      */
     public function parseRoute(string $filteredPathInfo, string $defaultRoute): RouterData
     {
-        // Guessing route from path info
         if (empty($filteredPathInfo)) {
-            if ($defaultRoute == 'none') {
+            if ($defaultRoute === 'none') {
                 CoreManager::dieWithStatusCode(404);
             }
 
             $route = $defaultRoute;
             $routeParams = [];
         } else {
-            $chunks = explode('/', $filteredPathInfo, 2);
-            $route = $chunks[0];
-            $firstRouteParam = 1;
-            if (!preg_match(self::ROUTE_REGEXP, $route) && Config::get(ConfigConstants::ROUTER_OPTIONS_ALLOW_DEFAULT_ROUTE_SUBSTITUTION, false)) {
-                $route = $defaultRoute;
-                $firstRouteParam = 0;
+            $chunks = explode('/', $filteredPathInfo);
+            if (count($chunks) < 2) {
+                if ($defaultRoute === 'none') {
+                    CoreManager::dieWithStatusCode(404);
+                } else {
+                    $route = $defaultRoute;
+                    $routeParams = $chunks;
+                }
+            } else {
+                $route = "{$chunks[0]}/{$chunks[1]}";
+                $routeParams = array_slice($chunks, 2);
             }
-            $routeParams = isset($chunks[$firstRouteParam]) ? explode('/', $chunks[$firstRouteParam]) : [];
         }
 
         // Checking route
@@ -56,7 +55,7 @@ class MainSubRouter implements IRouter
             RouterHelpers::check404file($routeParams);
             throw new \ErrorException("'{$route}' is not a valid route.");
         }
-        list($providerClassName, $routeMethodName) = explode('.', $route);
+        list($providerClassName, $routeMethodName) = explode('/', $route);
 
         $providerClass = RouterHelpers::getRouteProviderClass($providerClassName);
         if ($providerClass === NULL) {
@@ -74,8 +73,7 @@ class MainSubRouter implements IRouter
             throw new \ErrorException("'{$routeMethodName}' is not a valid route of the '{$providerClassName}' provider.");
         }
 
-        $defaultTemplate = str_replace(array('_', '.'), '/', $route);
-
+        $defaultTemplate = "{$providerClass->getName()}/{$routeMethod->getName()}";
         return new RouterData($route, $providerAttributes, $routeAttributes, $routeParams, $routeMethod, $defaultTemplate);
     }
 }
