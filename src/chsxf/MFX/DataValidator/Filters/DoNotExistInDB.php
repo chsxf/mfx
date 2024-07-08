@@ -14,9 +14,8 @@ use chsxf\MFX\DatabaseManager;
  * Description of a filter validating if the specified value exists in a database table
  * @since 1.0
  */
-class DontExistsInDB extends ExistsInDB
+class DoNotExistInDB extends ExistsInDB
 {
-
 	/**
 	 * Constructor
 	 * @since 1.0
