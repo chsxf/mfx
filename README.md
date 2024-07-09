@@ -1,6 +1,6 @@
 # About MFX
 
-MFX is a full-stack PHP micro-framework (hence "MFX"), designed to be used as the core of any regular website or API.
+MFX is a PHP micro-framework (hence "MFX"), designed to be used as the core of any regular website or API.
 
 Originally created as a project basis for Cheese Burgames, a now-defunct french independant video game studio. The first version, previously called php-micro-framework was introduced in 2013 and matured in 2016. With time, MFX has evolved into a complete framework for external developments.
 
