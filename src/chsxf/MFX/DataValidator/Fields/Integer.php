@@ -169,11 +169,11 @@ class Integer extends Field
      * (non-PHPdoc)
      * @ignore
      * @see Field::getHTMLType()
-     * @param FieldType $type_override
+     * @param FieldType $typeOverride
      */
-    public function getHTMLType(?FieldType $type_override = null): string
+    public function getHTMLType(?FieldType $typeOverride = null): string
     {
-        return parent::getHTMLType(($type_override === null) ? FieldType::NUMBER : $type_override);
+        return parent::getHTMLType(($typeOverride === null) ? FieldType::NUMBER : $typeOverride);
     }
 }
 

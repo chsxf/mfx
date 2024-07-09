@@ -17,37 +17,37 @@ final class CoreProfiler
     /**
      * @var CoreProfiler Singleton instance
      */
-    private static ?CoreProfiler $_singleInstance = null;
+    private static ?CoreProfiler $singleInstance = null;
 
     /**
      * @var boolean Flag indicating if the class should fill the profiling data
      */
-    private bool $_ticking = true;
+    private bool $ticking = true;
     /**
      * @var float Profiling start time as returned by microtime(true);
      */
-    private float $_profilingStartTime;
+    private float $profilingStartTime;
     /**
      * @var float Profiling end time as returned by microtime(true);
      */
-    private float $_profilingEndTime;
+    private float $profilingEndTime;
     /**
      * @var array Profiling data
      */
-    private array $_profilingData;
+    private array $profilingData;
     /**
      * @var int Last annotation index
      */
-    private int $_lastAnnotation = 0;
+    private int $lastAnnotation = 0;
 
     /**
      * Constructor
      */
     private function __construct()
     {
-        $this->_profilingStartTime = microtime(true);
-        $this->_profilingEndTime = 0;
-        $this->_profilingData = array();
+        $this->profilingStartTime = microtime(true);
+        $this->profilingEndTime = 0;
+        $this->profilingData = array();
     }
 
     /**
@@ -59,12 +59,12 @@ final class CoreProfiler
      */
     public function tickHandler(?string $event = null)
     {
-        if ($this->_ticking || !empty($event)) {
-            $this->_profilingData[] = array(
-                microtime(true) - $this->_profilingStartTime,
+        if ($this->ticking || !empty($event)) {
+            $this->profilingData[] = array(
+                microtime(true) - $this->profilingStartTime,
                 memory_get_usage(),
                 memory_get_usage(true),
-                empty($event) ? 'null' : sprintf('"%d"', ++$this->_lastAnnotation),
+                empty($event) ? 'null' : sprintf('"%d"', ++$this->lastAnnotation),
                 empty($event) ? 'null' : "\"$event\""
             );
         }
@@ -79,12 +79,12 @@ final class CoreProfiler
      */
     public static function init()
     {
-        if (self::$_singleInstance !== null) {
+        if (self::$singleInstance !== null) {
             return;
         }
 
-        self::$_singleInstance = new CoreProfiler();
-        register_tick_function(array(&self::$_singleInstance, 'tickHandler'));
+        self::$singleInstance = new CoreProfiler();
+        register_tick_function(array(&self::$singleInstance, 'tickHandler'));
         Scripts::add('https://www.google.com/jsapi');
         ob_start();
 
@@ -98,15 +98,15 @@ final class CoreProfiler
      */
     public static function pushEvent(string $event)
     {
-        if (self::$_singleInstance === null || !empty(self::$_singleInstance->_profilingEndTime)) {
+        if (self::$singleInstance === null || !empty(self::$singleInstance->profilingEndTime)) {
             return;
         }
 
-        self::$_singleInstance->_ticking = false;
-        if (self::$_singleInstance !== null) {
-            self::$_singleInstance->tickHandler($event);
+        self::$singleInstance->ticking = false;
+        if (self::$singleInstance !== null) {
+            self::$singleInstance->tickHandler($event);
         }
-        self::$_singleInstance->_ticking = true;
+        self::$singleInstance->ticking = true;
     }
 
     /**
@@ -115,12 +115,12 @@ final class CoreProfiler
      */
     public static function stop()
     {
-        if (self::$_singleInstance === null) {
+        if (self::$singleInstance === null) {
             return;
         }
 
-        unregister_tick_function(array(&self::$_singleInstance, 'tickHandler'));
-        self::$_singleInstance->_profilingEndTime = microtime(true);
+        unregister_tick_function(array(&self::$singleInstance, 'tickHandler'));
+        self::$singleInstance->profilingEndTime = microtime(true);
 
         $peak = memory_get_usage();
         $realPeak = memory_get_peak_usage(true);
@@ -164,12 +164,12 @@ final class CoreProfiler
 
         $context = array(
             'duration' => self::getProfilingDuration(),
-            'opCount' => count(self::$_singleInstance->_profilingData),
+            'opCount' => count(self::$singleInstance->profilingData),
             'memPeakUsage' => $peak,
             'memPeakUsageRatio' => $peak / $memlimit,
             'memRealPeakUsage' => $realPeak,
             'memRealPeakUsageRatio' => $realPeak / $memlimit,
-            'data' => self::$_singleInstance->_profilingData
+            'data' => self::$singleInstance->profilingData
         );
 
         // HTML
@@ -228,9 +228,9 @@ final class CoreProfiler
      */
     public static function getProfilingDuration(): float|false
     {
-        if (self::$_singleInstance === null || empty(self::$_singleInstance->_profilingEndTime)) {
+        if (self::$singleInstance === null || empty(self::$singleInstance->profilingEndTime)) {
             return false;
         }
-        return (self::$_singleInstance->_profilingEndTime - self::$_singleInstance->_profilingStartTime);
+        return (self::$singleInstance->profilingEndTime - self::$singleInstance->profilingStartTime);
     }
 }

@@ -11,8 +11,8 @@ use chsxf\MFX\Routers\IRouteProvider;
  */
 final class DatabaseUpdater implements IRouteProvider
 {
-    private static ?array $_updatersData = null;
-    private static ?string $_updatersDomain = null;
+    private static ?array $updatersData = null;
+    private static ?string $updatersDomain = null;
 
     /**
      * @since 1.0
@@ -28,9 +28,9 @@ final class DatabaseUpdater implements IRouteProvider
         }
 
         // Retrieving updaters domain
-        self::$_updatersDomain = Config::get(ConfigConstants::DATABASE_UPDATERS_DOMAIN, null);
-        if (!preg_match('/^[[:alnum:]_-]+$/', self::$_updatersDomain)) {
-            self::$_updatersDomain = null;
+        self::$updatersDomain = Config::get(ConfigConstants::DATABASE_UPDATERS_DOMAIN, null);
+        if (!preg_match('/^[[:alnum:]_-]+$/', self::$updatersDomain)) {
+            self::$updatersDomain = null;
         }
 
         // Initializing database manager
@@ -48,12 +48,12 @@ final class DatabaseUpdater implements IRouteProvider
         // Load versions and file modification times
         $sql = "SELECT `updater_key`, `updater_version`, UNIX_TIMESTAMP(`updater_file_modified`) AS `updater_filemtime`
 					FROM `mfx_database_updaters`";
-        if (self::$_updatersDomain === null) {
+        if (self::$updatersDomain === null) {
             $sql .= " WHERE `updater_domain` IS NULL";
         } else {
             $sql .= " WHERE `updater_domain` = ?";
         }
-        self::$_updatersData = $dbm->getIndexed($sql, 'updater_key', \PDO::FETCH_OBJ, self::$_updatersDomain);
+        self::$updatersData = $dbm->getIndexed($sql, 'updater_key', \PDO::FETCH_OBJ, self::$updatersDomain);
 
         foreach ($updaters as $updater) {
             $rc = new \ReflectionClass($updater);
@@ -81,7 +81,7 @@ final class DatabaseUpdater implements IRouteProvider
 
         // Checking file modification time
         $mtime = filemtime($pathToSQL);
-        if (array_key_exists($key, self::$_updatersData) && self::$_updatersData[$key]->updater_filemtime == $mtime) {
+        if (array_key_exists($key, self::$updatersData) && self::$updatersData[$key]->updater_filemtime == $mtime) {
             return true;
         }
 
@@ -104,7 +104,7 @@ final class DatabaseUpdater implements IRouteProvider
             } elseif (preg_match('/^CONNECTION:\s*(\S+)$/', $chunk, $regs)) {
                 $dbm = DatabaseManager::open($regs[1]);
             } else {
-                if (array_key_exists($key, self::$_updatersData) && self::$_updatersData[$key]->updater_version >= $version) {
+                if (array_key_exists($key, self::$updatersData) && self::$updatersData[$key]->updater_version >= $version) {
                     continue;
                 }
 
@@ -129,7 +129,7 @@ final class DatabaseUpdater implements IRouteProvider
                 $sql = "INSERT INTO `mfx_database_updaters` (`updater_key`, `updater_domain`, `updater_version`, `updater_file_modified`)
 							VALUE (?, ?, ?, FROM_UNIXTIME(?))
 							ON DUPLICATE KEY UPDATE `updater_version` = VALUES(`updater_version`), `updater_file_modified` = VALUES(`updater_file_modified`)";
-                if ($dbmMFX->exec($sql, $key, self::$_updatersDomain, $version, $mtime) === false) {
+                if ($dbmMFX->exec($sql, $key, self::$updatersDomain, $version, $mtime) === false) {
                     trigger_error(sprintf(dgettext('mfx', "An error has occured while processing DatabaseUpdater '%s'."), $key), E_USER_ERROR);
                     return false;
                 }

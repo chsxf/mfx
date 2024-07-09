@@ -30,12 +30,12 @@ class InFloatRange extends AbstractFilter
      * @param bool $includeMax If set, includes the max value. If not, the max value is not part of the range.
      * @param string $message Error message
      */
-    public function __construct(float $_value1, float $_value2, bool $_includeMax = false, ?string $message = null)
+    public function __construct(float $value1, float $value2, bool $includeMax = false, ?string $message = null)
     {
-        $this->min = min($_value1, $_value2);
-        $this->max = max($_value1, $_value2);
+        $this->min = min($value1, $value2);
+        $this->max = max($value1, $value2);
 
-        $this->includeMax = $_includeMax;
+        $this->includeMax = $includeMax;
 
         if ($message === null) {
             $inclusivity = $this->includeMax ? dgettext('mfx', 'inclusive') : dgettext('mfx', 'exclusive');

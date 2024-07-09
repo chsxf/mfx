@@ -17,67 +17,67 @@ class Field
     /**
      * @var string Field's name
      */
-    private string $_name;
+    private string $name;
 
     /**
      * @var FieldType Field's type
      */
-    private FieldType $_type;
+    private FieldType $type;
 
     /**
      * @var boolean If set, this field is required.
      */
-    private bool $_required;
+    private bool $required;
 
     /**
      * @var mixed Field's default value
      */
-    private mixed $_defaultValue;
+    private mixed $defaultValue;
 
     /**
      * @var mixed Field's populated value
      */
-    private mixed $_populatedValue;
+    private mixed $populatedValue;
 
     /**
      * @var array Field's filters holder
      */
-    private array $_filters;
+    private array $filters;
 
     /**
      * @var bool If set, this field is repeatable.
      */
-    private bool $_isRepeatable;
+    private bool $isRepeatable;
 
     /**
      * @var int Maximum number of iteration for this field. If -1, no limit.
      */
-    private int $_repeatableUpTo;
+    private int $repeatableUpTo;
 
     /**
      * @var int Current repeat counter for the generator.
      */
-    private int $_repeatCounter;
+    private int $repeatCounter;
 
     /**
      * @var bool Read only flag
      */
-    private bool $_readOnly;
+    private bool $readOnly;
 
     /**
      * @var bool Disabled flag
      */
-    private bool $_disabled;
+    private bool $disabled;
 
     /**
      * @var boolean If set, the field is populated with the current or default value when generated
      */
-    private bool $_generateWithValue;
+    private bool $generateWithValue;
 
     /**
      * @var array Extra options for field generation
      */
-    private array $_extras;
+    private array $extras;
 
     /**
      * Constructor
@@ -97,24 +97,24 @@ class Field
             throw new DataValidatorException(dgettext('mfx', "Expected string as the field name."));
         }
 
-        $this->_name = $name;
-        $this->_type = $type;
-        $this->_defaultValue = $defaultValue;
-        $this->_required = !empty($required);
+        $this->name = $name;
+        $this->type = $type;
+        $this->defaultValue = $defaultValue;
+        $this->required = !empty($required);
 
-        $this->_populatedValue = null;
+        $this->populatedValue = null;
 
-        $this->_filters = array();
+        $this->filters = array();
 
-        $this->_isRepeatable = false;
-        $this->_repeatableUpTo = -1;
-        $this->_repeatCounter = 0;
+        $this->isRepeatable = false;
+        $this->repeatableUpTo = -1;
+        $this->repeatCounter = 0;
 
-        $this->_readOnly = false;
-        $this->_disabled = false;
+        $this->readOnly = false;
+        $this->disabled = false;
 
-        $this->_generateWithValue = true;
-        $this->_extras = array();
+        $this->generateWithValue = true;
+        $this->extras = array();
     }
 
     /**
@@ -139,7 +139,7 @@ class Field
      */
     public function getName(): string
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -149,18 +149,18 @@ class Field
      */
     public function getType(): FieldType
     {
-        return $this->_type;
+        return $this->type;
     }
 
     /**
      * Gets the HTML type of this field
      * @since 1.0
-     * @param FieldType $type_override Type to use to override original field type. If NULL, no override. (Defaults to NULL)
+     * @param FieldType $typeOverride Type to use to override original field type. If NULL, no override. (Defaults to NULL)
      * @return string
      */
-    public function getHTMLType(?FieldType $type_override = null): string
+    public function getHTMLType(?FieldType $typeOverride = null): string
     {
-        return ($type_override ?? $this->_type)->value;
+        return ($typeOverride ?? $this->type)->value;
     }
 
     /**
@@ -170,7 +170,7 @@ class Field
      */
     public function isRequired(): bool
     {
-        return $this->_required;
+        return $this->required;
     }
 
     /**
@@ -190,7 +190,7 @@ class Field
      */
     public function getDefaultValue(): mixed
     {
-        return $this->_defaultValue;
+        return $this->defaultValue;
     }
 
     /**
@@ -206,12 +206,12 @@ class Field
             }
 
             // Filtering values with over limit indexes
-            if ($this->_repeatableUpTo !== null) {
-                $keys = array_flip(range(0, $this->_repeatableUpTo - 1));
+            if ($this->repeatableUpTo !== null) {
+                $keys = array_flip(range(0, $this->repeatableUpTo - 1));
                 $value = array_intersect_key($value, $keys);
             }
         }
-        $this->_populatedValue = $value;
+        $this->populatedValue = $value;
     }
 
     /**
@@ -222,10 +222,10 @@ class Field
      */
     public function getValue(bool $returnDefaultIfNotSet = false): mixed
     {
-        if ($this->_populatedValue !== null) {
-            return $this->_populatedValue;
+        if ($this->populatedValue !== null) {
+            return $this->populatedValue;
         } else {
-            return $returnDefaultIfNotSet ? $this->_defaultValue : null;
+            return $returnDefaultIfNotSet ? $this->defaultValue : null;
         }
     }
 
@@ -242,21 +242,21 @@ class Field
             return $this->getValue($returnDefaultIfNotSet);
         }
 
-        if ($this->_populatedValue === null || (is_array($this->_populatedValue) && !array_key_exists($index, $this->_populatedValue))) {
+        if ($this->populatedValue === null || (is_array($this->populatedValue) && !array_key_exists($index, $this->populatedValue))) {
             if ($returnDefaultIfNotSet) {
-                if (is_array($this->_defaultValue)) {
-                    if (array_key_exists($index, $this->_defaultValue)) {
-                        return $this->_defaultValue[$index];
+                if (is_array($this->defaultValue)) {
+                    if (array_key_exists($index, $this->defaultValue)) {
+                        return $this->defaultValue[$index];
                     }
                 } else {
-                    return $this->_defaultValue;
+                    return $this->defaultValue;
                 }
             }
             return null;
-        } elseif (!is_array($this->_populatedValue)) {
-            return $this->_populatedValue;
+        } elseif (!is_array($this->populatedValue)) {
+            return $this->populatedValue;
         } else {
-            return $this->_populatedValue[$index];
+            return $this->populatedValue[$index];
         }
     }
 
@@ -267,7 +267,7 @@ class Field
      */
     final public function addFilter(AbstractFilter $filter)
     {
-        $this->_filters[] = $filter;
+        $this->filters[] = $filter;
     }
 
     /**
@@ -277,10 +277,10 @@ class Field
      */
     final public function removeFilter(AbstractFilter $filter)
     {
-        if (!empty($this->_filters)) {
-            $key = array_search($filter, $this->_filters, true);
+        if (!empty($this->filters)) {
+            $key = array_search($filter, $this->filters, true);
             if ($key !== false) {
-                array_splice($this->_filters, $key, 1);
+                array_splice($this->filters, $key, 1);
             }
         }
     }
@@ -293,11 +293,11 @@ class Field
      */
     final public function setRepeatable(bool $isRepeatable, int $upTo = -1)
     {
-        $this->_isRepeatable = !empty($isRepeatable);
-        if ($upTo <= 0 || !$this->_isRepeatable) {
-            $this->_repeatableUpTo = -1;
+        $this->isRepeatable = !empty($isRepeatable);
+        if ($upTo <= 0 || !$this->isRepeatable) {
+            $this->repeatableUpTo = -1;
         } else {
-            $this->_repeatableUpTo = $upTo;
+            $this->repeatableUpTo = $upTo;
         }
     }
 
@@ -308,7 +308,7 @@ class Field
      */
     final public function isRepeatable(): bool
     {
-        return $this->_isRepeatable;
+        return $this->isRepeatable;
     }
 
     /**
@@ -318,7 +318,7 @@ class Field
      */
     final public function repeatableUpTo(): int
     {
-        return $this->_repeatableUpTo;
+        return $this->repeatableUpTo;
     }
 
     /**
@@ -327,7 +327,7 @@ class Field
      */
     final public function resetRepeatCounter()
     {
-        $this->_repeatCounter = 0;
+        $this->repeatCounter = 0;
     }
 
     /**
@@ -341,7 +341,7 @@ class Field
             return -1;
         }
 
-        $value = ($this->_populatedValue === null) ? $this->_defaultValue : $this->_populatedValue;
+        $value = ($this->populatedValue === null) ? $this->defaultValue : $this->populatedValue;
         if (!is_array($value) || empty($value)) {
             return -1;
         } else {
@@ -356,7 +356,7 @@ class Field
      */
     final public function setReadOnly(bool $readOnly)
     {
-        $this->_readOnly = $readOnly;
+        $this->readOnly = $readOnly;
     }
 
     /**
@@ -366,7 +366,7 @@ class Field
      */
     final public function isReadOnly(): bool
     {
-        return $this->_readOnly;
+        return $this->readOnly;
     }
 
     /**
@@ -376,7 +376,7 @@ class Field
      */
     final public function setEnabled(bool $enabled)
     {
-        $this->_disabled = !$enabled;
+        $this->disabled = !$enabled;
     }
 
     /**
@@ -386,7 +386,7 @@ class Field
      */
     final public function isEnabled(): bool
     {
-        return !$this->_disabled;
+        return !$this->disabled;
     }
 
     /**
@@ -396,7 +396,7 @@ class Field
      */
     final public function setGenerationWithValue(bool $enabled)
     {
-        $this->_generateWithValue = $enabled;
+        $this->generateWithValue = $enabled;
     }
 
     /**
@@ -406,7 +406,7 @@ class Field
      */
     final public function shouldGenerateWithValue(): bool
     {
-        return $this->_generateWithValue;
+        return $this->generateWithValue;
     }
 
     /**
@@ -417,7 +417,7 @@ class Field
      */
     final public function addExtra(string $key, string $value)
     {
-        $this->_extras[$key] = $value;
+        $this->extras[$key] = $value;
     }
 
     /**
@@ -456,7 +456,7 @@ class Field
 
         if ($this->isRepeatable()) {
             $maxIndex = $this->getMaxRepeatIndex();
-            if ($this->_required && ($maxIndex < 0 || $this->_populatedValue === null || !is_array($this->_populatedValue))) {
+            if ($this->required && ($maxIndex < 0 || $this->populatedValue === null || !is_array($this->populatedValue))) {
                 if (!$silent) {
                     trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
                 }
@@ -465,10 +465,10 @@ class Field
             if (!$this->applyFiltersOnField($silent)) {
                 return false;
             }
-            if ($this->_populatedValue !== null && is_array($this->_populatedValue)) {
+            if ($this->populatedValue !== null && is_array($this->populatedValue)) {
                 for ($i = 0; $i <= $maxIndex; $i++) {
-                    if (array_key_exists($i, $this->_populatedValue)) {
-                        if ($this->_required && ($this->_populatedValue[$i] === null || $this->_populatedValue[$i] === '')) {
+                    if (array_key_exists($i, $this->populatedValue)) {
+                        if ($this->required && ($this->populatedValue[$i] === null || $this->populatedValue[$i] === '')) {
                             if (!$silent) {
                                 trigger_error(sprintf(dgettext('mfx', "The field '%s' at index %d is required."), $this->getName(), $i));
                             }
@@ -484,7 +484,7 @@ class Field
             }
             return true;
         } else {
-            if ($this->_required && ($this->_populatedValue === null || $this->_populatedValue === '')) {
+            if ($this->required && ($this->populatedValue === null || $this->populatedValue === '')) {
                 if (!$silent) {
                     trigger_error(sprintf(dgettext('mfx', "The field '%s' is required."), $this->getName()));
                 }
@@ -512,8 +512,8 @@ class Field
      */
     protected function applyFiltersOnField(bool $silent = false): bool
     {
-        if (!empty($this->_filters)) {
-            foreach ($this->_filters as $f) {
+        if (!empty($this->filters)) {
+            foreach ($this->filters as $f) {
                 $fieldValue = $this->getValue(true);
                 if ($f->appliesToField() && ($f->isRequired() || $fieldValue !== null) && !$f->validate($this->getName(), $fieldValue, null, $silent)) {
                     return false;
@@ -533,9 +533,9 @@ class Field
      */
     protected function applyFilterOnValue(mixed $value, int $atIndex = -1, bool $silent = false): bool
     {
-        $canSkipFilters = (!$this->_required && $value === null);
-        if (!empty($this->_filters)) {
-            foreach ($this->_filters as $f) {
+        $canSkipFilters = (!$this->required && $value === null);
+        if (!empty($this->filters)) {
+            foreach ($this->filters as $f) {
                 if ($f->appliesToField() || ($canSkipFilters && $f->mayBeSkipped($atIndex))) {
                     continue;
                 }
@@ -551,13 +551,13 @@ class Field
      * Generates the HTML representation of this field
      * @since 1.0
      * @param array $containingGroups Containing groups
-     * @param FieldType $type_override Type to use to override original field type. If NULL, no override. (Defaults to NULL)
+     * @param FieldType $typeOverride Type to use to override original field type. If NULL, no override. (Defaults to NULL)
      * @return array
      */
-    public function generate(array $containingGroups = array(), ?FieldType $type_override = null): array
+    public function generate(array $containingGroups = array(), ?FieldType $typeOverride = null): array
     {
-        if ($this->_repeatableUpTo > 0 && $this->_repeatCounter + 1 > $this->_repeatableUpTo) {
-            throw new DataValidatorException(sprintf(dgettext('mfx', "The field '%s' cannot be repeated more than %d times."), $this->getName(), $this->_repeatableUpTo));
+        if ($this->repeatableUpTo > 0 && $this->repeatCounter + 1 > $this->repeatableUpTo) {
+            throw new DataValidatorException(sprintf(dgettext('mfx', "The field '%s' cannot be repeated more than %d times."), $this->getName(), $this->repeatableUpTo));
         }
 
         $name = $this->getName();
@@ -568,16 +568,16 @@ class Field
         return array(
             '@mfx/DataValidator/basic_input.twig',
             array(
-                'type' => $this->getHTMLType($type_override),
+                'type' => $this->getHTMLType($typeOverride),
                 'name' => $name,
                 'required' => $this->isRequired(),
                 'readonly' => $this->isReadOnly(),
                 'disabled' => !$this->isEnabled(),
-                'value' => $this->shouldGenerateWithValue() ? $this->getIndexedValue($this->_repeatCounter, true) : null,
+                'value' => $this->shouldGenerateWithValue() ? $this->getIndexedValue($this->repeatCounter, true) : null,
                 'repeatable' => $this->isRepeatable(),
-                'repeat_counter' => $this->_repeatCounter++,
+                'repeat_counter' => $this->repeatCounter++,
                 'suffix' => null,
-                'extras' => $this->_extras
+                'extras' => $this->extras
             )
         );
     }

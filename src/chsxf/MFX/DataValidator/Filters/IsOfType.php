@@ -19,7 +19,7 @@ class IsOfType extends AbstractFilter
     /**
      * @var string Variable type
      */
-    private string $_type;
+    private string $type;
 
     /**
      * Constructor
@@ -33,7 +33,7 @@ class IsOfType extends AbstractFilter
         if (!in_array($type, array('boolean', 'integer', 'double', 'string', 'array', 'object', 'resource', 'NULL'))) {
             throw new \InvalidArgumentException("type argument must be one of 'boolean', 'integer', 'double', 'string', 'array', 'object', 'resource' or 'NULL'");
         }
-        $this->_type = $type;
+        $this->type = $type;
 
         if (empty($message)) {
             $message = sprintf(dgettext('mfx', "The '%%s' field value must be of type '%s'."), $type);
@@ -48,7 +48,7 @@ class IsOfType extends AbstractFilter
      */
     public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool
     {
-        if (gettype($value) != $this->_type) {
+        if (gettype($value) != $this->type) {
             if (!$silent) {
                 $this->emitMessage($fieldName);
             }

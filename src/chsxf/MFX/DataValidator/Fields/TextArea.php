@@ -23,11 +23,11 @@ class TextArea extends Field
      * @ignore
      * @see Field::generate()
      * @param array $containingGroups
-     * @param FieldType $type_override
+     * @param FieldType $typeOverride
      */
-    public function generate(array $containingGroups = array(), ?FieldType $type_override = null): array
+    public function generate(array $containingGroups = array(), ?FieldType $typeOverride = null): array
     {
-        $result = parent::generate($containingGroups, $type_override);
+        $result = parent::generate($containingGroups, $typeOverride);
         $result[0] = '@mfx/DataValidator/textarea.twig';
         return $result;
     }

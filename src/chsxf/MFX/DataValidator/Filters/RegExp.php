@@ -29,7 +29,7 @@ class RegExp extends AbstractFilter
     /**
      * @var string Regular expression holder
      */
-    private string $_regexp;
+    private string $regexp;
 
     /**
      * Constructor
@@ -45,7 +45,7 @@ class RegExp extends AbstractFilter
         }
         parent::__construct($message);
 
-        $this->_regexp = $regexp;
+        $this->regexp = $regexp;
     }
 
     /**
@@ -60,7 +60,7 @@ class RegExp extends AbstractFilter
      */
     public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool
     {
-        $res = preg_match($this->_regexp, $value);
+        $res = preg_match($this->regexp, $value);
         if (empty($res)) {
             if (!$silent) {
                 $this->emitMessage($fieldName);
@@ -138,28 +138,28 @@ class RegExp extends AbstractFilter
     /**
      * Helper function to build variable bit-length hexadecimal key validation filter
      * @since 1.0
-     * @param int $_bitLength Bit-length of the key (must be a multiple of 8)
-     * @param bool $_ignoreCase If set, produces a case-insensitive validation filter
-     * @param bool $_lowerCase If set and case is not ignored, the validation filter will constrain to lower case. If not set and case is not ignored, the validation filter will constrain to upper case.
+     * @param int $bitLength Bit-length of the key (must be a multiple of 8)
+     * @param bool $ignoreCase If set, produces a case-insensitive validation filter
+     * @param bool $lowerCase If set and case is not ignored, the validation filter will constrain to lower case. If not set and case is not ignored, the validation filter will constrain to upper case.
      * @return RegExp
      */
-    public static function hexKey(int $_bitLength, bool $_ignoreCase = false, bool $_lowerCase = true): RegExp
+    public static function hexKey(int $bitLength, bool $ignoreCase = false, bool $lowerCase = true): RegExp
     {
-        $bytes = floor($_bitLength / 8);
+        $bytes = floor($bitLength / 8);
         $hexLength = $bytes * 2;
 
-        $chars = $_lowerCase ? 'a-z' : 'A-Z';
+        $chars = $lowerCase ? 'a-z' : 'A-Z';
         $regexp = "/^[{$chars}0-9]{{$hexLength}}$/";
-        if ($_ignoreCase) {
+        if ($ignoreCase) {
             $regexp .= 'i';
             $message = dgettext('mfx', "The field '%%s' does not contain a %d bits hexadecimal key.");
-        } elseif ($_lowerCase) {
+        } elseif ($lowerCase) {
             $message = dgettext('mfx', "The field '%%s' does not contain a %d bits lower case hexadecimal key.");
         } else {
             $message = dgettext('mfx', "The field '%%s' does not contain a %d bits upper case hexadecimal key.");
         }
 
-        $message = sprintf($message, $_bitLength);
+        $message = sprintf($message, $bitLength);
         return new RegExp($regexp, $message);
     }
 

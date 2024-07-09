@@ -87,38 +87,38 @@ final class CoreManager
     /**
      * @var CoreManager Single instance of the class
      */
-    private static ?CoreManager $_singleInstance = null;
+    private static ?CoreManager $singleInstance = null;
 
     /**
      * @var array Fake protocols list (keys are protocols names and values replacement strings)
      */
-    private array $_fakeProtocols = array();
+    private array $fakeProtocols = array();
 
     /**
      * @var string Root URL container (as built from server information)
      */
-    private ?string $_rootURL = null;
+    private ?string $rootURL = null;
 
     /**
      * @var \Twig\Environment Twig environment for the current request
      */
-    private ?Environment $_currentTwigEnvironment = null;
+    private ?Environment $currentTwigEnvironment = null;
 
     /**
      * Ensures the singleton class instance has been correctly initialized only once
      * @return CoreManager the singleton class instance
      */
-    private static function _ensureInit()
+    private static function ensureInit()
     {
-        if (self::$_singleInstance === null) {
-            self::$_singleInstance = new CoreManager();
+        if (self::$singleInstance === null) {
+            self::$singleInstance = new CoreManager();
 
             // Fake protocols
             $mfxRelativeBaseHREF = Config::get(ConfigConstants::RELATIVE_BASE_HREF, 'vendor/chsxf/mfx/static');
             if ('/' !== $mfxRelativeBaseHREF) {
                 $mfxRelativeBaseHREF = rtrim($mfxRelativeBaseHREF, '/');
             }
-            self::$_singleInstance->_fakeProtocols = array(
+            self::$singleInstance->fakeProtocols = array(
                 'mfxjs' => "{$mfxRelativeBaseHREF}/js/",
                 'mfxcss' => "{$mfxRelativeBaseHREF}/css/",
                 'mfximg' => "{$mfxRelativeBaseHREF}/img/"
@@ -127,7 +127,7 @@ final class CoreManager
             if (is_array($fakeProtocols)) {
                 $definedWrappers = stream_get_wrappers();
                 foreach ($fakeProtocols as $k => $v) {
-                    if (in_array($k, $definedWrappers) || array_key_exists($k, self::$_singleInstance->_fakeProtocols) || !preg_match('/^\w+$/', $k)) {
+                    if (in_array($k, $definedWrappers) || array_key_exists($k, self::$singleInstance->fakeProtocols) || !preg_match('/^\w+$/', $k)) {
                         continue;
                     }
 
@@ -136,7 +136,7 @@ final class CoreManager
                         $v .= '/';
                     }
 
-                    self::$_singleInstance->_fakeProtocols[$k] = $v;
+                    self::$singleInstance->fakeProtocols[$k] = $v;
                 }
             }
             ob_start(array(__CLASS__, 'convertFakeProtocols'));
@@ -165,7 +165,7 @@ final class CoreManager
                 }
             }
         }
-        return self::$_singleInstance;
+        return self::$singleInstance;
     }
 
     /**
@@ -179,12 +179,12 @@ final class CoreManager
      */
     public static function convertFakeProtocols(string $str): string
     {
-        $inst = self::_ensureInit();
+        $inst = self::ensureInit();
         $search = array();
-        foreach (array_keys($inst->_fakeProtocols) as $k) {
+        foreach (array_keys($inst->fakeProtocols) as $k) {
             $search[] = "{$k}://";
         }
-        return str_replace($search, array_values($inst->_fakeProtocols), $str);
+        return str_replace($search, array_values($inst->fakeProtocols), $str);
     }
 
     /**
@@ -196,7 +196,7 @@ final class CoreManager
      */
     public static function getTwig(): ?Environment
     {
-        return self::_ensureInit()->_currentTwigEnvironment;
+        return self::ensureInit()->currentTwigEnvironment;
     }
 
     /**
@@ -208,9 +208,9 @@ final class CoreManager
      */
     public static function handleRequest(Environment $twig, string $defaultRoute)
     {
-        $inst = self::_ensureInit();
+        $inst = self::ensureInit();
 
-        $inst->_currentTwigEnvironment = $twig;
+        $inst->currentTwigEnvironment = $twig;
 
         if (CommandLine::isCLI()) {
             $routePathInfo = $_SERVER['REQUEST_URI'];
@@ -291,7 +291,7 @@ final class CoreManager
                 }
 
                 CoreProfiler::pushEvent('Building response');
-                self::_setResponseContentType($routerData->routeAttributes, Config::get(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/html'), Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
+                self::setResponseContentType($routerData->routeAttributes, Config::get(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/html'), Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
                 $template = $reqResult->template(($routeProvidedTemplate === null) ? $routerData->defaultTemplate : $routeProvidedTemplate);
 
                 $context = array_merge(RequestResult::getViewGlobals(), $reqResult->data(), array(
@@ -357,8 +357,8 @@ final class CoreManager
 
     private static function outputJSON(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = null, Environment $twig = null)
     {
-        self::_setStatusCode($reqResult->statusCode());
-        self::_setResponseContentType($routeAttributes, 'application/json', Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
+        self::setStatusCode($reqResult->statusCode());
+        self::setResponseContentType($routeAttributes, 'application/json', Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
         if ($twig != null && $reqResult->preformatted()) {
             ErrorManager::flush();
             $template = $twig->createTemplate($reqResult->data());
@@ -372,8 +372,8 @@ final class CoreManager
 
     private static function outputXML(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = null, Environment $twig = null)
     {
-        self::_setStatusCode($reqResult->statusCode());
-        self::_setResponseContentType($routeAttributes, 'application/xml', Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
+        self::setStatusCode($reqResult->statusCode());
+        self::setResponseContentType($routeAttributes, 'application/xml', Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
         if ($twig != null && $reqResult->preformatted()) {
             ErrorManager::flush();
             $template = $twig->createTemplate($reqResult->data());
@@ -394,22 +394,22 @@ final class CoreManager
      */
     public static function getRootURL(): string
     {
-        $inst = self::_ensureInit();
-        if (null === $inst->_rootURL) {
-            $inst->_rootURL = Config::get(ConfigConstants::BASE_HREF, null);
-            if (null === $inst->_rootURL) {
+        $inst = self::ensureInit();
+        if (null === $inst->rootURL) {
+            $inst->rootURL = Config::get(ConfigConstants::BASE_HREF, null);
+            if (null === $inst->rootURL) {
                 if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
                     $protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
                 } else {
                     $protocol = (empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off') ? 'http' : 'https';
                 }
-                $inst->_rootURL = "{$protocol}://{$_SERVER['HTTP_HOST']}" . preg_replace('#/mfx$#', '/', dirname($_SERVER['PHP_SELF']));
-                if (!preg_match('#/$#', $inst->_rootURL)) {
-                    $inst->_rootURL .= '/';
+                $inst->rootURL = "{$protocol}://{$_SERVER['HTTP_HOST']}" . preg_replace('#/mfx$#', '/', dirname($_SERVER['PHP_SELF']));
+                if (!preg_match('#/$#', $inst->rootURL)) {
+                    $inst->rootURL .= '/';
                 }
             }
         }
-        return $inst->_rootURL;
+        return $inst->rootURL;
     }
 
     /**
@@ -443,7 +443,7 @@ final class CoreManager
      * @param int $code HTTP status code to emit (Defaults to 200 OK)
      * @return int the specified status code or 400 if invalid
      */
-    private static function _setStatusCode(int $code = 200): int
+    private static function setStatusCode(int $code = 200): int
     {
         if (!array_key_exists($code, self::$HTTP_STATUS_CODES)) {
             $code = 400;
@@ -459,7 +459,7 @@ final class CoreManager
      */
     private static function outputStatusCode(int $code = 400, ?string $message = null)
     {
-        $code = self::_setStatusCode($code);
+        $code = self::setStatusCode($code);
 
         $contentType = Config::get(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/plain');
         $charset = Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8');
@@ -472,7 +472,7 @@ final class CoreManager
             $data['message'] = $message;
         }
 
-        self::_setResponseContentType(null, $contentType, $charset);
+        self::setResponseContentType(null, $contentType, $charset);
         switch ($contentType) {
             case 'application/json':
                 $reqResult = RequestResult::buildJSONRequestResult($data, false, $code);
@@ -513,7 +513,7 @@ final class CoreManager
      * @param string $default Content type to use if not provided by the route.
      * @param string $defaultCharset Charset to use if not provided by the route.
      */
-    private static function _setResponseContentType(?RouteAttributesParser $routeAttributes, string $default, string $defaultCharset)
+    private static function setResponseContentType(?RouteAttributesParser $routeAttributes, string $default, string $defaultCharset)
     {
         $ct = ($routeAttributes !== null && $routeAttributes->hasAttribute(ContentType::class)) ? $routeAttributes->getAttributeValue(ContentType::class) : $default;
         if (!preg_match('/;\s+charset=.+$/', $ct)) {

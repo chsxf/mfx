@@ -51,11 +51,11 @@ class Word extends Field
      * (non-PHPdoc)
      * @ignore
      * @see Field::getHTMLType()
-     * @param FieldType $type_override
+     * @param FieldType $typeOverride
      */
-    public function getHTMLType(?FieldType $type_override = null): string
+    public function getHTMLType(?FieldType $typeOverride = null): string
     {
-        return parent::getHTMLType($type_override ?? FieldType::TEXT);
+        return parent::getHTMLType($typeOverride ?? FieldType::TEXT);
     }
 }
 

@@ -19,7 +19,7 @@ class Path extends AbstractFilter
     /**
      * @var string Root path holder
      */
-    private string $_root;
+    private string $root;
 
     /**
      * Constructor
@@ -34,7 +34,7 @@ class Path extends AbstractFilter
         }
         parent::__construct($message);
 
-        $this->_root = $root;
+        $this->root = $root;
     }
 
     /**
@@ -49,7 +49,7 @@ class Path extends AbstractFilter
      */
     public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool
     {
-        $fp = $this->_root . $value;
+        $fp = $this->root . $value;
         if (!file_exists($fp)) {
             if (!$silent) {
                 $this->emitMessage($fieldName);

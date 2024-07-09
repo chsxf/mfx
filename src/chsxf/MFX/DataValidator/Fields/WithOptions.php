@@ -111,7 +111,7 @@ class WithOptions extends Field
 
                 // Checks value against options and applies filters
                 foreach ($val as $v) {
-                    if (!$this->_isValidOption($v)) {
+                    if (!$this->isValidOption($v)) {
                         if (!$silent) {
                             trigger_error(sprintf(dgettext('mfx', "'%s' is not a valid value for the '%s' field at index %d."), $v, $this->getName(), $i));
                         }
@@ -135,7 +135,7 @@ class WithOptions extends Field
 
             // Checks value against options and applies filters
             foreach ($value as $v) {
-                if (!$this->_isValidOption($v)) {
+                if (!$this->isValidOption($v)) {
                     if (!$silent) {
                         trigger_error(sprintf(dgettext('mfx', "'%s' is not a valid value for the '%s' field."), $v, $this->getName()));
                     }
@@ -156,7 +156,7 @@ class WithOptions extends Field
      * @param mixed $value
      * @return boolean true if the value is a valid option, false either.
      */
-    private function _isValidOption(mixed $value): bool
+    private function isValidOption(mixed $value): bool
     {
         foreach ($this->_options as $opt) {
             if ($opt['value'] == $value) {
@@ -170,11 +170,11 @@ class WithOptions extends Field
      * (non-PHPdoc)
      * @ignore
      * @see Field::getHTMLType()
-     * @param FieldType $type_override
+     * @param FieldType $typeOverride
      */
-    public function getHTMLType(?FieldType $type_override = null): string
+    public function getHTMLType(?FieldType $typeOverride = null): string
     {
-        return ($this->getType() === FieldType::MULTI_SELECT) ? 'select' : parent::getHTMLType($type_override);
+        return ($this->getType() === FieldType::MULTI_SELECT) ? 'select' : parent::getHTMLType($typeOverride);
     }
 
     /**
@@ -182,9 +182,9 @@ class WithOptions extends Field
      * @ignore
      * @see Field::generate()
      * @param array $containingGroups
-     * @param FieldType $type_override
+     * @param FieldType $typeOverride
      */
-    public function generate(array $containingGroups = array(), ?FieldType $type_override = null): array
+    public function generate(array $containingGroups = array(), ?FieldType $typeOverride = null): array
     {
         $template = ($this->getType() === FieldType::RADIO) ? '@mfx/DataValidator/radio.twig' : '@mfx/DataValidator/select.twig';
 
@@ -214,8 +214,8 @@ class WithOptions extends Field
             $optionsToGenerate = $this->_options;
         }
 
-        $result = parent::generate($containingGroups, $type_override);
-        if ($type_override === null || $type_override !== FieldType::HIDDEN) {
+        $result = parent::generate($containingGroups, $typeOverride);
+        if ($typeOverride === null || $typeOverride !== FieldType::HIDDEN) {
             $result[0] = $template;
             $result[1] = array_merge($result[1], array(
                 'name' => ($this->getType() === FieldType::MULTI_SELECT) ? sprintf('%s[]', $result[1]['name']) : $result[1]['name'],

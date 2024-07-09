@@ -20,17 +20,17 @@ class ExistsInDB extends AbstractFilter
     /**
      * @var string|DatabaseManager Database connection name or instance
      */
-    private string|DatabaseManager $_connection;
+    private string|DatabaseManager $connection;
 
     /**
      * @var string Database table name
      */
-    private string $_table;
+    private string $table;
 
     /**
      * @var string Database field name
      */
-    private string $_field;
+    private string $field;
 
     /**
      * Constructor
@@ -47,9 +47,9 @@ class ExistsInDB extends AbstractFilter
         }
         parent::__construct($message);
 
-        $this->_connection = $connection;
-        $this->_table = preg_replace('/[^a-z0-9_]/', '', $table);
-        $this->_field = preg_replace('/[^a-z0-9_]/', '', $field);
+        $this->connection = $connection;
+        $this->table = preg_replace('/[^a-z0-9_]/', '', $table);
+        $this->field = preg_replace('/[^a-z0-9_]/', '', $field);
     }
 
     /**
@@ -83,10 +83,10 @@ class ExistsInDB extends AbstractFilter
      */
     final protected function getConnection(): DatabaseManager
     {
-        if ($this->_connection instanceof DatabaseManager) {
-            return $this->_connection;
+        if ($this->connection instanceof DatabaseManager) {
+            return $this->connection;
         }
-        return DatabaseManager::open($this->_connection);
+        return DatabaseManager::open($this->connection);
     }
 
     /**
@@ -96,7 +96,7 @@ class ExistsInDB extends AbstractFilter
      */
     final protected function getTable(): string
     {
-        return $this->_table;
+        return $this->table;
     }
 
     /**
@@ -106,7 +106,7 @@ class ExistsInDB extends AbstractFilter
      */
     final protected function getField(): string
     {
-        return $this->_field;
+        return $this->field;
     }
 
     /**
@@ -122,11 +122,11 @@ class ExistsInDB extends AbstractFilter
     /**
      * Gets the SQL query values
      * @since 1.0
-     * @param mixed $_value Field's value
+     * @param mixed $value Field's value
      * @return array
      */
-    protected function getSQLValues(mixed $_value): array
+    protected function getSQLValues(mixed $value): array
     {
-        return array($_value);
+        return array($value);
     }
 }

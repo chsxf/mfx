@@ -19,7 +19,7 @@ class ErrorManager
     /**
      * @var array Key-value pairs of catchable error codes
      */
-    private static array $_CATCHABLE = array(
+    private static array $catchables = array(
         'E_NOTICE' => E_NOTICE,
         'E_WARNING' => E_WARNING,
         'E_USER_ERROR' => E_USER_ERROR,
@@ -33,11 +33,11 @@ class ErrorManager
     /**
      * @var array Errors container
      */
-    private static array $_errors = array();
+    private static array $errors = array();
     /**
      * @var array Notifications container
      */
-    private static array $_notifs = array();
+    private static array $notifs = array();
 
     /**
      * @var callable Reference to the previous error handler, or NULL if none exists
@@ -49,9 +49,9 @@ class ErrorManager
      * @param int $errno Error number
      * @return string|boolean the name string of false if the error number is not catchable
      */
-    private static function _getConstantFromErrorNumber(int $errno): string|false
+    private static function getConstantFromErrorNumber(int $errno): string|false
     {
-        foreach (self::$_CATCHABLE as $k => $v) {
+        foreach (self::$catchables as $k => $v) {
             if ($v == $errno) {
                 return $k;
             }
@@ -66,7 +66,7 @@ class ErrorManager
      */
     public static function hasError(): bool
     {
-        return !empty(self::$_errors);
+        return !empty(self::$errors);
     }
 
     /**
@@ -76,7 +76,7 @@ class ErrorManager
      */
     public static function hasNotif(): bool
     {
-        return !empty(self::$_notifs);
+        return !empty(self::$notifs);
     }
 
     /**
@@ -95,7 +95,7 @@ class ErrorManager
     public static function handleError(int $errno, string $errstr, string $errfile, int $errline): bool
     {
         if (error_reporting() && $errno) {
-            if (($constant = self::_getConstantFromErrorNumber($errno)) !== false) {
+            if (($constant = self::getConstantFromErrorNumber($errno)) !== false) {
                 $errdata = array(
                     'errno' => $errno,
                     'errstr' => $errstr,
@@ -105,7 +105,7 @@ class ErrorManager
                     $errdata['errfile'] = $errfile;
                     $errdata['errline'] = $errline;
                 }
-                self::$_errors[] = $errdata;
+                self::$errors[] = $errdata;
                 return true;
             }
         }
@@ -123,7 +123,7 @@ class ErrorManager
      */
     public static function handleNotif(string $message)
     {
-        self::$_notifs[] = $message;
+        self::$notifs[] = $message;
     }
 
     /**
@@ -133,7 +133,7 @@ class ErrorManager
      */
     public static function freeze(bool $flush = false)
     {
-        $_SESSION[__CLASS__] = serialize(array('errors' => self::$_errors, 'notifs' => self::$_notifs));
+        $_SESSION[__CLASS__] = serialize(array('errors' => self::$errors, 'notifs' => self::$notifs));
         if (!empty($flush)) {
             ErrorManager::flush();
         }
@@ -148,8 +148,8 @@ class ErrorManager
         if (!empty($_SESSION[__CLASS__])) {
             $arr = @unserialize($_SESSION[__CLASS__]);
             if (!empty($arr)) {
-                self::$_errors = array_merge(self::$_errors, $arr['errors']);
-                self::$_notifs = array_merge(self::$_notifs, $arr['notifs']);
+                self::$errors = array_merge(self::$errors, $arr['errors']);
+                self::$notifs = array_merge(self::$notifs, $arr['notifs']);
             }
             unset($_SESSION[__CLASS__]);
         }
@@ -164,12 +164,12 @@ class ErrorManager
     public static function flush(?Environment $twig = null): string
     {
         if ($twig !== null) {
-            $str = $twig->render('@mfx/ErrorManager.twig', array('errors' => self::$_errors, 'notifs' => self::$_notifs, 'debug' => Config::get(ConfigConstants::RESPONSE_FULL_ERRORS, false)));
+            $str = $twig->render('@mfx/ErrorManager.twig', array('errors' => self::$errors, 'notifs' => self::$notifs, 'debug' => Config::get(ConfigConstants::RESPONSE_FULL_ERRORS, false)));
         } else {
             $str = '';
         }
-        self::$_errors = array();
-        self::$_notifs = array();
+        self::$errors = array();
+        self::$notifs = array();
         return $str;
     }
 
@@ -194,11 +194,11 @@ class ErrorManager
      */
     public static function flushToArray(array &$arr)
     {
-        if (!empty(self::$_errors)) {
-            $arr['errors'] = self::$_errors;
+        if (!empty(self::$errors)) {
+            $arr['errors'] = self::$errors;
         }
-        if (!empty(self::$_notifs)) {
-            $arr['notifs'] = self::$_notifs;
+        if (!empty(self::$notifs)) {
+            $arr['notifs'] = self::$notifs;
         }
         ErrorManager::flush();
     }
@@ -210,11 +210,11 @@ class ErrorManager
      */
     public static function flushToObject(object $object)
     {
-        if (!empty(self::$_errors)) {
-            $object->errors = self::$_errors;
+        if (!empty(self::$errors)) {
+            $object->errors = self::$errors;
         }
-        if (!empty(self::$_notifs)) {
-            $object->notifs = self::$_notifs;
+        if (!empty(self::$notifs)) {
+            $object->notifs = self::$notifs;
         }
         ErrorManager::flush();
     }

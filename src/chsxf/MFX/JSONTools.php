@@ -39,7 +39,7 @@ class JSONTools
      *
      * @used-by JSONTools::filterAndEncode()
      */
-    private static function _filter(mixed $var): mixed
+    private static function filter(mixed $var): mixed
     {
         // Scalar values
         if (is_scalar($var)) {
@@ -75,7 +75,7 @@ class JSONTools
         // Arrays
         elseif (is_array($var)) {
             foreach ($var as $k => $v) {
-                $var[$k] = self::_filter($v);
+                $var[$k] = self::filter($v);
             }
             return $var;
         }
@@ -93,10 +93,10 @@ class JSONTools
                 $props = $ro->getProperties(\ReflectionProperty::IS_PUBLIC);
                 foreach ($props as $v) {
                     if ($v->isDefault()) {
-                        $v->setValue($newObj, self::_filter($v->getValue($newObj)));
+                        $v->setValue($newObj, self::filter($v->getValue($newObj)));
                     } else {
                         $name = $v->getName();
-                        $newObj->$name = self::_filter($newObj->$name);
+                        $newObj->$name = self::filter($newObj->$name);
                     }
                 }
                 $res = $newObj;
@@ -126,6 +126,6 @@ class JSONTools
     public static function filterAndEncode(mixed $var): string
     {
         self::$RECURSIONS = array();
-        return json_encode(self::_filter($var));
+        return json_encode(self::filter($var));
     }
 }

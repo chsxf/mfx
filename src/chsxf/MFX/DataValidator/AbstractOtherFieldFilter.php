@@ -17,7 +17,7 @@ abstract class AbstractOtherFieldFilter extends AbstractFilter
     /**
      * @var array References to the matching fields
      */
-    private array $_otherFields;
+    private array $otherFields;
 
     /**
      * Constructor
@@ -46,7 +46,7 @@ abstract class AbstractOtherFieldFilter extends AbstractFilter
             }
         }
 
-        $this->_otherFields = is_array($otherFields) ? $otherFields : array($otherFields);
+        $this->otherFields = is_array($otherFields) ? $otherFields : array($otherFields);
     }
 
     /**
@@ -56,6 +56,6 @@ abstract class AbstractOtherFieldFilter extends AbstractFilter
      */
     protected function getOtherFields(): array
     {
-        return $this->_otherFields;
+        return $this->otherFields;
     }
 }

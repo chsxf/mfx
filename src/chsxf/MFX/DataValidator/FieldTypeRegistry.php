@@ -10,7 +10,7 @@ final class FieldTypeRegistry
     /**
      * @var array Type to class map
      */
-    private static array $_classForType = array();
+    private static array $classForType = array();
 
     /**
      * Registers a class name for a specific field type
@@ -21,10 +21,10 @@ final class FieldTypeRegistry
      */
     public static function registerClassForType(FieldType $type, string $className)
     {
-        if (array_key_exists($type->value, self::$_classForType)) {
+        if (array_key_exists($type->value, self::$classForType)) {
             throw new DataValidatorException(dgettext('mfx', "A class is already registered for the field type."));
         }
-        self::$_classForType[$type->value] = $className;
+        self::$classForType[$type->value] = $className;
     }
 
     /**
@@ -35,10 +35,10 @@ final class FieldTypeRegistry
      */
     public static function getClassForType(FieldType $type): string
     {
-        if (!array_key_exists($type->value, self::$_classForType)) {
+        if (!array_key_exists($type->value, self::$classForType)) {
             return Field::class;
         } else {
-            return self::$_classForType[$type->value];
+            return self::$classForType[$type->value];
         }
     }
 }

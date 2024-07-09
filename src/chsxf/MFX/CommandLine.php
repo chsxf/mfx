@@ -19,15 +19,15 @@ class CommandLine
     /**
      * @var array Arguments list
      */
-    private static array $_argv;
+    private static array $argv;
     /**
      * @var int Argument count
      */
-    private static int $_argc;
+    private static int $argc;
     /**
      * @var int Argument current index
      */
-    private static int $_argi;
+    private static int $argi;
 
     /**
      * Tells if PHP is running on the command-line interface (CLI) server API
@@ -51,20 +51,20 @@ class CommandLine
             return;
         }
 
-        self::_initArgs();
+        self::initArgs();
 
         // Options
-        while (self::_hasArgument()) {
-            $opt = self::_getNextArgument();
+        while (self::hasArgument()) {
+            $opt = self::getNextArgument();
 
             if (preg_match('/^-/', $opt)) {
                 switch ($opt) {
                     case '--config':
-                        define('MFX_CONFIG_FILE_PATH', self::_getNextArgument());
+                        define('MFX_CONFIG_FILE_PATH', self::getNextArgument());
                         break;
 
                     default:
-                        self::_dieUsage();
+                        self::dieUsage();
                 }
             } else {
                 $_SERVER['REQUEST_URI'] = "{$_SERVER['PHP_SELF']}/{$opt}";
@@ -76,39 +76,39 @@ class CommandLine
     /**
      * Initializes the arguments list from the global $argc and $argv variables
      */
-    private static function _initArgs()
+    private static function initArgs()
     {
         global $argv;
-        self::$_argv = array_slice($argv, 1);
-        self::$_argc = count(self::$_argv);
-        self::$_argi = 0;
+        self::$argv = array_slice($argv, 1);
+        self::$argc = count(self::$argv);
+        self::$argi = 0;
     }
 
     /**
      * Tells if the arguments list contains further argument
      * @return boolean
      */
-    private static function _hasArgument(): bool
+    private static function hasArgument(): bool
     {
-        return (self::$_argi < self::$_argc);
+        return (self::$argi < self::$argc);
     }
 
     /**
      * Retrieves the next argument in the list
      * @return string
      */
-    private static function _getNextArgument(): string
+    private static function getNextArgument(): string
     {
-        if (!self::_hasArgument()) {
-            self::_dieUsage();
+        if (!self::hasArgument()) {
+            self::dieUsage();
         }
-        return self::$_argv[self::$_argi++];
+        return self::$argv[self::$argi++];
     }
 
     /**
      * Terminates the script when incorrectedly used and display the usage message
      */
-    private static function _dieUsage()
+    private static function dieUsage()
     {
         printf("Usage: php /path/to/mfx/entrypoint.php [options] [route]\n\n");
         printf("\t--config <file>\t\tPath to custom config file\n");

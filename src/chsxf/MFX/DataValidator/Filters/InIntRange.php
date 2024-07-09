@@ -30,12 +30,12 @@ class InIntRange extends AbstractFilter
      * @param bool $includeMax If set, includes the max value. If not, the max value is not part of the range.
      * @param string $message Error message
      */
-    public function __construct(int $_value1, int $_value2, bool $_includeMax = false, ?string $message = null)
+    public function __construct(int $value1, int $value2, bool $includeMax = false, ?string $message = null)
     {
-        $this->min = min($_value1, $_value2);
-        $this->max = max($_value1, $_value2);
+        $this->min = min($value1, $value2);
+        $this->max = max($value1, $value2);
 
-        $this->includeMax = $_includeMax;
+        $this->includeMax = $includeMax;
 
         if ($message === null) {
             $inclusivity = $this->includeMax ? dgettext('mfx', 'inclusive') : dgettext('mfx', 'exclusive');

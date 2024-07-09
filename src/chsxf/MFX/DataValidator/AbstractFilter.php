@@ -20,12 +20,12 @@ abstract class AbstractFilter
     /**
      * @var string Filter error message
      */
-    private string $_message;
+    private string $message;
 
     /**
      * @var IMessageDispatcher Overridden message dispatcher
      */
-    private ?IMessageDispatcher $_messageDispatcher = null;
+    private ?IMessageDispatcher $messageDispatcher = null;
 
     /**
      * Constructor
@@ -49,12 +49,12 @@ abstract class AbstractFilter
      */
     final protected function emitMessage(string $fieldName, int $level = E_USER_NOTICE)
     {
-        if (!empty($this->_message)) {
-            $msg = sprintf($this->_message, $fieldName);
-            if ($this->_messageDispatcher === null) {
+        if (!empty($this->message)) {
+            $msg = sprintf($this->message, $fieldName);
+            if ($this->messageDispatcher === null) {
                 trigger_error($msg, $level);
             } else {
-                $this->_messageDispatcher->dispatchMessage($msg, $level);
+                $this->messageDispatcher->dispatchMessage($msg, $level);
             }
         }
     }
@@ -70,9 +70,9 @@ abstract class AbstractFilter
     final protected function setMessage(string $message)
     {
         if (is_string($message) && !empty($message)) {
-            $this->_message = $message;
+            $this->message = $message;
         } else {
-            $this->_message = null;
+            $this->message = null;
         }
     }
 
@@ -83,7 +83,7 @@ abstract class AbstractFilter
      */
     final public function setMessageDispatcher(IMessageDispatcher $dispatcher)
     {
-        $this->_messageDispatcher = $dispatcher;
+        $this->messageDispatcher = $dispatcher;
     }
 
     /**

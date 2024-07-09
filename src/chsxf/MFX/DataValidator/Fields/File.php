@@ -18,7 +18,7 @@ use chsxf\MFX\DataValidator\FieldTypeRegistry;
  */
 class File extends Field
 {
-    private static array $_requiredKeys = array(
+    private static array $requiredKeys = array(
         'name',
         'type',
         'tmp_name',
@@ -44,7 +44,7 @@ class File extends Field
             $maxIndex = $this->getMaxRepeatIndex();
             for ($i = 0; $i <= $maxIndex; $i++) {
                 $value = $this->getIndexedValue($i, true);
-                if (($this->isRequired() || !empty($value)) && !$this->_validateFileData($value)) {
+                if (($this->isRequired() || !empty($value)) && !$this->validateFileData($value)) {
                     if (!$silent) {
                         trigger_error(sprintf($errorRepeatable, $this->getName(), $i));
                     }
@@ -53,7 +53,7 @@ class File extends Field
             }
         } else {
             $value = $this->getValue(true);
-            if (($this->isRequired() || !empty($value)) && !$this->_validateFileData($value)) {
+            if (($this->isRequired() || !empty($value)) && !$this->validateFileData($value)) {
                 if (!$silent) {
                     trigger_error(sprintf($error, $this->getName()));
                 }
@@ -67,17 +67,17 @@ class File extends Field
     /**
      * Validates a file data entry
      *
-     * @param mixed $_data
+     * @param mixed $data
      */
-    private function _validateFileData(mixed $_data): bool
+    private function validateFileData(mixed $data): bool
     {
         $isValid = false;
-        if (is_array($_data)) {
-            $intersect = array_intersect(self::$_requiredKeys, array_keys($_data));
-            $isValid = (count($intersect) == count(self::$_requiredKeys));
+        if (is_array($data)) {
+            $intersect = array_intersect(self::$requiredKeys, array_keys($data));
+            $isValid = (count($intersect) == count(self::$requiredKeys));
 
             if ($isValid) {
-                $isValid = ($_data['error'] == 0);
+                $isValid = ($data['error'] == 0);
             }
         }
         return $isValid;

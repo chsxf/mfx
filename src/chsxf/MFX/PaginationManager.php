@@ -19,24 +19,24 @@ final class PaginationManager
     /**
      * @var IPaginationProvider Reference to the pagination information provider
      */
-    private IPaginationProvider $_provider;
+    private IPaginationProvider $provider;
 
     /**
      * @var int Total number of items
      */
-    private int $_totalItemCount;
+    private int $totalItemCount;
     /**
      * @var int Index of the first element of the page
      */
-    private int $_currentPageStart;
+    private int $currentPageStart;
     /**
      * @var int Number of items per page
      */
-    private int $_pageCount;
+    private int $pageCount;
     /**
      * @var array Extra parameters for pagination requests
      */
-    private array $_extraParameters;
+    private array $extraParameters;
 
     /**
      * Constructor
@@ -46,42 +46,42 @@ final class PaginationManager
      */
     public function __construct(IPaginationProvider $provider, array $extraParameterKeys = array())
     {
-        $this->_provider = $provider;
-        $this->_totalItemCount = $this->_provider->totalItemCount();
+        $this->provider = $provider;
+        $this->totalItemCount = $this->provider->totalItemCount();
 
-        $this->_extraParameters = array();
+        $this->extraParameters = array();
         foreach ($extraParameterKeys as $k) {
-            $this->_extraParameters[$k] = null;
+            $this->extraParameters[$k] = null;
         }
 
-        $this->_buildFromRequest();
+        $this->buildFromRequest();
     }
 
     /**
      * Builds pagination information from request
      */
-    private function _buildFromRequest()
+    private function buildFromRequest()
     {
         if (isset($_REQUEST['page_count'])) {
             $reqCount = intval($_REQUEST['page_count']);
         } else {
-            $reqCount = $this->_provider->defaultPageCount();
+            $reqCount = $this->provider->defaultPageCount();
         }
-        $this->_pageCount = $reqCount;
+        $this->pageCount = $reqCount;
 
         if (isset($_REQUEST['page_start'])) {
             $reqStart = intval($_REQUEST['page_start']);
         } else {
             $reqStart = 0;
         }
-        if ($reqStart > $this->_totalItemCount) {
-            $reqStart = max(0, $this->_totalItemCount - $this->_pageCount);
+        if ($reqStart > $this->totalItemCount) {
+            $reqStart = max(0, $this->totalItemCount - $this->pageCount);
         }
-        $this->_currentPageStart = max(0, $reqStart);
+        $this->currentPageStart = max(0, $reqStart);
 
-        foreach (array_keys($this->_extraParameters) as $k) {
+        foreach (array_keys($this->extraParameters) as $k) {
             if (isset($_REQUEST[$k])) {
-                $this->_extraParameters[$k] = $_REQUEST[$k];
+                $this->extraParameters[$k] = $_REQUEST[$k];
             }
         }
     }
@@ -94,8 +94,8 @@ final class PaginationManager
      */
     public function setExtraParameter(string $key, mixed $value)
     {
-        if (array_key_exists($key, $this->_extraParameters)) {
-            $this->_extraParameters[$key] = $value;
+        if (array_key_exists($key, $this->extraParameters)) {
+            $this->extraParameters[$key] = $value;
         }
     }
 
@@ -106,7 +106,7 @@ final class PaginationManager
      */
     public function sqlLimit(): string
     {
-        return sprintf(" LIMIT %d, %d", $this->_currentPageStart, $this->_pageCount);
+        return sprintf(" LIMIT %d, %d", $this->currentPageStart, $this->pageCount);
     }
 
     /**
@@ -116,7 +116,7 @@ final class PaginationManager
      */
     public function getPagesCount(): int
     {
-        return ($this->_pageCount == 0) ? 1 : max(1, ceil($this->_totalItemCount / $this->_pageCount));
+        return ($this->pageCount == 0) ? 1 : max(1, ceil($this->totalItemCount / $this->pageCount));
     }
 
     /**
@@ -126,7 +126,7 @@ final class PaginationManager
      */
     public function getItemCountPerPage(): int
     {
-        return $this->_pageCount;
+        return $this->pageCount;
     }
 
     /**
@@ -136,7 +136,7 @@ final class PaginationManager
      */
     public function getCurrentPageIndex(): int
     {
-        return ($this->_pageCount == 0) ? 0 : floor($this->_currentPageStart / $this->_pageCount);
+        return ($this->pageCount == 0) ? 0 : floor($this->currentPageStart / $this->pageCount);
     }
 
     /**
@@ -146,7 +146,7 @@ final class PaginationManager
      */
     public function getTotalItemCount(): int
     {
-        return $this->_totalItemCount;
+        return $this->totalItemCount;
     }
 
     /**
@@ -156,7 +156,7 @@ final class PaginationManager
      */
     public function getCurrentPageStart(): int
     {
-        return $this->_currentPageStart;
+        return $this->currentPageStart;
     }
 
     /**
@@ -177,7 +177,7 @@ final class PaginationManager
      */
     public function hasPrevPage(): bool
     {
-        return ($this->_currentPageStart > 0);
+        return ($this->currentPageStart > 0);
     }
 
     /**
@@ -187,7 +187,7 @@ final class PaginationManager
      */
     public function prevPageStart(): int
     {
-        return max(0, $this->_currentPageStart - $this->_pageCount);
+        return max(0, $this->currentPageStart - $this->pageCount);
     }
 
     /**
@@ -200,10 +200,10 @@ final class PaginationManager
     {
         $args = array(
             'page_start' => $this->prevPageStart(),
-            'page_count' => $this->_pageCount
+            'page_count' => $this->pageCount
         );
         if ($includeExtraParameters) {
-            $args = array_merge($this->_extraParameters, $args);
+            $args = array_merge($this->extraParameters, $args);
         }
         return http_build_query($args);
     }
@@ -215,7 +215,7 @@ final class PaginationManager
      */
     public function hasNextPage(): bool
     {
-        return ($this->_currentPageStart < $this->_totalItemCount - $this->_pageCount);
+        return ($this->currentPageStart < $this->totalItemCount - $this->pageCount);
     }
 
     /**
@@ -225,7 +225,7 @@ final class PaginationManager
      */
     public function nextPageStart(): int
     {
-        return max(0, min($this->_totalItemCount - 1, $this->_currentPageStart + $this->_pageCount));
+        return max(0, min($this->totalItemCount - 1, $this->currentPageStart + $this->pageCount));
     }
 
     /**
@@ -238,10 +238,10 @@ final class PaginationManager
     {
         $args = array(
             'page_start' => $this->nextPageStart(),
-            'page_count' => $this->_pageCount
+            'page_count' => $this->pageCount
         );
         if ($includeExtraParameters) {
-            $args = array_merge($this->_extraParameters, $args);
+            $args = array_merge($this->extraParameters, $args);
         }
         return http_build_query($args);
     }
@@ -255,7 +255,7 @@ final class PaginationManager
     public function pageStart(int $pageIndex): int
     {
         $pageIndex = max(0, intval($pageIndex));
-        return min($this->_totalItemCount - 1, $pageIndex * $this->_pageCount);
+        return min($this->totalItemCount - 1, $pageIndex * $this->pageCount);
     }
 
     /**
@@ -269,10 +269,10 @@ final class PaginationManager
     {
         $args = array(
             'page_start' => $this->pageStart($pageIndex),
-            'page_count' => $this->_pageCount
+            'page_count' => $this->pageCount
         );
         if ($includeExtraParameters) {
-            $args = array_merge($this->_extraParameters, $args);
+            $args = array_merge($this->extraParameters, $args);
         }
         return http_build_query($args);
     }
@@ -285,6 +285,6 @@ final class PaginationManager
     public function addCurrentPageDataValidatorFields(DataValidator $validator)
     {
         $validator->createField('page_start', FieldType::POSITIVEZERO_INTEGER, $this->pageStart($this->getCurrentPageIndex()), false);
-        $validator->createField('page_count', FieldType::POSITIVEZERO_INTEGER, $this->_pageCount, false);
+        $validator->createField('page_count', FieldType::POSITIVEZERO_INTEGER, $this->pageCount, false);
     }
 }

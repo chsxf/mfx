@@ -24,19 +24,19 @@ class LogicOr extends AbstractFilter implements IMessageDispatcher
      * Filters container
      * @var array
      */
-    private array $_filters = array();
+    private array $filters = array();
 
     /**
      * Messages container
      * @var array
      */
-    private array $_messages = array();
+    private array $messages = array();
 
     /**
      * Maximum message level
      * @var int
      */
-    private int $_messageLevel = 0;
+    private int $messageLevel = 0;
 
     /**
      * Constructor
@@ -55,7 +55,7 @@ class LogicOr extends AbstractFilter implements IMessageDispatcher
     public function addFilter(AbstractFilter $filter)
     {
         $filter->setMessageDispatcher($this);
-        $this->_filters[] = $filter;
+        $this->filters[] = $filter;
     }
 
     /**
@@ -65,15 +65,15 @@ class LogicOr extends AbstractFilter implements IMessageDispatcher
      */
     public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool
     {
-        foreach ($this->_filters as $filter) {
+        foreach ($this->filters as $filter) {
             if ($filter->validate($fieldName, $value, $atIndex, $silent)) {
                 return true;
             }
         }
 
         if (!$silent) {
-            $message = implode(sprintf('<br />%d<br />', dgettext('mfx', ' or ')), $this->_messages);
-            $this->emitMessage($message, $this->_messageLevel);
+            $message = implode(sprintf('<br />%d<br />', dgettext('mfx', ' or ')), $this->messages);
+            $this->emitMessage($message, $this->messageLevel);
         }
         return false;
     }
@@ -85,7 +85,7 @@ class LogicOr extends AbstractFilter implements IMessageDispatcher
      */
     public function dispatchMessage(string $message, int $level)
     {
-        $this->_messages[] = $message;
-        $this->_messageLevel = max($this->_messageLevel, $level);
+        $this->messages[] = $message;
+        $this->messageLevel = max($this->messageLevel, $level);
     }
 }

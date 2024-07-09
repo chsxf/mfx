@@ -22,9 +22,9 @@ final class DatabaseManager extends PDODatabaseManager
     /**
      * @var array Open connections container
      */
-    private static array $_openConnections = array();
+    private static array $openConnections = array();
 
-    private string $_serverConfigurationKey;
+    private string $serverConfigurationKey;
 
     /**
      * Constructor
@@ -38,7 +38,7 @@ final class DatabaseManager extends PDODatabaseManager
     public function __construct(string $dsn, string $username, string $password, string $server = self::DEFAULT_CONNECTION)
     {
         parent::__construct($dsn, $username, $password, null, Config::get(ConfigConstants::DATABASE_ERROR_LOGGING, false));
-        $this->_serverConfigurationKey = $server;
+        $this->serverConfigurationKey = $server;
     }
 
     /**
@@ -51,8 +51,8 @@ final class DatabaseManager extends PDODatabaseManager
      */
     public static function open(string $server = self::DEFAULT_CONNECTION, bool $forceNew = false): DatabaseManager
     {
-        if (array_key_exists($server, self::$_openConnections) && empty($forceNew)) {
-            return self::$_openConnections[$server];
+        if (array_key_exists($server, self::$openConnections) && empty($forceNew)) {
+            return self::$openConnections[$server];
         }
 
         if (!Config::has(ConfigConstants::DATABASE_SERVERS)) {
@@ -79,8 +79,8 @@ final class DatabaseManager extends PDODatabaseManager
         }
 
         $dbm = new DatabaseManager($dsn, $username, $password, $server);
-        if (!array_key_exists($server, self::$_openConnections)) {
-            self::$_openConnections[$server] = $dbm;
+        if (!array_key_exists($server, self::$openConnections)) {
+            self::$openConnections[$server] = $dbm;
         }
         return $dbm;
     }
@@ -91,7 +91,7 @@ final class DatabaseManager extends PDODatabaseManager
      */
     public static function close(DatabaseManager &$_manager)
     {
-        unset(self::$_openConnections[$_manager->_serverConfigurationKey]);
+        unset(self::$openConnections[$_manager->serverConfigurationKey]);
         $_manager = null;
     }
 }

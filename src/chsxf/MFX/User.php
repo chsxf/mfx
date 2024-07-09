@@ -17,27 +17,27 @@ class User
     /**
      * @var User Current registered user reference
      */
-    private static ?User $_currentUser = null;
+    private static ?User $currentUser = null;
 
     /**
      * @var boolean If set, the current registered is a valid user. Either, the user is a guest
      */
-    private bool $_valid;
+    private bool $valid;
 
     /**
      * @var string User key. NULL for guests and most commonly the user database ID for valid users.
      */
-    private ?string $_key;
+    private ?string $key;
 
     /**
      * @var array User data fetched from the database
      */
-    private ?array $_data;
+    private ?array $data;
 
     /**
      * @var boolean If set, user data has been fetched.
      */
-    private bool $_dataFetched;
+    private bool $dataFetched;
 
     /**
      * Validates user session
@@ -47,13 +47,13 @@ class User
     {
         // Authenticator class
         $rc = new \ReflectionClass(Config::get(ConfigConstants::USER_MANAGEMENT_CLASS, __CLASS__));
-        self::$_currentUser = $rc->newInstance();
+        self::$currentUser = $rc->newInstance();
 
         // Validating
         if (!empty($_SESSION['logged_user'])) {
             list($key, $ip) = explode('|', $_SESSION['logged_user'], 2);
 
-            if ($ip != $_SERVER['REMOTE_ADDR'] || !self::$_currentUser->registerFromKey($key)) {
+            if ($ip != $_SERVER['REMOTE_ADDR'] || !self::$currentUser->registerFromKey($key)) {
                 unset($_SESSION['logged_user']);
             }
         }
@@ -67,8 +67,8 @@ class User
      */
     public static function validateWithFields(array $fields): bool
     {
-        if (!self::$_currentUser->isValid() && self::$_currentUser->registerWithFields($fields)) {
-            self::setSessionWithUserKey(self::$_currentUser->getKey());
+        if (!self::$currentUser->isValid() && self::$currentUser->registerWithFields($fields)) {
+            self::setSessionWithUserKey(self::$currentUser->getKey());
             return true;
         }
         return false;
@@ -103,7 +103,7 @@ class User
      */
     public static function currentUser(): ?User
     {
-        return self::$_currentUser;
+        return self::$currentUser;
     }
 
     /**
@@ -113,11 +113,11 @@ class User
      */
     public function __construct(string $key = null)
     {
-        $this->_valid = false;
-        $this->_key = null;
+        $this->valid = false;
+        $this->key = null;
 
-        $this->_data = null;
-        $this->_dataFetched = false;
+        $this->data = null;
+        $this->dataFetched = false;
 
         if ($key !== null) {
             $this->registerFromKey($key);
@@ -220,8 +220,8 @@ class User
             return false;
         }
 
-        $this->_key = $key;
-        $this->_valid = $this->validateUser();
+        $this->key = $key;
+        $this->valid = $this->validateUser();
         return true;
     }
 
@@ -246,7 +246,7 @@ class User
      */
     protected function validateUser(): bool
     {
-        return $this->_key !== null;
+        return $this->key !== null;
     }
 
     /**
@@ -259,8 +259,8 @@ class User
     public function registerFromKey($key): bool
     {
         if ($this->validateKey($key)) {
-            $this->_key = $key;
-            $this->_valid = $this->validateUser();
+            $this->key = $key;
+            $this->valid = $this->validateUser();
             return true;
         }
         return false;
@@ -273,7 +273,7 @@ class User
      */
     public function getKey(): string
     {
-        return $this->_key;
+        return $this->key;
     }
 
     /**
@@ -283,7 +283,7 @@ class User
      */
     public function isValid(): bool
     {
-        return $this->_valid;
+        return $this->valid;
     }
 
     /**
@@ -297,14 +297,14 @@ class User
             return false;
         }
 
-        if ($this->_dataFetched == false) {
+        if ($this->dataFetched == false) {
             if (($data = $this->fetchData()) === false) {
-                $this->_valid = false;
+                $this->valid = false;
                 return false;
             }
 
-            $this->_data = $data;
-            $this->_dataFetched = true;
+            $this->data = $data;
+            $this->dataFetched = true;
         }
 
         return true;
@@ -319,7 +319,7 @@ class User
     protected function fetchData(): mixed
     {
         $dbm = DatabaseManager::open('__mfx');
-        $row = $dbm->getRow($this->getFetchDataQuery(), \PDO::FETCH_ASSOC, $this->_key);
+        $row = $dbm->getRow($this->getFetchDataQuery(), \PDO::FETCH_ASSOC, $this->key);
         $dbm = null;
         return $row;
     }
@@ -341,7 +341,7 @@ class User
      */
     final protected function isDataReady(): bool
     {
-        return $this->isValid() && ($this->_dataFetched || $this->fetch());
+        return $this->isValid() && ($this->dataFetched || $this->fetch());
     }
 
     /**
@@ -359,7 +359,7 @@ class User
         if (!$this->isDataReady()) {
             return null;
         }
-        return array_key_exists($name, $this->_data) ? $this->_data[$name] : null;
+        return array_key_exists($name, $this->data) ? $this->data[$name] : null;
     }
 
     /**
@@ -374,6 +374,6 @@ class User
      */
     public function __isset(string $name): bool
     {
-        return $this->isDataReady() && isset($this->_data[$name]);
+        return $this->isDataReady() && isset($this->data[$name]);
     }
 }

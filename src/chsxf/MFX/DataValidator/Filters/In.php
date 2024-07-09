@@ -19,7 +19,7 @@ class In extends AbstractFilter
     /**
      * @var array List of options
      */
-    private array $_options;
+    private array $options;
 
     /**
      * Constructor
@@ -34,7 +34,7 @@ class In extends AbstractFilter
         }
         parent::__construct($message);
 
-        $this->_options = $options;
+        $this->options = $options;
     }
 
     /**
@@ -44,7 +44,7 @@ class In extends AbstractFilter
      */
     public function validate(string $fieldName, mixed $value, int $atIndex = -1, bool $silent = false): bool
     {
-        if (!in_array($value, $this->_options)) {
+        if (!in_array($value, $this->options)) {
             if (!$silent) {
                 $this->emitMessage($fieldName);
             }

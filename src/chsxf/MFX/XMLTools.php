@@ -37,7 +37,7 @@ class XMLTools
      *
      * @used-by XMLTools::build()
      */
-    private static function _build(\XMLWriter $writer, mixed $var, bool $filterStrings = true)
+    private static function recursiveBuild(\XMLWriter $writer, mixed $var, bool $filterStrings = true)
     {
         // NULL
         if (is_null($var)) {
@@ -89,7 +89,7 @@ class XMLTools
                 $writer->startElement('key');
                 $writer->writeCdata(strval($k));
                 $writer->endElement();
-                self::_build($writer, $v, $filterStrings);
+                self::recursiveBuild($writer, $v, $filterStrings);
             }
             $writer->endElement();
         }
@@ -116,7 +116,7 @@ class XMLTools
                 $writer->startElement('prop');
                 $writer->writeCdata($v->getName());
                 $writer->endElement();
-                self::_build($writer, $v->getValue($var), $filterStrings);
+                self::recursiveBuild($writer, $v->getValue($var), $filterStrings);
             }
             $writer->endElement();
 
@@ -141,7 +141,7 @@ class XMLTools
         $writer->setIndentString("\t");
         $writer->startDocument('1.0', $encoding);
         $writer->startElement('root');
-        self::_build($writer, $var);
+        self::recursiveBuild($writer, $var);
         $writer->endElement();
         $writer->endDocument();
         return $writer->outputMemory(false);

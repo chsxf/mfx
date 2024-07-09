@@ -17,32 +17,32 @@ final class RequestResult
     /**
      * @var array Global data to be passed with all VIEW request results
      */
-    private static array $_viewGlobalData = array();
+    private static array $viewGlobalData = array();
 
     /**
      * @var RequestResultType Request result type
      */
-    private RequestResultType $_type;
+    private RequestResultType $type;
     /**
      * @var string Template to use as the response renderer.
      */
-    private ?string $_template;
+    private ?string $template;
     /**
      * @var mixed Response data holder
      */
-    private mixed $_data;
+    private mixed $data;
     /**
      * @var string Redirection target URL container
      */
-    private ?string $_redirectURL;
+    private ?string $redirectURL;
     /**
      * @var int HTTP status code of the response
      */
-    private int $_statusCode;
+    private int $statusCode;
     /**
      * @var boolean Flag indicating if the XML and JSON data are preformatted or not
      */
-    private bool $_preformatted;
+    private bool $preformatted;
 
     /**
      * Constructor
@@ -62,12 +62,12 @@ final class RequestResult
      */
     public function __construct(?RequestResultType $type = null, mixed $data = null, ?string $template = null, ?string $redirectURL = null, int $statusCode = 200, bool $preformatted = false)
     {
-        $this->_type = ($type ?? RequestResultType::VIEW);
-        $this->_template = $template;
-        $this->_data = ($this->_type === RequestResultType::VIEW && !is_array($data)) ? array() : $data;
-        $this->_redirectURL = $redirectURL;
-        $this->_statusCode = $statusCode;
-        $this->_preformatted = !empty($preformatted);
+        $this->type = ($type ?? RequestResultType::VIEW);
+        $this->template = $template;
+        $this->data = ($this->type === RequestResultType::VIEW && !is_array($data)) ? array() : $data;
+        $this->redirectURL = $redirectURL;
+        $this->statusCode = $statusCode;
+        $this->preformatted = !empty($preformatted);
     }
 
     /**
@@ -77,7 +77,7 @@ final class RequestResult
      */
     public function type(): RequestResultType
     {
-        return $this->_type;
+        return $this->type;
     }
 
     /**
@@ -88,7 +88,7 @@ final class RequestResult
      */
     public function template(?string $defaultValue = null): string
     {
-        return (empty($this->_template) ? $defaultValue : $this->_template) . '.twig';
+        return (empty($this->template) ? $defaultValue : $this->template) . '.twig';
     }
 
     /**
@@ -98,7 +98,7 @@ final class RequestResult
      */
     public function data(): mixed
     {
-        return $this->_data;
+        return $this->data;
     }
 
     /**
@@ -108,7 +108,7 @@ final class RequestResult
      */
     public function redirectURL(): ?string
     {
-        return $this->_redirectURL;
+        return $this->redirectURL;
     }
 
     /**
@@ -118,7 +118,7 @@ final class RequestResult
      */
     public function statusCode(): int
     {
-        return $this->_statusCode;
+        return $this->statusCode;
     }
 
     /**
@@ -128,7 +128,7 @@ final class RequestResult
      */
     public function preformatted(): bool
     {
-        return $this->_preformatted;
+        return $this->preformatted;
     }
 
     /**
@@ -139,7 +139,7 @@ final class RequestResult
      */
     public static function addViewGlobal(string $name, mixed $value)
     {
-        self::$_viewGlobalData[$name] = $value;
+        self::$viewGlobalData[$name] = $value;
     }
 
     /**
@@ -149,7 +149,7 @@ final class RequestResult
      */
     public static function removeViewGlobal(string $name)
     {
-        unset(self::$_viewGlobalData[$name]);
+        unset(self::$viewGlobalData[$name]);
     }
 
     /**
@@ -159,7 +159,7 @@ final class RequestResult
      */
     public static function getViewGlobals(): array
     {
-        return self::$_viewGlobalData;
+        return self::$viewGlobalData;
     }
 
     /**
