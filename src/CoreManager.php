@@ -145,7 +145,7 @@ final class CoreManager
 
             if (Config::get(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/html') == 'text/html') {
                 // Adding scripts
-                Scripts::add('https://code.jquery.com/jquery-1.12.4.min.js');
+                Scripts::add('https://code.jquery.com/jquery-3.7.1.slim.min.js');
                 Scripts::add('mfxjs://layout.min.js');
                 Scripts::add('mfxjs://ui.min.js');
                 Scripts::add('mfxjs://mainObserver.min.js');
