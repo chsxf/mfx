@@ -1,6 +1,6 @@
 <?php
 
-use \chsxf\MFX\ErrorManager;
+use chsxf\MFX\ErrorManager;
 
 /**
  * Triggers multiple errors from an array
@@ -50,7 +50,7 @@ function trigger_errors_and_notifs(array|object $container)
                 trigger_notifs($container->notifs);
             }
         }
-    } else if (is_array($container)) {
+    } elseif (is_array($container)) {
         if (!empty($container['errors'])) {
             trigger_errors($container['errors']);
             if (!empty($container['notifs'])) {

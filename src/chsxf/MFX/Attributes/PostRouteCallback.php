@@ -13,8 +13,8 @@ class PostRouteCallback extends AbstractRouteStringAttribute
 {
     /**
      * @since 1.0
-     * @param string $value 
-     * @throws Error 
+     * @param string $value
+     * @throws Error
      */
     public function __construct(string $value)
     {

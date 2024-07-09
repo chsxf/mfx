@@ -2,7 +2,7 @@
 
 /**
  * Interface for use with JSONTools and XMLTools
- * 
+ *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
 

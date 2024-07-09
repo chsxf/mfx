@@ -2,7 +2,7 @@
 
 /**
  * Data validation Text area field type class
- * 
+ *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
 
@@ -18,19 +18,19 @@ use chsxf\MFX\DataValidator\FieldTypeRegistry;
  */
 class TextArea extends Field
 {
-	/**
-	 * (non-PHPdoc)
-	 * @ignore
-	 * @see Field::generate()
-	 * @param array $containingGroups
-	 * @param FieldType $type_override
-	 */
-	public function generate(array $containingGroups = array(), ?FieldType $type_override = NULL): array
-	{
-		$result = parent::generate($containingGroups, $type_override);
-		$result[0] = '@mfx/DataValidator/textarea.twig';
-		return $result;
-	}
+    /**
+     * (non-PHPdoc)
+     * @ignore
+     * @see Field::generate()
+     * @param array $containingGroups
+     * @param FieldType $type_override
+     */
+    public function generate(array $containingGroups = array(), ?FieldType $type_override = null): array
+    {
+        $result = parent::generate($containingGroups, $type_override);
+        $result[0] = '@mfx/DataValidator/textarea.twig';
+        return $result;
+    }
 }
 
 FieldTypeRegistry::registerClassForType(FieldType::TEXTAREA, TextArea::class);

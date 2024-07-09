@@ -15,9 +15,9 @@ interface IRouter
 {
     /**
      * @since 1.0
-     * @param string $filteredPathInfo 
-     * @param string $defaultRoute 
-     * @return RouterData 
+     * @param string $filteredPathInfo
+     * @param string $defaultRoute
+     * @return RouterData
      */
     public function parseRoute(string $filteredPathInfo, string $defaultRoute): RouterData;
 }

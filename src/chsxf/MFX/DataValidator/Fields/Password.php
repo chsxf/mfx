@@ -18,21 +18,20 @@ use chsxf\MFX\DataValidator\FieldTypeRegistry;
  */
 class Password extends Field
 {
+    /**
+     * Constructor
+     * @since 1.0
+     * @param string $name Field's name
+     * @param FieldType $type Field's type
+     * @param mixed $defaultValue Field's default value
+     * @param boolean $required If set, this field will become required in the validation process.
+     */
+    protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required)
+    {
+        parent::__construct($name, $type, $defaultValue, $required);
 
-	/**
-	 * Constructor
-	 * @since 1.0
-	 * @param string $name Field's name
-	 * @param FieldType $type Field's type
-	 * @param mixed $defaultValue Field's default value
-	 * @param boolean $required If set, this field will become required in the validation process.
-	 */
-	protected function __construct(string $name, FieldType $type, mixed $defaultValue, bool $required)
-	{
-		parent::__construct($name, $type, $defaultValue, $required);
-
-		$this->setGenerationWithValue(false);
-	}
+        $this->setGenerationWithValue(false);
+    }
 }
 
 FieldTypeRegistry::registerClassForType(FieldType::PASSWORD, Password::class);

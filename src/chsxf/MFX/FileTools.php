@@ -2,7 +2,7 @@
 
 /**
  * Class and helper functions for file management
- * 
+ *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
 
@@ -14,28 +14,28 @@ namespace chsxf\MFX;
  */
 class FileTools
 {
-	/**
-	 * Get file MIME type
-	 * @since 1.0
-	 * @param string $ext File extension
-	 * @return string
-	 */
-	public static function mimeTypeFromExtension(string $ext): string
-	{
-		$lowercaseExt = strtolower($ext);
-		switch ($lowercaseExt) {
-			case 'zip':
-			case 'pdf':
-				return "application/{$lowercaseExt}";
+    /**
+     * Get file MIME type
+     * @since 1.0
+     * @param string $ext File extension
+     * @return string
+     */
+    public static function mimeTypeFromExtension(string $ext): string
+    {
+        $lowercaseExt = strtolower($ext);
+        switch ($lowercaseExt) {
+            case 'zip':
+            case 'pdf':
+                return "application/{$lowercaseExt}";
 
-			case 'jpg':
-				return 'image/jpeg';
+            case 'jpg':
+                return 'image/jpeg';
 
-			case 'apk':
-				return 'application/vnd.android.package-archive';
+            case 'apk':
+                return 'application/vnd.android.package-archive';
 
-			default:
-				CoreManager::dieWithStatusCode(401);
-		}
-	}
+            default:
+                CoreManager::dieWithStatusCode(401);
+        }
+    }
 }

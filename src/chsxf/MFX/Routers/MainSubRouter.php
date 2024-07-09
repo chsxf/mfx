@@ -24,11 +24,11 @@ class MainSubRouter implements IRouter
 
     /**
      * @since 1.0
-     * @param string $filteredPathInfo 
-     * @param string $defaultRoute 
-     * @return RouterData 
-     * @throws ErrorException 
-     * @throws ReflectionException 
+     * @param string $filteredPathInfo
+     * @param string $defaultRoute
+     * @return RouterData
+     * @throws ErrorException
+     * @throws ReflectionException
      */
     public function parseRoute(string $filteredPathInfo, string $defaultRoute): RouterData
     {
@@ -59,10 +59,10 @@ class MainSubRouter implements IRouter
         list($providerClassName, $routeMethodName) = explode('.', $route);
 
         $providerClass = RouterHelpers::getRouteProviderClass($providerClassName);
-        if ($providerClass === NULL) {
+        if ($providerClass === null) {
             RouterHelpers::check404file($routeParams);
         }
-        if ($providerClass === NULL || !$providerClass->implementsInterface(IRouteProvider::class)) {
+        if ($providerClass === null || !$providerClass->implementsInterface(IRouteProvider::class)) {
             throw new \ErrorException("'{$providerClassName}' is not a valid route provider.");
         }
         $providerAttributes = new RouteAttributesParser($providerClass);

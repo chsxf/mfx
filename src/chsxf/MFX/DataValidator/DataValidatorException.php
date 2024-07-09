@@ -2,7 +2,7 @@
 
 /**
  * Data validation exception
- * 
+ *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
 

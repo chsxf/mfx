@@ -20,7 +20,7 @@ final class Framework
 {
     /**
      * @since 1.0
-     * @param string $configFilePath 
+     * @param string $configFilePath
      */
     public static function init(string $configFilePath)
     {

@@ -13,19 +13,19 @@ use chsxf\MFX\Routers\IRouteProvider;
  */
 final class Status implements IRouteProvider
 {
-	/**
-	 * @since 1.0
-	 * @return RequestResult 
-	 */
-	#[Route]
-	#[AnonymousRoute]
-	public static function ping(): RequestResult
-	{
-		$result = array('result' => true);
+    /**
+     * @since 1.0
+     * @return RequestResult
+     */
+    #[Route]
+    #[AnonymousRoute]
+    public static function ping(): RequestResult
+    {
+        $result = array('result' => true);
 
-		$executionDuration = microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
-		$result['request_duration'] = $executionDuration;
+        $executionDuration = microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
+        $result['request_duration'] = $executionDuration;
 
-		return RequestResult::buildJSONRequestResult($result);
-	}
+        return RequestResult::buildJSONRequestResult($result);
+    }
 }

@@ -15,7 +15,7 @@ class RouteAttributesParser
 
     /**
      * @since 1.0
-     * @param ReflectionClass|ReflectionMethod $reflectedElement 
+     * @param ReflectionClass|ReflectionMethod $reflectedElement
      */
     public function __construct(\ReflectionClass|\ReflectionMethod $reflectedElement)
     {
@@ -34,8 +34,8 @@ class RouteAttributesParser
 
     /**
      * @since 1.0
-     * @param string $class 
-     * @return bool 
+     * @param string $class
+     * @return bool
      */
     public function hasAttribute(string $class)
     {
@@ -49,10 +49,10 @@ class RouteAttributesParser
 
     /**
      * @since 1.0
-     * @param string $class 
-     * @param null|string $defaultValue 
-     * @return null|string 
-     * @throws ErrorException 
+     * @param string $class
+     * @param null|string $defaultValue
+     * @return null|string
+     * @throws ErrorException
      */
     public function getAttributeValue(string $class, ?string $defaultValue = null): ?string
     {

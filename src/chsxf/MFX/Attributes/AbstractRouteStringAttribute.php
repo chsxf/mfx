@@ -9,7 +9,7 @@ abstract class AbstractRouteStringAttribute extends AbstractRouteAttribute
 {
     /**
      * @since 1.0
-     * @return string 
+     * @return string
      */
     public function getValue(): string
     {
@@ -18,7 +18,7 @@ abstract class AbstractRouteStringAttribute extends AbstractRouteAttribute
 
     /**
      * @since 1.0
-     * @param string $value 
+     * @param string $value
      */
     public function __construct(private string $value)
     {

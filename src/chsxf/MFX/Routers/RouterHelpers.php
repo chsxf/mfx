@@ -57,7 +57,7 @@ final class RouterHelpers
             array_unshift($routeNamespaces, '');
         }
 
-        $providerClass = NULL;
+        $providerClass = null;
         foreach ($routeNamespaces as $namespace) {
             $namespace = rtrim($namespace, '\\');
             $qualifiedClassName = empty($namespace) ? "\\{$providerClassName}" : "\\{$namespace}\\{$providerClassName}";
@@ -66,7 +66,7 @@ final class RouterHelpers
                 $providerClass = new \ReflectionClass($qualifiedClassName);
                 break;
             } catch (\ReflectionException $e) {
-                $providerClass = NULL;
+                $providerClass = null;
             }
         }
 

@@ -5,7 +5,7 @@ namespace chsxf\MFX;
 /**
  * Repository of constants referencing built-in
  * {@see https://github.com/chsxf/mfx/wiki/Configuration-Directives configuration directives}
- * 
+ *
  * @see chsxf\MFX\Config
  * @since 1.0
  */
