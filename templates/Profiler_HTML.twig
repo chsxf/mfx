@@ -1,5 +1,5 @@
 <div id="mfx-profiler">
-<pre>
+	<pre>
 Profiling results:
 	- {{ dgettext('mfx', 'PHP version') }}: {{ constant('PHP_VERSION') }}
 	- {{ dgettext('mfx', 'Duration') }}: {{ dgettext('mfx', '%0.4f s')|format(duration) }}
@@ -8,42 +8,48 @@ Profiling results:
 	- {{ dgettext('mfx', 'Memory real peak usage') }}: {{ _d('mfx', '%s bytes')|format(memRealPeakUsage|number_format(0)) }} ({{ dgettext('mfx', '%s%% of allowed memory')|format((memRealPeakUsageRatio * 100)|number_format(3)) }})
 </pre>
 
-<script type="text/javascript">
-/* <![CDATA[ */
+	<script type="text/javascript">
+		/* <![CDATA[ */
 function loadProfilerGraph() {
-	google.load('visualization', '1', { packages: [ 'corechart' ] });
-	google.setOnLoadCallback(function() {
-		var data = new google.visualization.DataTable();
-		data.addColumn('number', "{{ dgettext('mfx', 'Milliseconds') }}");
-		data.addColumn('number', "{{ dgettext('mfx', 'Memory usage') }}");
-		data.addColumn({type: 'string', role: 'annotation'});
-		data.addColumn({type: 'string', role: 'annotationText'});
-		data.addColumn('number', "{{ dgettext('mfx', 'Real memory usage') }}");
-		data.addColumn({type: 'string', role: 'annotation'});
-		data.addColumn({type: 'string', role: 'annotationText'});
+google.load('visualization', '1', {packages: ['corechart']});
+google.setOnLoadCallback(function () {
+var data = new google.visualization.DataTable();
+data.addColumn('number', "{{ dgettext('mfx', 'Milliseconds') }}");
+data.addColumn('number', "{{ dgettext('mfx', 'Memory usage') }}");
+data.addColumn({type: 'string', role: 'annotation'});
+data.addColumn({type: 'string', role: 'annotationText'});
+data.addColumn('number', "{{ dgettext('mfx', 'Real memory usage') }}");
+data.addColumn({type: 'string', role: 'annotation'});
+data.addColumn({type: 'string', role: 'annotationText'});
 
-		data.addRows([
-		{% for row in data %}
-		[ {{ row[0] }}, {{ row[1] }}, {{ row[3]|raw }}, {{ row[4]|raw }}, {{ row[2] }}, {{ row[3]|raw }}, {{ row[4]|raw }} ],
-		{% endfor %}
-		]);
+data.addRows([{% for row in data %}[
+{{ row[0] }},
+{{ row[1] }},
+{{ row[3]|raw }},
+{{ row[4]|raw }},
+{{ row[2] }},
+{{ row[3]|raw }},
+{{ row[4]|raw }}
+],{% endfor %}]);
 
-		var element = $('#mfx-profiler-chart');
-		
-		var options = {
-			title: "{{ dgettext('mfx', 'Profiling timeline (bytes over milliseconds)')|e('js') }}",
-			width: element.width(),
-			height: element.height(),
-			backgroundColor: 'white'
-		};
+var element = $('#mfx-profiler-chart');
 
-		var chart = new google.visualization.LineChart(document.getElementById('mfx-profiler-chart'));
-		chart.draw(data, options);
-	});
+var options = {
+title: "{{ dgettext('mfx', 'Profiling timeline (bytes over milliseconds)')|e('js') }}",
+width: element.width(),
+height: element.height(),
+backgroundColor: 'white'
+};
+
+var chart = new google.visualization.LineChart(document.getElementById('mfx-profiler-chart'));
+chart.draw(data, options);
+});
 }
 /* ]]> */
-</script>
-<div id="mfx-profiler-chart"></div>
+	</script>
+	<div id="mfx-profiler-chart"></div>
 </div>
 
-<div id="mfx-profiler-bar"><a href="#" class="mfx-profiler-toggle" title="{{ dgettext('mfx', 'Show / hide profiler')|e }}" mfx:dialog-title="{{ dgettext('mfx', 'Profiling results')|e }}"><img src="mfximg://icons/profiles.png" /></a></div>
+<div id="mfx-profiler-bar">
+	<a href="#" class="mfx-profiler-toggle" title="{{ dgettext('mfx', 'Show / hide profiler')|e }}" mfx:dialog-title="{{ dgettext('mfx', 'Profiling results')|e }}">{{ dgettext('mfx', 'Profiling results')|e }}</a>
+</div>

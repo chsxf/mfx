@@ -44,6 +44,10 @@ class Scripts
             throw new ScriptException("'{$url} is not a valid script URL.");
         }
 
+        if (preg_match('#^mfx(css|js)://#', $url)) {
+            $inline = true;
+        }
+
         $url = CoreManager::convertFakeProtocols($url);
         if (!empty($inline) && (!file_exists($url) || !is_file($url) || !is_readable($url))) {
             throw new ScriptException("'{$url} is not a valid script URL.");
@@ -80,7 +84,7 @@ class Scripts
     {
         foreach (self::$scripts as &$v) {
             if ($v->inline) {
-                $v->content = $twig->render($v->content);
+                $v->content = $twig->createTemplate($v->content)->render();
             }
         }
         return $twig->render('@mfx/Scripts.twig', array('scripts' => self::$scripts));

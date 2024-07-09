@@ -20,6 +20,8 @@ body {
 
   top: 4px;
   left: 4px;
+
+  white-space: nowrap;
 }
 
 #mfx-profiler {

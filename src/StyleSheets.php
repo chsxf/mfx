@@ -41,7 +41,16 @@ class StyleSheets
      */
     public static function add(string $url, string $media = 'screen', bool $inline = false, bool $prepend = false, string $type = 'text/css')
     {
-        if (empty($url) || (!empty($inline) && (!file_exists($url) || !is_file($url) || !is_readable($url)))) {
+        if (empty($url)) {
+            throw new StyleSheetException("'{$url} is not a valid style sheet URL.");
+        }
+
+        if (preg_match('#^mfx(css|js)://#', $url)) {
+            $inline = true;
+        }
+
+        $url = CoreManager::convertFakeProtocols($url);
+        if (!empty($inline) && (!file_exists($url) || !is_file($url) || !is_readable($url))) {
             throw new StyleSheetException("'{$url} is not a valid style sheet URL.");
         }
 

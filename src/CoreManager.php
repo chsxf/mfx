@@ -20,6 +20,8 @@ use chsxf\MFX\L10n\L10nManager;
 use chsxf\MFX\Routers\IRouter;
 use chsxf\MFX\Routers\PathRouter;
 use Twig\Environment;
+use Wikimedia\Minify\CSSMin;
+use Wikimedia\Minify\JavaScriptMinifier;
 
 /**
  * Core manager singleton class
@@ -119,9 +121,9 @@ final class CoreManager
                 $mfxRelativeBaseHREF = rtrim($mfxRelativeBaseHREF, '/');
             }
             self::$singleInstance->fakeProtocols = array(
-                'mfxjs' => "{$mfxRelativeBaseHREF}/js/",
-                'mfxcss' => "{$mfxRelativeBaseHREF}/css/",
-                'mfximg' => "{$mfxRelativeBaseHREF}/img/"
+                'mfxjs' => ROOT . '/static/js/',
+                'mfxcss' => ROOT . '/static/css/',
+                'mfximg' => ROOT . '/static/img/'
             );
             $fakeProtocols = Config::get(ConfigConstants::FAKE_PROTOCOLS, array());
             if (is_array($fakeProtocols)) {
@@ -143,11 +145,11 @@ final class CoreManager
 
             if (Config::get(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/html') == 'text/html') {
                 // Adding scripts
-                Scripts::add('mfxjs://jquery.min.js');
-                Scripts::add('mfxjs://layout.js');
-                Scripts::add('mfxjs://ui.js');
-                Scripts::add('mfxjs://mainObserver.js');
-                Scripts::add('mfxjs://string.js');
+                Scripts::add('https://code.jquery.com/jquery-1.12.4.min.js');
+                Scripts::add('mfxjs://layout.min.js');
+                Scripts::add('mfxjs://ui.min.js');
+                Scripts::add('mfxjs://mainObserver.min.js');
+                Scripts::add('mfxjs://string.min.js');
                 $userScripts = Config::get(ConfigConstants::SCRIPTS, array());
                 if (is_array($userScripts)) {
                     foreach ($userScripts as $s) {
@@ -156,7 +158,7 @@ final class CoreManager
                 }
 
                 // Adding stylesheets
-                StyleSheets::add('mfxcss://framework.css');
+                StyleSheets::add('mfxcss://framework.min.css');
                 $userSheets = Config::get(ConfigConstants::STYLESHEETS, array());
                 if (is_array($userSheets)) {
                     foreach ($userSheets as $s) {
@@ -284,7 +286,7 @@ final class CoreManager
         $reqResult = $routerData->routeMethod->invoke(null, $routerData->routeParams);
         $routeProvidedTemplate = $routerData->routeAttributes->hasAttribute(Template::class) ? $routerData->routeAttributes->getAttributeValue(Template::class) : null;
         switch ($reqResult->type()) {
-            // Views
+                // Views
             case RequestResultType::VIEW:
                 if (!in_array($reqResult->statusCode(), [200, 201, 206])) {
                     self::dieWithStatusCode($reqResult->statusCode());
@@ -568,6 +570,40 @@ final class CoreManager
     {
         $message = sprintf("Uncaught %s: %s\n%s", get_class($exception), $exception->getMessage(), $exception->getTraceAsString());
         self::dieWithStatusCode(400, $message);
+    }
+
+    /**
+     * @ignore
+     */
+    public static function minifyStaticFiles()
+    {
+        $path = dirname(dirname(__FILE__)) . '/static/js';
+        $cssFiles = scandir($path);
+        $cssFiles = array_filter($cssFiles, function ($item) {
+            return preg_match('/\.js$/', $item) && !preg_match('/\.min\.js$/', $item);
+        });
+        foreach ($cssFiles as $cssFile) {
+            $inputPath = "{$path}/{$cssFile}";
+            $fileContents = file_get_contents($inputPath);
+            $minified = JavaScriptMinifier::minify($fileContents);
+            $minifiedJsFile = preg_replace('/\.js$/', '.min.js', $cssFile);
+            $outputPath = "{$path}/{$minifiedJsFile}";
+            file_put_contents($outputPath, $minified);
+        }
+
+        $path = dirname(dirname(__FILE__)) . '/static/css';
+        $cssFiles = scandir($path);
+        $cssFiles = array_filter($cssFiles, function ($item) {
+            return preg_match('/\.css$/', $item) && !preg_match('/\.min\.css$/', $item);
+        });
+        foreach ($cssFiles as $cssFile) {
+            $inputPath = "{$path}/{$cssFile}";
+            $fileContents = file_get_contents($inputPath);
+            $minified = CSSMin::minify($fileContents);
+            $minifiedJsFile = preg_replace('/\.css$/', '.min.css', $cssFile);
+            $outputPath = "{$path}/{$minifiedJsFile}";
+            file_put_contents($outputPath, $minified);
+        }
     }
 }
 
