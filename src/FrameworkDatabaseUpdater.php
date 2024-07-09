@@ -22,7 +22,6 @@ final class FrameworkDatabaseUpdater implements IDatabaseUpdater
      */
     public function pathToSQLFile(): string
     {
-        $root = constant('chsxf\MFX\ROOT');
-        return "{$root}/sql/mfx.sql";
+        return ROOT . '/sql/mfx.sql';
     }
 }

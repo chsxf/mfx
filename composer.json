@@ -14,7 +14,7 @@
   },
   "autoload": {
     "psr-4": {
-      "chsxf\\MFX\\": "src/chsxf/MFX/"
+      "chsxf\\MFX\\": "src/"
     },
     "files": [
       "src/error_functions.php"

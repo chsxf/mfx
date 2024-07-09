@@ -11,7 +11,7 @@ use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
-define('chsxf\MFX\ROOT', dirname(dirname(dirname(__FILE__))));
+define('chsxf\MFX\ROOT', dirname(dirname(__FILE__)));
 
 /**
  * @since 1.0
@@ -41,15 +41,13 @@ final class Framework
             CoreProfiler::init();
         }
 
-        $srcPath = dirname(dirname(dirname(__FILE__)));
-
         L10nManager::init();
-        L10nManager::bindTextDomain('mfx', "{$srcPath}/messages");
+        L10nManager::bindTextDomain('mfx', ROOT . '/messages');
 
         // Initializing Twig
         CoreProfiler::pushEvent('Loading Twig');
         $fsLoader = new FilesystemLoader(Config::get(ConfigConstants::TWIG_TEMPLATES, array()));
-        $fsLoader->addPath("{$srcPath}/templates", 'mfx');
+        $fsLoader->addPath(ROOT . '/templates', 'mfx');
         $twig = new Environment($fsLoader, [
             'cache' => Config::get(ConfigConstants::TWIG_CACHE, 'tmp/twig_cache'),
             'debug' => true,

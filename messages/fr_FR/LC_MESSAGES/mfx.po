@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PHP-MicroFX\n"
-"POT-Creation-Date: 2024-07-09 12:38+0200\n"
-"PO-Revision-Date: 2024-07-09 12:38+0200\n"
+"POT-Creation-Date: 2024-07-09 21:44+0200\n"
+"PO-Revision-Date: 2024-07-09 21:44+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -14,7 +14,8 @@ msgstr ""
 "X-Poedit-Basepath: ../../..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: _d:2;_n:1,2;_dn:2,3\n"
-"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-0: src\n"
+"X-Poedit-SearchPath-1: templates\n"
 
 #: standard input:2
 #, php-format
@@ -86,11 +87,11 @@ msgstr "Afficher / masquer le profileur"
 msgid "Profiling results"
 msgstr "Résultats du profilage"
 
-#: chsxf/MFX/DataValidator.php:307
+#: src/DataValidator.php:307
 msgid "Field values cannot be removed."
 msgstr "Les valeurs des champs ne peuvent être supprimées."
 
-#: chsxf/MFX/DataValidator/AbstractOtherFieldFilter.php:45
+#: src/DataValidator/AbstractOtherFieldFilter.php:45
 msgid ""
 "References to other fields must be provided as a Field instance or an array "
 "containing only instances of this class."
@@ -99,154 +100,153 @@ msgstr ""
 "instance de Field ou à un tableau ne contenant que des instances de cette "
 "classe."
 
-#: chsxf/MFX/DataValidator/Field.php:94
+#: src/DataValidator/Field.php:94
 msgid "Field name cannot be empty."
 msgstr "Le nom du champ ne doit pas être vide."
 
-#: chsxf/MFX/DataValidator/Field.php:97
+#: src/DataValidator/Field.php:97
 msgid "Expected string as the field name."
 msgstr "Le nom du champ doit être une chaîne de caractères."
 
-#: chsxf/MFX/DataValidator/Field.php:205
+#: src/DataValidator/Field.php:205
 #, php-format
 msgid "Value for repeatable field '%s' must be an array."
 msgstr "La valeur du champ répétable '%s' doit être un tableau."
 
-#: chsxf/MFX/DataValidator/Field.php:461 chsxf/MFX/DataValidator/Field.php:489
-#: chsxf/MFX/DataValidator/Fields/WithOptions.php:77
-#: chsxf/MFX/DataValidator/Fields/WithOptions.php:86
+#: src/DataValidator/Field.php:461 src/DataValidator/Field.php:489
+#: src/DataValidator/Fields/WithOptions.php:77
+#: src/DataValidator/Fields/WithOptions.php:86
 #, php-format
 msgid "The field '%s' is required."
 msgstr "Le champ '%s' est requis."
 
-#: chsxf/MFX/DataValidator/Field.php:473
-#: chsxf/MFX/DataValidator/Fields/WithOptions.php:103
+#: src/DataValidator/Field.php:473 src/DataValidator/Fields/WithOptions.php:103
 #, php-format
 msgid "The field '%s' at index %d is required."
 msgstr "Le champ '%s' à l'index %d est requis."
 
-#: chsxf/MFX/DataValidator/Field.php:560
+#: src/DataValidator/Field.php:560
 #, php-format
 msgid "The field '%s' cannot be repeated more than %d times."
 msgstr "Le champ '%s' ne peut être répété plus de %d fois."
 
-#: chsxf/MFX/DataValidator/FieldTypeRegistry.php:25
+#: src/DataValidator/FieldTypeRegistry.php:25
 msgid "A class is already registered for the field type."
 msgstr "Une classe est déjà enregistrée pour ce type de champ."
 
-#: chsxf/MFX/DataValidator/Fields/DateTime.php:41
+#: src/DataValidator/Fields/DateTime.php:41
 #, php-format
 msgid "The field '%s' does not contain a valid date."
 msgstr "Le champ '%s' ne contient pas une date valide."
 
-#: chsxf/MFX/DataValidator/Fields/DateTime.php:42
+#: src/DataValidator/Fields/DateTime.php:42
 #, php-format
 msgid "The field '%s' at index %d does not contain a valid date."
 msgstr "Le champ '%s' à l'index %d ne contient pas une date valide."
 
-#: chsxf/MFX/DataValidator/Fields/DateTime.php:45
+#: src/DataValidator/Fields/DateTime.php:45
 #, php-format
 msgid "The field '%s' does not contain a valid time."
 msgstr "Le champ '%s' ne contient pas une heure valide."
 
-#: chsxf/MFX/DataValidator/Fields/DateTime.php:46
+#: src/DataValidator/Fields/DateTime.php:46
 #, php-format
 msgid "The field '%s' at index %d does not contain a valid time."
 msgstr "Le champ '%s' à l'index %d ne contient pas une heure valide."
 
-#: chsxf/MFX/DataValidator/Fields/DateTime.php:105
+#: src/DataValidator/Fields/DateTime.php:105
 msgid "mm/dd/yyyy"
 msgstr "dd/mm/yyyy"
 
-#: chsxf/MFX/DataValidator/Fields/DateTime.php:105
+#: src/DataValidator/Fields/DateTime.php:105
 msgid "hh:mm"
 msgstr "hh:mm"
 
-#: chsxf/MFX/DataValidator/Fields/Email.php:39
+#: src/DataValidator/Fields/Email.php:39
 #, php-format
 msgid "The field '%s' at index %d is not a valid email address."
 msgstr "Le champ '%s' à l'index %d ne contient pas une adresse email valide."
 
-#: chsxf/MFX/DataValidator/Fields/Email.php:48
+#: src/DataValidator/Fields/Email.php:48
 #, php-format
 msgid "The field '%s' is not a valid email address."
 msgstr "Le champ '%s' ne contient pas une adresse email valide."
 
-#: chsxf/MFX/DataValidator/Fields/File.php:40
+#: src/DataValidator/Fields/File.php:40
 #, php-format
 msgid "The field '%s' does not contain a valid file."
 msgstr "Le champ '%s' ne contient pas un fichier valide."
 
-#: chsxf/MFX/DataValidator/Fields/File.php:41
+#: src/DataValidator/Fields/File.php:41
 #, php-format
 msgid "The field '%s' at index %d does not contain a valid file."
 msgstr "Le champ '%s' à l'index %d ne contient pas un fichier valide."
 
-#: chsxf/MFX/DataValidator/Fields/Integer.php:70
+#: src/DataValidator/Fields/Integer.php:70
 #, php-format
 msgid "The field '%s' at index %d is not an integer."
 msgstr "Le champ '%s' à l'index %d ne contient pas un entier."
 
-#: chsxf/MFX/DataValidator/Fields/Integer.php:79
+#: src/DataValidator/Fields/Integer.php:79
 #, php-format
 msgid "The field '%s' at index %d is not a stricly positive integer."
 msgstr ""
 "Le champ '%s' à l'index %d ne contient pas un entier strictement positif."
 
-#: chsxf/MFX/DataValidator/Fields/Integer.php:88
+#: src/DataValidator/Fields/Integer.php:88
 #, php-format
 msgid "The field '%s' at index %d is not a positive or zero integer."
 msgstr ""
 "Le champ '%s' à l'index %d ne contient pas un entier positif ou égal à zéro."
 
-#: chsxf/MFX/DataValidator/Fields/Integer.php:97
+#: src/DataValidator/Fields/Integer.php:97
 #, php-format
 msgid "The field '%s' at index %d is not a stricly negative integer."
 msgstr ""
 "Le champ '%s' à l'index %d ne contient pas un entier strictement négatif."
 
-#: chsxf/MFX/DataValidator/Fields/Integer.php:106
+#: src/DataValidator/Fields/Integer.php:106
 #, php-format
 msgid "The field '%s' at index %d is not a negative or zero integer."
 msgstr ""
 "Le champ '%s' à l'index %d ne contient pas un entier négatif ou égal à zéro."
 
-#: chsxf/MFX/DataValidator/Fields/Integer.php:121
+#: src/DataValidator/Fields/Integer.php:121
 #, php-format
 msgid "The field '%s' is not an integer."
 msgstr "Le champ '%s' ne contient pas un entier."
 
-#: chsxf/MFX/DataValidator/Fields/Integer.php:130
+#: src/DataValidator/Fields/Integer.php:130
 #, php-format
 msgid "The field '%s' is not a stricly positive integer."
 msgstr "Le champ '%s' ne contient pas un entier strictement positif."
 
-#: chsxf/MFX/DataValidator/Fields/Integer.php:139
+#: src/DataValidator/Fields/Integer.php:139
 #, php-format
 msgid "The field '%s' is not a positive or zero integer."
 msgstr "Le champ '%s' ne contient pas un entier positif ou égal à zéro."
 
-#: chsxf/MFX/DataValidator/Fields/Integer.php:148
+#: src/DataValidator/Fields/Integer.php:148
 #, php-format
 msgid "The field '%s' is not a stricly negative integer."
 msgstr "Le champ '%s' ne contient pas un entier strictement négatif."
 
-#: chsxf/MFX/DataValidator/Fields/Integer.php:157
+#: src/DataValidator/Fields/Integer.php:157
 #, php-format
 msgid "The field '%s' is not a negative or zero integer."
 msgstr "Le champ '%s' ne contient pas un entier négatif ou égal à zéro."
 
-#: chsxf/MFX/DataValidator/Fields/WithOptions.php:116
+#: src/DataValidator/Fields/WithOptions.php:116
 #, php-format
 msgid "'%s' is not a valid value for the '%s' field at index %d."
 msgstr "'%s' n'est pas une valeur valide pour le champ '%s' à l'index %d."
 
-#: chsxf/MFX/DataValidator/Fields/WithOptions.php:140
+#: src/DataValidator/Fields/WithOptions.php:140
 #, php-format
 msgid "'%s' is not a valid value for the '%s' field."
 msgstr "'%s' n'est pas une valeur valide pour le champ '%s'."
 
-#: chsxf/MFX/DataValidator/Filters/DoNotExistInDB.php:30
+#: src/DataValidator/Filters/DoNotExistInDB.php:30
 #, php-format
 msgid ""
 "The '%%s' field must reprensent a non-existing entry in the '%s' table "
@@ -255,7 +255,7 @@ msgstr ""
 "Le champ '%%s' doit représenter une entrée n'existant pas dans la table '%s' "
 "(comparée dans le champ '%s')."
 
-#: chsxf/MFX/DataValidator/Filters/ExistsInDB.php:46
+#: src/DataValidator/Filters/ExistsInDB.php:46
 #, php-format
 msgid ""
 "The '%%s' field must reprensent an existing entry in the '%s' table (matched "
@@ -264,23 +264,23 @@ msgstr ""
 "Le champ '%%s' doit représenter une entrée existant dans la table '%s' "
 "(comparée dans le champ '%s')."
 
-#: chsxf/MFX/DataValidator/Filters/In.php:33
+#: src/DataValidator/Filters/In.php:33
 #, php-format
 msgid "The value of the '%%s' field must be one of the following values: %s"
 msgstr ""
 "La valeur du champ ‘%%s’ doit correspondre à une des valeurs suivantes : %s"
 
-#: chsxf/MFX/DataValidator/Filters/InFloatRange.php:41
-#: chsxf/MFX/DataValidator/Filters/InIntRange.php:41
+#: src/DataValidator/Filters/InFloatRange.php:41
+#: src/DataValidator/Filters/InIntRange.php:41
 msgid "inclusive"
 msgstr "inclusif"
 
-#: chsxf/MFX/DataValidator/Filters/InFloatRange.php:41
-#: chsxf/MFX/DataValidator/Filters/InIntRange.php:41
+#: src/DataValidator/Filters/InFloatRange.php:41
+#: src/DataValidator/Filters/InIntRange.php:41
 msgid "exclusive"
 msgstr "exclusif"
 
-#: chsxf/MFX/DataValidator/Filters/InFloatRange.php:42
+#: src/DataValidator/Filters/InFloatRange.php:42
 #, php-format
 msgid ""
 "The value of the '%%s' field must fall in the range between %f and %f (%s)"
@@ -288,7 +288,7 @@ msgstr ""
 "La valeur du champ ‘%%s’ doit être comprise dans l’intervalle entre %f et %f "
 "(%s)"
 
-#: chsxf/MFX/DataValidator/Filters/InIntRange.php:42
+#: src/DataValidator/Filters/InIntRange.php:42
 #, php-format
 msgid ""
 "The value of the '%%s' field must fall in the range between %d and %d (%s)"
@@ -296,51 +296,51 @@ msgstr ""
 "La valeur du champ ‘%%s’ doit être comprise dans l’intervalle entre %d et %d "
 "(%s)"
 
-#: chsxf/MFX/DataValidator/Filters/IsOfType.php:39
+#: src/DataValidator/Filters/IsOfType.php:39
 #, php-format
 msgid "The '%%s' field value must be of type '%s'."
 msgstr "La valeur du champ ‘%%s’ doit être du type ‘%s’."
 
-#: chsxf/MFX/DataValidator/Filters/LogicOr.php:75
+#: src/DataValidator/Filters/LogicOr.php:75
 msgid " or "
 msgstr " ou "
 
-#: chsxf/MFX/DataValidator/Filters/MatchFilter.php:34
+#: src/DataValidator/Filters/MatchFilter.php:34
 #, php-format
 msgid "The field '%%s' must match the value of the field '%s'."
 msgstr "Le champ '%%s' doit correspondre à la valeur du champ '%s'."
 
-#: chsxf/MFX/DataValidator/Filters/MatchFilter.php:43
-#: chsxf/MFX/DataValidator/Filters/RequiredIfNotEmpty.php:44
+#: src/DataValidator/Filters/MatchFilter.php:43
+#: src/DataValidator/Filters/RequiredIfNotEmpty.php:44
 msgid ", "
 msgstr ", "
 
-#: chsxf/MFX/DataValidator/Filters/MatchFilter.php:43
-#: chsxf/MFX/DataValidator/Filters/RequiredIfNotEmpty.php:44
+#: src/DataValidator/Filters/MatchFilter.php:43
+#: src/DataValidator/Filters/RequiredIfNotEmpty.php:44
 msgid " and "
 msgstr " et "
 
-#: chsxf/MFX/DataValidator/Filters/MatchFilter.php:44
+#: src/DataValidator/Filters/MatchFilter.php:44
 #, php-format
 msgid "The field '%%s' must match the value of the fields %s."
 msgstr "Le champ '%%s' doit correspondre à la valeur des champs %s."
 
-#: chsxf/MFX/DataValidator/Filters/Path.php:33
+#: src/DataValidator/Filters/Path.php:33
 #, php-format
 msgid "The '%s' field does not contain an existing path."
 msgstr "Le champ '%s' ne contient pas un chemin existant."
 
-#: chsxf/MFX/DataValidator/Filters/RegExp.php:44
+#: src/DataValidator/Filters/RegExp.php:44
 #, php-format
 msgid "The '%s' field does not match the specified regular expression."
 msgstr "Le champ '%s' ne correspond pas l'expression régulière spécifiée."
 
-#: chsxf/MFX/DataValidator/Filters/RegExp.php:92
+#: src/DataValidator/Filters/RegExp.php:92
 #, php-format
 msgid "The string in field '%%s' must contain exactly %d characters."
 msgstr "Le chaîne dans le champ '%%s' doit contenir exactement %d caractères."
 
-#: chsxf/MFX/DataValidator/Filters/RegExp.php:95
+#: src/DataValidator/Filters/RegExp.php:95
 #, php-format
 msgid ""
 "The string in field '%%s' must contain between %d and %d characters "
@@ -349,78 +349,78 @@ msgstr ""
 "Le chaîne dans le champ '%%s' doit contenir entre %d et %d caractères "
 "(inclus)."
 
-#: chsxf/MFX/DataValidator/Filters/RegExp.php:98
+#: src/DataValidator/Filters/RegExp.php:98
 #, php-format
 msgid "The string in field '%%s' must contain at least %d characters."
 msgstr "Le chaîne dans le champ '%%s' doit contenir au moins %d caractères."
 
-#: chsxf/MFX/DataValidator/Filters/RegExp.php:101
+#: src/DataValidator/Filters/RegExp.php:101
 #, php-format
 msgid "The string in field '%%s' must contain at most %d characters."
 msgstr "Le chaîne dans le champ '%%s' doit contenir au plus %d caractères."
 
-#: chsxf/MFX/DataValidator/Filters/RegExp.php:115
+#: src/DataValidator/Filters/RegExp.php:115
 #, php-format
 msgid "The field '%s' does not contain a word."
 msgstr "Le champ '%s' ne contient pas un mot."
 
-#: chsxf/MFX/DataValidator/Filters/RegExp.php:125
+#: src/DataValidator/Filters/RegExp.php:125
 #, php-format
 msgid "The field '%s' does not contain a lower case word."
 msgstr "Le champ '%s' ne contient pas un mot en minuscules."
 
-#: chsxf/MFX/DataValidator/Filters/RegExp.php:135
+#: src/DataValidator/Filters/RegExp.php:135
 #, php-format
 msgid "The field '%s' does not contain an upper case word."
 msgstr "Le champ '%s' ne contient pas un mot en majuscules."
 
-#: chsxf/MFX/DataValidator/Filters/RegExp.php:155
+#: src/DataValidator/Filters/RegExp.php:155
 #, php-format
 msgid "The field '%%s' does not contain a %d bits hexadecimal key."
 msgstr "Le champ '%%s' ne contient pas une clé hexadécimale de %d bits."
 
-#: chsxf/MFX/DataValidator/Filters/RegExp.php:157
+#: src/DataValidator/Filters/RegExp.php:157
 #, php-format
 msgid "The field '%%s' does not contain a %d bits lower case hexadecimal key."
 msgstr ""
 "Le champ '%%s' ne contient pas une clé hexadécimale en caractères minuscules "
 "de %d bits."
 
-#: chsxf/MFX/DataValidator/Filters/RegExp.php:159
+#: src/DataValidator/Filters/RegExp.php:159
 #, php-format
 msgid "The field '%%s' does not contain a %d bits upper case hexadecimal key."
 msgstr ""
 "Le champ '%%s' ne contient pas une clé hexadécimale en caractères majuscules "
 "de %d bits."
 
-#: chsxf/MFX/DataValidator/Filters/RegExp.php:175
+#: src/DataValidator/Filters/RegExp.php:175
 #, php-format
 msgid "The field '%%s' does not equal the value '%s'."
 msgstr "Le champ '%%s' ne correspond pas à la valeur '%s'."
 
-#: chsxf/MFX/DataValidator/Filters/RequiredIfNotEmpty.php:35
+#: src/DataValidator/Filters/RequiredIfNotEmpty.php:35
 #, php-format
 msgid "The field '%%s' is required when the field '%s' is provided."
 msgstr "Le champ '%%s' est requis quand le champ '%s' est fourni."
 
-#: chsxf/MFX/DataValidator/Filters/RequiredIfNotEmpty.php:45
+#: src/DataValidator/Filters/RequiredIfNotEmpty.php:45
 #, php-format
 msgid "The field '%%s' is required when the fields %s are provided."
 msgstr "Le champ '%%s' est requis quand les champs %s sont fournis."
 
-#: chsxf/MFX/DataValidator/Filters/Unique.php:27
+#: src/DataValidator/Filters/Unique.php:27
 #, php-format
 msgid "The field '%s' must contain unique values."
 msgstr "Le champ '%s' doit contenir des valeurs uniques."
 
-#: chsxf/MFX/DatabaseUpdater.php:78
+#: src/DatabaseUpdater.php:78
 #, php-format
 msgid "Wrong SQL update file path for DatabaseUpdater '%s'."
 msgstr ""
 "Le chemin du fichier SQL de mise à jour pour le DatabaseUpdater ‘%s’ est "
 "incorrect."
 
-#: chsxf/MFX/DatabaseUpdater.php:98
+#: src/DatabaseUpdater.php:98
 #, php-format
 msgid ""
 "The SQL update file should start with a VERSION token (updater key: '%s')."
@@ -428,7 +428,7 @@ msgstr ""
 "Le fichier SQL de mise à jour devrait débuter avec un marqueur VERSION (clé "
 "d’actualiseur : ‘%s’)."
 
-#: chsxf/MFX/DatabaseUpdater.php:124 chsxf/MFX/DatabaseUpdater.php:133
+#: src/DatabaseUpdater.php:124 src/DatabaseUpdater.php:133
 #, php-format
 msgid "An error has occured while processing DatabaseUpdater '%s'."
 msgstr "Une erreur est survenue pendant l’exécution du DatabaseUpdater ‘%s’."
