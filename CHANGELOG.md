@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2024-07-10
+
 ### Added
 
 - `friendsofphp/php-cs-fixer` and `wikimedia/minify` as dev dependencies
