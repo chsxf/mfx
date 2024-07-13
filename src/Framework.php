@@ -49,7 +49,7 @@ final class Framework
         $fsLoader = new FilesystemLoader(Config::get(ConfigConstants::TWIG_TEMPLATES, array()));
         $fsLoader->addPath(ROOT . '/templates', 'mfx');
         $twig = new Environment($fsLoader, [
-            'cache' => Config::get(ConfigConstants::TWIG_CACHE, 'tmp/twig_cache'),
+            'cache' => Config::get(ConfigConstants::TWIG_CACHE, '../tmp/twig_cache'),
             'debug' => true,
             'strict_variables' => true,
             'autoescape' => false
