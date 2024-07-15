@@ -1,5 +1,6 @@
 <?php
 
+use chsxf\MFX\Exceptions\MFXException;
 use chsxf\MFX\FileTools;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +22,7 @@ final class FileToolsTest extends TestCase
             if (!empty($expectedResult)) {
                 $this->assertSame($expectedResult, FileTools::mimeTypeFromExtension($parameter));
             } else {
-                $this->expectException(ErrorException::class);
+                $this->expectException(MFXException::class);
                 FileTools::mimeTypeFromExtension($parameter);
             }
         }

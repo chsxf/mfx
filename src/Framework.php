@@ -2,14 +2,8 @@
 
 namespace chsxf\MFX;
 
-use chsxf\MFX\DataValidator\Twig\Extension;
+use chsxf\MFX\Exceptions\MFXException;
 use chsxf\MFX\L10n\L10nManager;
-use chsxf\Twig\Extension\Gettext;
-use chsxf\Twig\Extension\Lazy;
-use chsxf\Twig\Extension\SwitchCase;
-use Twig\Environment;
-use Twig\Extension\DebugExtension;
-use Twig\Loader\FilesystemLoader;
 
 define('chsxf\MFX\ROOT', dirname(dirname(__FILE__)));
 
@@ -18,59 +12,86 @@ define('chsxf\MFX\ROOT', dirname(dirname(__FILE__)));
  */
 final class Framework
 {
+    private static bool $initialized = false;
+
     /**
      * @since 1.0
      * @param string $configFilePath
      */
     public static function init(string $configFilePath)
     {
-        CommandLine::handleInvocation();
+        if (self::$initialized) {
+            throw new MFXException(HttpStatusCodes::internalServerError, "MFX has already been initialized");
+        }
+        self::$initialized = true;
+
+        $argumentsFromCLI = CommandLine::handleInvocation();
+        if ($argumentsFromCLI === null) {
+            $route = $_SERVER['REQUEST_URI'];
+        } else {
+            list($configFilePathFromCLI, $routeFromCLI) = $argumentsFromCLI;
+            if ($configFilePathFromCLI != null) {
+                $configFilePath = $configFilePathFromCLI;
+            }
+            $route = $routeFromCLI;
+        }
 
         // Loading configuration
-        require_once($configFilePath);
+        $configManager = new ConfigManager();
+        $configData = require_once($configFilePath);
+        $configManager->load($configData);
 
-        SessionManager::start();
-        ErrorManager::unfreeze();
+        $databaseManager = new DatabaseManager($configManager);
+
+        $profiler = new CoreProfiler($configManager->getValue(ConfigConstants::PROFILING, false));
+
+        self::startSession($configManager);
+        $errorManager = new ErrorManager($configManager);
+
+        $profiler->pushEvent('Starting session / Authenticating user');
+        $userManager = new UserManager($configManager, $databaseManager);
+
+        $localizationService = new L10nManager($configManager);
+        $localizationService->bindTextDomain('mfx', ROOT . '/messages');
+
+        $coreManager = new CoreManager($errorManager, $configManager, $localizationService, $profiler, $userManager, $databaseManager);
+        set_exception_handler($coreManager->exceptionHandler(...));
 
         $iniTimezone = ini_get('date.timezone');
-        if (Config::has(ConfigConstants::TIMEZONE) || empty($iniTimezone)) {
-            date_default_timezone_set(Config::get(ConfigConstants::TIMEZONE, 'UTC'));
+        if ($configManager->hasValue(ConfigConstants::TIMEZONE) || empty($iniTimezone)) {
+            date_default_timezone_set($configManager->getValue(ConfigConstants::TIMEZONE, 'UTC'));
         }
 
-        if (Config::get(ConfigConstants::PROFILING, false)) {
-            CoreProfiler::init();
+        $profiler->pushEvent('Processing request');
+        $coreManager->handleRequest($route, $configManager->getValue(ConfigConstants::REQUEST_DEFAULT_ROUTE, 'none'));
+
+        $errorManager->freeze();
+        if ($profiler->isActive()) {
+            $profiler->stop($coreManager->getTwig());
+        }
+    }
+
+    private static function startSession(ConfigManager $configManager)
+    {
+        if (empty($configManager->getValue(ConfigConstants::SESSION_ENABLED, true))) {
+            return;
         }
 
-        L10nManager::init();
-        L10nManager::bindTextDomain('mfx', ROOT . '/messages');
-
-        // Initializing Twig
-        CoreProfiler::pushEvent('Loading Twig');
-        $fsLoader = new FilesystemLoader(Config::get(ConfigConstants::TWIG_TEMPLATES, array()));
-        $fsLoader->addPath(ROOT . '/templates', 'mfx');
-        $twig = new Environment($fsLoader, [
-            'cache' => Config::get(ConfigConstants::TWIG_CACHE, '../tmp/twig_cache'),
-            'debug' => true,
-            'strict_variables' => true,
-            'autoescape' => false
-        ]);
-        $twig->addExtension(new DebugExtension());
-        $twig->addExtension(new Lazy());
-        $twig->addExtension(new Gettext());
-        $twig->addExtension(new SwitchCase());
-        $twig->addExtension(new Extension());
-        $customTwigExtensions = Config::get(ConfigConstants::TWIG_EXTENSIONS, array());
-        foreach ($customTwigExtensions as $ext) {
-            $twig->addExtension(new $ext());
+        // Setting session parameters
+        session_name($configManager->getValue(ConfigConstants::SESSION_NAME, 'MFXSESSION'));
+        if ($configManager->getValue(ConfigConstants::SESSION_USE_COOKIES, true)) {
+            ini_set('session.use_cookies', '1');
+            ini_set('session.use_trans_id', '0');
+            session_set_cookie_params($configManager->getValue(ConfigConstants::SESSION_LIFETIME, 0), $configManager->getValue(ConfigConstants::SESSION_PATH, ''), $configManager->getValue(ConfigConstants::SESSION_DOMAIN, ''));
+            session_start();
+        } else {
+            ini_set('session.use_cookies', '0');
+            ini_set('session.use_trans_id', '1');
+            if (!empty($_REQUEST[session_name()])) {
+                session_id($_REQUEST[session_name()]);
+            }
+            session_start();
+            output_add_rewrite_var(session_name(), session_id());
         }
-
-        CoreProfiler::pushEvent('Starting session / Authenticating user');
-        User::validate();
-
-        CoreProfiler::pushEvent('Processing request');
-        CoreManager::handleRequest($twig, Config::get(ConfigConstants::REQUEST_DEFAULT_ROUTE, 'none'));
-
-        ErrorManager::freeze();
-        CoreProfiler::stop();
     }
 }

@@ -8,8 +8,8 @@
 
 namespace chsxf\MFX\DataValidator\Filters;
 
+use chsxf\MFX\DatabaseConnectionInstance;
 use chsxf\MFX\DataValidator\AbstractFilter;
-use chsxf\MFX\DatabaseManager;
 
 /**
  * Description of a filter validating if the specified value exists in a database table
@@ -18,9 +18,9 @@ use chsxf\MFX\DatabaseManager;
 class ExistsInDB extends AbstractFilter
 {
     /**
-     * @var string|DatabaseManager Database connection name or instance
+     * @var DatabaseConnectionInstance Database connection instance
      */
-    private string|DatabaseManager $connection;
+    private DatabaseConnectionInstance $connection;
 
     /**
      * @var string Database table name
@@ -38,9 +38,9 @@ class ExistsInDB extends AbstractFilter
      * @param string $table Database table name
      * @param string $field Database field name
      * @param string $message Error message (Defaults to NULL)
-     * @param string|DatabaseManager $connection Database connection name or instance (Default to DatabaseManager::DEFAULT_CONNECTION)
+     * @param DatabaseConnectionInstance $connection Database connection instance
      */
-    public function __construct(string $table, string $field, ?string $message = null, string|DatabaseManager $connection = DatabaseManager::DEFAULT_CONNECTION)
+    public function __construct(string $table, string $field, ?string $message = null, DatabaseConnectionInstance $connection)
     {
         if (empty($message)) {
             $message = sprintf(dgettext('mfx', "The '%%s' field must reprensent an existing entry in the '%s' table (matched on the '%s' field)."), $table, $field);
@@ -77,16 +77,13 @@ class ExistsInDB extends AbstractFilter
     }
 
     /**
-     * Gets a database manager instance based on provided connection name or instance
+     * Gets the database connection instance
      * @since 1.0
-     * @return DatabaseManager
+     * @return DatabaseConnectionInstance
      */
-    final protected function getConnection(): DatabaseManager
+    final protected function getConnection(): DatabaseConnectionInstance
     {
-        if ($this->connection instanceof DatabaseManager) {
-            return $this->connection;
-        }
-        return DatabaseManager::open($this->connection);
+        return $this->connection;
     }
 
     /**

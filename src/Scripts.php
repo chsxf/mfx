@@ -8,13 +8,15 @@
 
 namespace chsxf\MFX;
 
-use Twig\Environment;
+use chsxf\MFX\Exceptions\MFXException;
+use chsxf\MFX\Services\IScriptService;
+use chsxf\MFX\Services\ITemplateService;
 
 /**
  * Exceptions dispatched by the Scripts class
  * @since 1.0
  */
-class ScriptException extends \Exception
+class ScriptException extends MFXException
 {
 }
 
@@ -22,12 +24,16 @@ class ScriptException extends \Exception
  * Helper class for managing scripts
  * @since 1.0
  */
-class Scripts
+final class Scripts implements IScriptService
 {
     /**
      * @var array Scripts container
      */
-    private static array $scripts = array();
+    private array $scripts = array();
+
+    public function __construct(private readonly ITemplateService $templateService)
+    {
+    }
 
     /**
      * Adds a script to the document
@@ -38,7 +44,7 @@ class Scripts
      * @param string $type Script type (Defaults to text/javascript).
      * @throws ScriptException If the URL is empty, or if the file does not exists or is not readable for inline scripts.
      */
-    public static function add(string $url, bool $inline = false, bool $prepend = false, string $type = 'text/javascript')
+    public function add(string $url, bool $inline = false, bool $prepend = false, string $type = 'text/javascript')
     {
         if (empty($url)) {
             throw new ScriptException("'{$url} is not a valid script URL.");
@@ -48,7 +54,7 @@ class Scripts
             $inline = true;
         }
 
-        $url = CoreManager::convertFakeProtocols($url);
+        $url = $this->templateService->convertFakeProtocols($url);
         if (!empty($inline) && (!file_exists($url) || !is_file($url) || !is_readable($url))) {
             throw new ScriptException("'{$url} is not a valid script URL.");
         }
@@ -68,25 +74,25 @@ class Scripts
             'content' => empty($inline) ? null : file_get_contents($url)
         );
         if ($prepend) {
-            array_unshift(self::$scripts, $obj);
+            array_unshift($this->scripts, $obj);
         } else {
-            self::$scripts[] = $obj;
+            $this->scripts[] = $obj;
         }
     }
 
     /**
      * Exports the HTML output for inclusion in the response `<head>` tag
      * @since 1.0
-     * @param \Twig_Environment $twig Twig environnement used for rendering HTML
      * @return string
      */
-    public static function export(Environment $twig): string
+    public function export(): string
     {
-        foreach (self::$scripts as &$v) {
+        $twig = $this->templateService->getTwig();
+        foreach ($this->scripts as &$v) {
             if ($v->inline) {
                 $v->content = $twig->createTemplate($v->content)->render();
             }
         }
-        return $twig->render('@mfx/Scripts.twig', array('scripts' => self::$scripts));
+        return $twig->render('@mfx/Scripts.twig', array('scripts' => $this->scripts));
     }
 }

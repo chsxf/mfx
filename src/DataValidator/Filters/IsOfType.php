@@ -9,6 +9,8 @@
 namespace chsxf\MFX\DataValidator\Filters;
 
 use chsxf\MFX\DataValidator\AbstractFilter;
+use chsxf\MFX\DataValidator\DataValidatorException;
+use chsxf\MFX\HttpStatusCodes;
 
 /**
  * Description of a filter validating if the specified value is of a specific type
@@ -26,12 +28,12 @@ class IsOfType extends AbstractFilter
      * @since 1.0
      * @param string $type Variable type
      * @param string $message Error message (Defaults to NULL)
-     * @throws \InvalidArgumentException
+     * @throws DataValidatorException
      */
     public function __construct(string $type, ?string $message = null)
     {
         if (!in_array($type, array('boolean', 'integer', 'double', 'string', 'array', 'object', 'resource', 'NULL'))) {
-            throw new \InvalidArgumentException("type argument must be one of 'boolean', 'integer', 'double', 'string', 'array', 'object', 'resource' or 'NULL'");
+            throw new DataValidatorException(HttpStatusCodes::internalServerError, "type argument must be one of 'boolean', 'integer', 'double', 'string', 'array', 'object', 'resource' or 'NULL'");
         }
         $this->type = $type;
 

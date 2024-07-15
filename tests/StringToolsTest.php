@@ -238,8 +238,6 @@ final class StringToolsTest extends TestCase
     #[DataProvider('sanitizeProvider')]
     public function testSanitize(string $str, ?string $placeholder, string $expectedResult): void
     {
-        putenv('LANG=en_US');
-
         if ($placeholder === NULL) {
             $generatedString = StringTools::sanitize($str);
         } else {
@@ -267,7 +265,6 @@ final class StringToolsTest extends TestCase
     #[DataProvider('removeAccentsProvider')]
     public function testRemoveAccents(string $str, string $expectedResult): void
     {
-        putenv('LANG=en_US');
         $generatedString = StringTools::removeAccents($str);
         $this->assertSame($expectedResult, $generatedString);
     }

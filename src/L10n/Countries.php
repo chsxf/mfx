@@ -1,24 +1,19 @@
 <?php
 
-/**
- * ISO 3166-1 alpha-2 country codes helper class
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX\L10n;
 
 /**
  * Class containing ISO 3166-1 alpha-2 country codes
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 class Countries
 {
     /**
-     * @since 1.0
-     * @var array Country codes container
+     * Country codes container
+     * @since 2.0
      */
-    public static array $MAP = array(
+    public const MAP = array(
         'AF' => 'Afghanistan',
         'AX' => 'Åland Islands',
         'AL' => 'Albania',

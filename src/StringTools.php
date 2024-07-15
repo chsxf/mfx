@@ -194,9 +194,9 @@ class StringTools
      * @param string $placeholder Placeholder text (Defaults to '-')
      * @return string
      */
-    public static function sanitize(string $string, string $placeholder = '-'): string
+    public static function sanitize(string $string, string $placeholder = '-', ?string $locale = null): string
     {
-        $string = self::removeAccents($string);
+        $string = self::removeAccents($string, $locale);
         $string = strtolower($string);
 
         $string = preg_replace('/[^a-z0-9]/', $placeholder, $string);
@@ -212,7 +212,7 @@ class StringTools
      * @param string $string Source string
      * @return string
      */
-    public static function removeAccents(string $string): string
+    public static function removeAccents(string $string, ?string $locale = null): string
     {
         if (!preg_match('/[\x80-\xff]/', $string)) {
             return $string;
@@ -548,8 +548,6 @@ class StringTools
         );
 
         // Used for locale-specific rules
-        $locale = L10nManager::getLocale();
-
         if ('de_DE' == $locale) {
             $chars[chr(195) . chr(132)] = 'Ae';
             $chars[chr(195) . chr(164)] = 'ae';

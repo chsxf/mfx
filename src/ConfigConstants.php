@@ -80,7 +80,7 @@ final class ConfigConstants
     /** @since 1.0 */
     public const USER_MANAGEMENT_CLASS = self::USER_MANAGEMENT . '.class';
     /** @since 1.0 */
-    public const USER_MANAGEMENT_KEY_FIELD = self::USER_MANAGEMENT . '.key_field';
+    public const USER_MANAGEMENT_ID_FIELD = self::USER_MANAGEMENT . '.id_field';
     /** @since 1.0 */
     public const USER_MANAGEMENT_TABLE = self::USER_MANAGEMENT . '.table';
 

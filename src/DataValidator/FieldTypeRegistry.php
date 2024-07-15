@@ -22,7 +22,7 @@ final class FieldTypeRegistry
     public static function registerClassForType(FieldType $type, string $className)
     {
         if (array_key_exists($type->value, self::$classForType)) {
-            throw new DataValidatorException(dgettext('mfx', "A class is already registered for the field type."));
+            throw new DataValidatorException(message: dgettext('mfx', "A class is already registered for the field type."));
         }
         self::$classForType[$type->value] = $className;
     }

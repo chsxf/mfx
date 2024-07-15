@@ -1,24 +1,19 @@
 <?php
 
-/**
- * ISO 639-1 alpha-2 language codes helper class
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX\L10n;
 
 /**
  * Class containing ISO 639-1 alpha-2 language codes
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 class Languages
 {
     /**
-     * @since 1.0
-     * @var array Language codes container
+     * Language codes container
+     * @since 2.0
      */
-    public static array $MAP = array(
+    public const MAP = array(
         'aa' => 'Afaraf',
         'ab' => 'Аҧсуа',
         'ae' => 'Avesta',

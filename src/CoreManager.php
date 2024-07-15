@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Core manager
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 use chsxf\MFX\Attributes\ContentType;
@@ -16,10 +10,26 @@ use chsxf\MFX\Attributes\RequiredContentType;
 use chsxf\MFX\Attributes\RequiredRequestMethod;
 use chsxf\MFX\Attributes\RouteAttributesParser;
 use chsxf\MFX\Attributes\Template;
-use chsxf\MFX\L10n\L10nManager;
+use chsxf\MFX\DataValidator\Twig\Extension;
+use chsxf\MFX\Exceptions\MFXException;
 use chsxf\MFX\Routers\IRouter;
 use chsxf\MFX\Routers\PathRouter;
+use chsxf\MFX\Services\IAuthenticationService;
+use chsxf\MFX\Services\IConfigService;
+use chsxf\MFX\Services\ICoreServiceProvider;
+use chsxf\MFX\Services\IDatabaseService;
+use chsxf\MFX\Services\ILocalizationService;
+use chsxf\MFX\Services\IProfilingService;
+use chsxf\MFX\Services\IRequestService;
+use chsxf\MFX\Services\ITemplateService;
+use chsxf\Twig\Extension\Gettext;
+use chsxf\Twig\Extension\Lazy;
+use chsxf\Twig\Extension\SwitchCase;
+use ReflectionClass;
+use ReflectionException;
 use Twig\Environment;
+use Twig\Extension\DebugExtension;
+use Twig\Loader\FilesystemLoader;
 use Wikimedia\Minify\CSSMin;
 use Wikimedia\Minify\JavaScriptMinifier;
 
@@ -29,67 +39,12 @@ use Wikimedia\Minify\JavaScriptMinifier;
  * Handles all requests and responses.
  *
  * @since 1.0
+ * 
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
-final class CoreManager
+final class CoreManager implements IRequestService, ITemplateService
 {
-    private static array $HTTP_STATUS_CODES = array(
-        100 => 'Continue',
-        101 => 'Switching Protocols',
-        200 => 'OK',
-        201 => 'Created',
-        202 => 'Accepted',
-        203 => 'Non-Authoritative Information',
-        204 => 'No Content',
-        205 => 'Reset Content',
-        206 => 'Partial Content',
-        300 => 'Multiple Choices',
-        301 => 'Moved Permanently',
-        302 => 'Moved Temporarily',
-        303 => 'See Other',
-        304 => 'Not Modified',
-        305 => 'Use Proxy',
-        307 => 'Temporary Redirect',
-        308 => 'Permanent Redirect',
-        310 => 'Too many Redirects',
-        400 => 'Bad Request',
-        401 => 'Unauthorized',
-        402 => 'Payment Required',
-        403 => 'Forbidden',
-        404 => 'Not Found',
-        405 => 'Method Not Allowed',
-        406 => 'Not Acceptable',
-        407 => 'Proxy Authentication Required',
-        408 => 'Request Time-out',
-        409 => 'Conflict',
-        410 => 'Gone',
-        411 => 'Length Required',
-        412 => 'Precondition Failed',
-        413 => 'Request Entity Too Large',
-        414 => 'Request-URI Too Large',
-        415 => 'Unsupported Media Type',
-        416 => 'Requested range unsatisfiable',
-        417 => 'Expectation failed',
-        426 => 'Upgrade Required',
-        428 => 'Precondition Required',
-        429 => 'Too Many Requests',
-        431 => 'Request Header Fields Too Large',
-        449 => 'Retry With',
-        500 => 'Internal Server Error',
-        501 => 'Not Implemented',
-        502 => 'Bad Gateway',
-        503 => 'Service Unavailable',
-        504 => 'Gateway Time-out',
-        505 => 'HTTP Version not supported',
-        509 => 'Bandwidth Limit Exceeded',
-        510 => 'Not extended',
-        511 => 'Network authentication required',
-        520 => 'Web server is returning an unknown error'
-    );
-
-    /**
-     * @var CoreManager Single instance of the class
-     */
-    private static ?CoreManager $singleInstance = null;
+    public const HTML_CONTENT_TYPE = 'text/html';
 
     /**
      * @var array Fake protocols list (keys are protocols names and values replacement strings)
@@ -106,68 +61,77 @@ final class CoreManager
      */
     private ?Environment $currentTwigEnvironment = null;
 
-    /**
-     * Ensures the singleton class instance has been correctly initialized only once
-     * @return CoreManager the singleton class instance
-     */
-    private static function ensureInit()
+    private ?Scripts $scripts = null;
+    private ?StyleSheets $styleSheets = null;
+
+    private ICoreServiceProvider $coreServiceProvider;
+
+    public function __construct(
+        private readonly ErrorManager $errorManager,
+        private readonly IConfigService $configService,
+        private readonly ILocalizationService $localizationService,
+        private readonly IProfilingService $profilingService,
+        private readonly IAuthenticationService $authenticationService,
+        private readonly IDatabaseService $databaseService
+    ) {
+        // Fake protocols
+        $this->fakeProtocols = array(
+            'mfxjs' => ROOT . '/static/js/',
+            'mfxcss' => ROOT . '/static/css/',
+            'mfximg' => ROOT . '/static/img/'
+        );
+        $fakeProtocolsFromConfig = $configService->getValue(ConfigConstants::FAKE_PROTOCOLS, array());
+        if (is_array($fakeProtocolsFromConfig)) {
+            $definedWrappers = stream_get_wrappers();
+            foreach ($fakeProtocolsFromConfig as $k => $v) {
+                if (in_array($k, $definedWrappers) || array_key_exists($k, $this->fakeProtocols) || !preg_match('/^\w+$/', $k)) {
+                    continue;
+                }
+
+                // Trailing with a back slash
+                if (!preg_match('#/$#', $v) && $v != '') {
+                    $v .= '/';
+                }
+
+                $this->fakeProtocols[$k] = $v;
+            }
+        }
+
+        $this->initializeScriptsAndStylsheets();
+
+        $this->coreServiceProvider = new CoreServiceProviderImplementation($configService, $this, $this, $localizationService, $profilingService, $this->scripts, $this->styleSheets, $authenticationService, $databaseService);
+    }
+
+    private function initializeScriptsAndStylsheets()
     {
-        if (self::$singleInstance === null) {
-            self::$singleInstance = new CoreManager();
-
-            // Fake protocols
-            $mfxRelativeBaseHREF = Config::get(ConfigConstants::RELATIVE_BASE_HREF, 'vendor/chsxf/mfx/static');
-            if ('/' !== $mfxRelativeBaseHREF) {
-                $mfxRelativeBaseHREF = rtrim($mfxRelativeBaseHREF, '/');
+        if ($this->configService->getValue(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, self::HTML_CONTENT_TYPE) == self::HTML_CONTENT_TYPE) {
+            // Adding scripts
+            $this->scripts = new Scripts($this);
+            $this->scripts->add('https://code.jquery.com/jquery-3.7.1.slim.min.js');
+            $this->scripts->add('mfxjs://layout.min.js');
+            $this->scripts->add('mfxjs://ui.min.js');
+            $this->scripts->add('mfxjs://mainObserver.min.js');
+            $this->scripts->add('mfxjs://string.min.js');
+            if ($this->profilingService->isActive()) {
+                $this->scripts->add('https://www.google.com/jsapi');
             }
-            self::$singleInstance->fakeProtocols = array(
-                'mfxjs' => ROOT . '/static/js/',
-                'mfxcss' => ROOT . '/static/css/',
-                'mfximg' => ROOT . '/static/img/'
-            );
-            $fakeProtocols = Config::get(ConfigConstants::FAKE_PROTOCOLS, array());
-            if (is_array($fakeProtocols)) {
-                $definedWrappers = stream_get_wrappers();
-                foreach ($fakeProtocols as $k => $v) {
-                    if (in_array($k, $definedWrappers) || array_key_exists($k, self::$singleInstance->fakeProtocols) || !preg_match('/^\w+$/', $k)) {
-                        continue;
-                    }
-
-                    // Trailing with a back slash
-                    if (!preg_match('#/$#', $v) && $v != '') {
-                        $v .= '/';
-                    }
-
-                    self::$singleInstance->fakeProtocols[$k] = $v;
+            $userScripts = $this->configService->getValue(ConfigConstants::SCRIPTS, array());
+            if (is_array($userScripts)) {
+                foreach ($userScripts as $s) {
+                    $this->scripts->add($s);
                 }
             }
-            ob_start(array(__CLASS__, 'convertFakeProtocols'));
 
-            if (Config::get(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/html') == 'text/html') {
-                // Adding scripts
-                Scripts::add('https://code.jquery.com/jquery-3.7.1.slim.min.js');
-                Scripts::add('mfxjs://layout.min.js');
-                Scripts::add('mfxjs://ui.min.js');
-                Scripts::add('mfxjs://mainObserver.min.js');
-                Scripts::add('mfxjs://string.min.js');
-                $userScripts = Config::get(ConfigConstants::SCRIPTS, array());
-                if (is_array($userScripts)) {
-                    foreach ($userScripts as $s) {
-                        Scripts::add($s);
-                    }
-                }
-
-                // Adding stylesheets
-                StyleSheets::add('mfxcss://framework.min.css');
-                $userSheets = Config::get(ConfigConstants::STYLESHEETS, array());
-                if (is_array($userSheets)) {
-                    foreach ($userSheets as $s) {
-                        StyleSheets::add($s);
-                    }
+            // Adding stylesheets
+            $this->styleSheets = new StyleSheets($this);
+            $this->styleSheets->add('mfxcss://framework.min.css');
+            $userSheets = $this->configService->getValue(ConfigConstants::STYLESHEETS, array());
+            if (is_array($userSheets)) {
+                foreach ($userSheets as $s) {
+                    $this->styleSheets->add($s);
                 }
             }
         }
-        return self::$singleInstance;
     }
 
     /**
@@ -179,14 +143,13 @@ final class CoreManager
      *
      * @return string
      */
-    public static function convertFakeProtocols(string $str): string
+    public function convertFakeProtocols(string $str): string
     {
-        $inst = self::ensureInit();
         $search = array();
-        foreach (array_keys($inst->fakeProtocols) as $k) {
+        foreach (array_keys($this->fakeProtocols) as $k) {
             $search[] = "{$k}://";
         }
-        return str_replace($search, array_values($inst->fakeProtocols), $str);
+        return str_replace($search, array_values($this->fakeProtocols), $str);
     }
 
     /**
@@ -196,9 +159,32 @@ final class CoreManager
      *
      * @return \Twig\Environment
      */
-    public static function getTwig(): ?Environment
+    public function getTwig(): ?Environment
     {
-        return self::ensureInit()->currentTwigEnvironment;
+        if ($this->currentTwigEnvironment === null) {
+            $this->profilingService->pushEvent('Loading Twig');
+            $fsLoader = new FilesystemLoader($this->configService->getValue(ConfigConstants::TWIG_TEMPLATES, array()));
+            $fsLoader->addPath(ROOT . '/templates', 'mfx');
+            $twig = new Environment($fsLoader, [
+                'cache' => $this->configService->getValue(ConfigConstants::TWIG_CACHE, '../tmp/twig_cache'),
+                'debug' => true,
+                'strict_variables' => true,
+                'autoescape' => false
+            ]);
+            $twig->addExtension(new DebugExtension());
+            $twig->addExtension(new Lazy());
+            $twig->addExtension(new Gettext());
+            $twig->addExtension(new SwitchCase());
+            $twig->addExtension(new Extension());
+            $customTwigExtensions = $this->configService->getValue(ConfigConstants::TWIG_EXTENSIONS, array());
+            foreach ($customTwigExtensions as $ext) {
+                $twig->addExtension(new $ext());
+            }
+
+            $this->currentTwigEnvironment = $twig;
+            $this->profilingService->pushEvent('Twig Loaded');
+        }
+        return $this->currentTwigEnvironment;
     }
 
     /**
@@ -208,52 +194,38 @@ final class CoreManager
      *
      * @param string $defaultRoute Route to use if none can be guessed from request
      */
-    public static function handleRequest(Environment $twig, string $defaultRoute)
+    public function handleRequest(string $requestURI, string $defaultRoute)
     {
-        $inst = self::ensureInit();
-
-        $inst->currentTwigEnvironment = $twig;
-
-        if (CommandLine::isCLI()) {
-            $routePathInfo = $_SERVER['REQUEST_URI'];
-            $lastForwardSlashIndex = strrpos($routePathInfo, '/');
-            if ($lastForwardSlashIndex !== false) {
-                $routePathInfo = substr($routePathInfo, $lastForwardSlashIndex + 1);
-            }
-        } else {
-            // Finding route path info from REQUEST_URI
-            $scriptPath = dirname($_SERVER['SCRIPT_NAME']);
-            if (PHP_OS_FAMILY == 'Windows' && $scriptPath == '\\') {
-                $scriptPath = '/';
-            }
-            $prefix = preg_replace('#/mfx$#', '/', $scriptPath);
-            if (!preg_match('#/$#', $prefix)) {
-                $prefix .= '/';
-            }
-            $prefix .= Config::get(ConfigConstants::REQUEST_PREFIX, '');
-            if (!preg_match('#/$#', $prefix)) {
-                $prefix .= '/';
-            }
-            $routePathInfo = substr($_SERVER['REQUEST_URI'], strlen($prefix));
-            $routePathInfo = explode('?', $routePathInfo, 2);
-            $routePathInfo = ltrim($routePathInfo[0], '/');
+        // Finding route path info from REQUEST_URI
+        $prefix = $this->configService->getValue(ConfigConstants::REQUEST_PREFIX, '');
+        if (!preg_match('#/$#', $prefix)) {
+            $prefix .= '/';
         }
+        if (strlen($requestURI) < strlen($prefix)) {
+            throw new MFXException(message: 'Invalid request URI');
+        }
+        $routePathInfo = substr($requestURI, strlen($prefix));
+        $routePathInfo = explode('?', $routePathInfo, 2);
+        $routePathInfo = ltrim($routePathInfo[0], '/');
 
         // Parsing through the router
-        $routerClass = Config::get(ConfigConstants::ROUTER_CLASS, PathRouter::class);
-        if (!class_exists($routerClass) || !is_subclass_of($routerClass, IRouter::class)) {
-            throw new \ErrorException("Invalid router class '{$routerClass}'");
+        $routerClassName = $this->configService->getValue(ConfigConstants::ROUTER_CLASS, PathRouter::class);
+        try {
+            $routerClass = new ReflectionClass($routerClassName);
+        } catch (ReflectionException $e) {
+            throw new MFXException(HttpStatusCodes::internalServerError, "Invalid router class '{$routerClassName}'");
         }
-        $router = new $routerClass();
-        if ($router instanceof IRouter) {
-            $routerData = $router->parseRoute($routePathInfo, $defaultRoute);
+        if (!$routerClass->isSubclassOf(IRouter::class)) {
+            throw new MFXException(HttpStatusCodes::internalServerError, "Invalid router class '{$routerClassName}'");
         }
+        $router = $routerClass->newInstance();
+        $routerData = $router->parseRoute($this->coreServiceProvider, $routePathInfo, $defaultRoute);
 
         // Checking pre-conditions
         // -- Request method
         $requiredRequestMethod = $routerData->routeAttributes->getAttributeValue(RequiredRequestMethod::class);
         if (!empty($requiredRequestMethod) && $_SERVER['REQUEST_METHOD'] !== $requiredRequestMethod) {
-            self::dieWithStatusCode(405);
+            throw new MFXException(HttpStatusCodes::methodNotAllowed);
         }
         // -- Content-Type
         $requiredContentType = $routerData->routeAttributes->getAttributeValue(RequiredContentType::class);
@@ -261,53 +233,63 @@ final class CoreManager
             $regs = array();
             preg_match('/^([^;]+);?/', $_SERVER['CONTENT_TYPE'], $regs);
             if ($regs[1] !== $requiredContentType) {
-                self::dieWithStatusCode(415);
+                throw new MFXException(HttpStatusCodes::unsupportedMediaType);
             }
         }
 
+        ob_start($this->convertFakeProtocols(...));
+
         // Pre-processing callbacks
+        $this->profilingService->pushEvent('Calling pre-route callbacks');
+        $reqResult = null;
         // -- Global
-        $callback = Config::get(ConfigConstants::REQUEST_PRE_ROUTE_CALLBACK);
+        $callback = $this->configService->getValue(ConfigConstants::REQUEST_PRE_ROUTE_CALLBACK);
         if (!empty($callback) && is_callable($callback)) {
-            call_user_func($callback, $routerData);
+            $reqResult = call_user_func($callback, $this->coreServiceProvider, $routerData);
         }
         // -- Route Provider
-        $callback = $routerData->routeProviderAttributes->getAttributeValue(PreRouteCallback::class);
-        if (!empty($callback) && is_callable($callback)) {
-            call_user_func($callback, $routerData);
+        if ($reqResult === null) {
+            $callback = $routerData->routeProviderAttributes->getAttributeValue(PreRouteCallback::class);
+            if (!empty($callback) && is_callable($callback)) {
+                $reqResult = call_user_func($callback, $this->coreServiceProvider, $routerData);
+            }
         }
         // -- Route
-        $callback = $routerData->routeAttributes->getAttributeValue(PreRouteCallback::class);
-        if (!empty($callback) && is_callable($callback)) {
-            call_user_func($callback, $routerData);
+        if ($reqResult === null) {
+            $callback = $routerData->routeAttributes->getAttributeValue(PreRouteCallback::class);
+            if (!empty($callback) && is_callable($callback)) {
+                $reqResult = call_user_func($callback, $this->coreServiceProvider, $routerData);
+            }
         }
+        $this->profilingService->pushEvent('Pre-route callbacks completed');
 
         // Processing route
-        $reqResult = $routerData->routeMethod->invoke(null, $routerData->routeParams);
-        $routeProvidedTemplate = $routerData->routeAttributes->hasAttribute(Template::class) ? $routerData->routeAttributes->getAttributeValue(Template::class) : null;
+        $this->profilingService->pushEvent('Building response');
+        if ($reqResult === null) {
+            $reqResult = $routerData->getResult();
+        }
         switch ($reqResult->type()) {
                 // Views
             case RequestResultType::VIEW:
-                if (!in_array($reqResult->statusCode(), [200, 201, 206])) {
-                    self::dieWithStatusCode($reqResult->statusCode());
+                if (!in_array($reqResult->statusCode(), [HttpStatusCodes::ok, HttpStatusCodes::created, HttpStatusCodes::accepted])) {
+                    $this->dieWithStatusCode($reqResult->statusCode(), $reqResult->statusCode()->getStatusMessage());
                 }
 
-                CoreProfiler::pushEvent('Building response');
-                self::setResponseContentType($routerData->routeAttributes, Config::get(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/html'), Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
+                $this->setResponseContentType($routerData->routeAttributes, $this->configService->getValue(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/html'), $this->configService->getValue(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
+                $routeProvidedTemplate = $routerData->routeAttributes->hasAttribute(Template::class) ? $routerData->routeAttributes->getAttributeValue(Template::class) : null;
                 $template = $reqResult->template(($routeProvidedTemplate === null) ? $routerData->defaultTemplate : $routeProvidedTemplate);
 
                 $context = array_merge(RequestResult::getViewGlobals(), $reqResult->data(), array(
-                    'mfx_scripts' => Scripts::export($twig),
-                    'mfx_stylesheets' => StyleSheets::export($twig),
-                    'mfx_root_url' => self::getRootURL(),
-                    'mfx_errors_and_notifs' => ErrorManager::flush($twig),
-                    'mfx_current_user' => User::currentUser(),
-                    'mfx_locale' => L10nManager::getLocale(),
-                    'mfx_language' => L10nManager::getLanguage()
+                    'mfx_scripts' => $this->scripts->export(),
+                    'mfx_stylesheets' => $this->styleSheets->export(),
+                    'mfx_root_url' => $this->getRootURL(),
+                    'mfx_errors_and_notifs' => $this->errorManager->flush($this->getTwig()),
+                    'mfx_current_user' => $this->authenticationService->getCurrentAuthenticatedUser(),
+                    'mfx_locale' => $this->localizationService->getLocale(),
+                    'mfx_language' => $this->localizationService->getLanguage()
                 ));
 
-                $twig->display($template, $context);
-                CoreProfiler::pushEvent('Response built');
+                $this->getTwig()->display($template, $context);
                 break;
 
                 // Edit requests - Mostly requests with POST data
@@ -316,73 +298,76 @@ final class CoreManager
                 if (empty($redirectionURL) && $routerData->routeAttributes->hasAttribute(RedirectURL::class)) {
                     $redirectionURL = $routerData->routeAttributes->getAttributeValue(RedirectURL::class);
                 }
-                self::redirect($redirectionURL);
+                $this->redirect($redirectionURL);
                 break;
 
                 // Asynchronous requests expecting JSON data
             case RequestResultType::JSON:
-                self::outputJSON($reqResult, $routerData->routeAttributes, $twig);
+                $this->outputJSON($reqResult, $routerData->routeAttributes, $this->getTwig());
                 break;
 
                 // Asynchronous requests expecting XML data
             case RequestResultType::XML:
-                self::outputXML($reqResult, $routerData->routeAttributes, $twig);
+                $this->outputXML($reqResult, $routerData->routeAttributes, $this->getTwig());
                 break;
 
                 // Status
             case RequestResultType::STATUS:
-                self::outputStatusCode($reqResult->statusCode(), $reqResult->data());
+                $this->outputStatusCode($reqResult->statusCode(), $reqResult->data());
                 break;
         }
+        $this->profilingService->pushEvent('Response built');
 
         // Post-processing callback
+        $this->profilingService->pushEvent('Calling post-route callbacks');
         // -- Starting output buffering to prevent unvolontury output during post-processing callback
         ob_start();
         // -- Route
         $callback = $routerData->routeAttributes->getAttributeValue(PostRouteCallback::class);
         if (!empty($callback) && is_callable($callback)) {
-            call_user_func($callback, $routerData);
+            call_user_func($callback, $this->coreServiceProvider, $routerData);
         }
         // -- Route provider
         $callback = $routerData->routeProviderAttributes->getAttributeValue(PostRouteCallback::class);
         if (!empty($callback) && is_callable($callback)) {
-            call_user_func($callback, $routerData);
+            call_user_func($callback, $this->coreServiceProvider, $routerData);
         }
         // -- Global
-        $callback = Config::get(ConfigConstants::REQUEST_POST_ROUTE_CALLBACK);
+        $callback = $this->configService->getValue(ConfigConstants::REQUEST_POST_ROUTE_CALLBACK);
         if (!empty($callback) && is_callable($callback)) {
-            call_user_func($callback, $routerData);
+            call_user_func($callback, $this->coreServiceProvider, $routerData);
         }
         // -- Discarding output if any
         ob_end_clean();
+        $this->profilingService->pushEvent('Post-route callbacks completed');
     }
 
-    private static function outputJSON(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = null, Environment $twig = null)
+    private function outputJSON(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = null, Environment $twig = null)
     {
-        self::setStatusCode($reqResult->statusCode());
-        self::setResponseContentType($routeAttributes, 'application/json', Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
+        $this->setStatusCode($reqResult->statusCode());
+        $this->setResponseContentType($routeAttributes, 'application/json', $this->configService->getValue(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
         if ($twig != null && $reqResult->preformatted()) {
-            ErrorManager::flush();
+            $this->errorManager->flush();
             $template = $twig->createTemplate($reqResult->data());
-            echo $template->render(array('mfx_current_user' => User::currentUser()));
+            echo $template->render(array('mfx_current_user' => $this->authenticationService->getCurrentAuthenticatedUser()));
         } else {
             $d = $reqResult->data();
-            ErrorManager::flushToArrayOrObject($d);
+            $this->errorManager->flushToArrayOrObject($d);
             echo JSONTools::filterAndEncode($d);
         }
     }
 
-    private static function outputXML(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = null, Environment $twig = null)
+    private function outputXML(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = null, Environment $twig = null)
     {
-        self::setStatusCode($reqResult->statusCode());
-        self::setResponseContentType($routeAttributes, 'application/xml', Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
+        $this->setStatusCode($reqResult->statusCode());
+        $this->setResponseContentType($routeAttributes, 'application/xml', $this->configService->getValue(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
         if ($twig != null && $reqResult->preformatted()) {
-            ErrorManager::flush();
+            $this->errorManager->flush();
             $template = $twig->createTemplate($reqResult->data());
-            echo $template->render(array('mfx_current_user' => User::currentUser()));
+            echo $template->render(array('mfx_current_user' => $this->authenticationService->getCurrentAuthenticatedUser()));
         } else {
             $d = $reqResult->data();
-            ErrorManager::flushToArrayOrObject($d);
+            $this->errorManager->flushToArrayOrObject($d);
             echo XMLTools::build($reqResult->data());
         }
     }
@@ -394,24 +379,23 @@ final class CoreManager
      *
      * @return string
      */
-    public static function getRootURL(): string
+    public function getRootURL(): string
     {
-        $inst = self::ensureInit();
-        if (null === $inst->rootURL) {
-            $inst->rootURL = Config::get(ConfigConstants::BASE_HREF, null);
-            if (null === $inst->rootURL) {
+        if (null === $this->rootURL) {
+            $this->rootURL = $this->configService->getValue(ConfigConstants::BASE_HREF, null);
+            if (null === $this->rootURL) {
                 if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
                     $protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'];
                 } else {
                     $protocol = (empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off') ? 'http' : 'https';
                 }
-                $inst->rootURL = "{$protocol}://{$_SERVER['HTTP_HOST']}" . preg_replace('#/mfx$#', '/', dirname($_SERVER['PHP_SELF']));
-                if (!preg_match('#/$#', $inst->rootURL)) {
-                    $inst->rootURL .= '/';
+                $this->rootURL = "{$protocol}://{$_SERVER['HTTP_HOST']}" . preg_replace('#/mfx$#', '/', dirname($_SERVER['PHP_SELF']));
+                if (!preg_match('#/$#', $this->rootURL)) {
+                    $this->rootURL .= '/';
                 }
             }
         }
-        return $inst->rootURL;
+        return $this->rootURL;
     }
 
     /**
@@ -421,7 +405,7 @@ final class CoreManager
      *
      * @param string $redirectURL Target redirection URL (Defaults to NULL)
      */
-    public static function redirect(string $redirectURL = null)
+    private function redirect(string $redirectURL = null): never
     {
         if (empty($redirectURL) && !empty($_SERVER['HTTP_REFERER']) && preg_match("#https?://{$_SERVER['HTTP_HOST']}#", $_SERVER['HTTP_REFERER'])) {
             $redirectURL = $_SERVER['HTTP_REFERER'];
@@ -429,7 +413,7 @@ final class CoreManager
 
         if (empty($redirectURL) || !preg_match('#^https?://#', $redirectURL)) {
             // Building URL
-            $r = self::getRootURL();
+            $r = $this->getRootURL();
             if (!empty($redirectURL)) {
                 $r .= ltrim($redirectURL, '/');
             }
@@ -437,52 +421,48 @@ final class CoreManager
             $r = $redirectURL;
         }
         header("Location: $r");
-        ErrorManager::freeze();
+        $this->errorManager->freeze();
+        exit();
     }
 
     /**
      * Sets the HTTP status code
      * @param int $code HTTP status code to emit (Defaults to 200 OK)
-     * @return int the specified status code or 400 if invalid
      */
-    private static function setStatusCode(int $code = 200): int
+    private function setStatusCode(HttpStatusCodes $code = HttpStatusCodes::ok)
     {
-        if (!array_key_exists($code, self::$HTTP_STATUS_CODES)) {
-            $code = 400;
-        }
-        header(sprintf("HTTP/1.1 %d %s", $code, self::$HTTP_STATUS_CODES[$code]));
-        return $code;
+        header(sprintf("HTTP/1.1 %d %s", $code->value, $code->getStatusMessage()));
     }
 
     /**
      * Emits a HTTP status code
-     * @param int $code HTTP status code to emit (Defaults to 400 Bad Request)
+     * @param HttpStatusCodes $code HTTP status code to emit (Defaults to 400 Bad Request)
      * @param ?string $message Custom message to output with status code
      */
-    private static function outputStatusCode(int $code = 400, ?string $message = null)
+    private function outputStatusCode(HttpStatusCodes $code = HttpStatusCodes::badRequest, ?string $message = null)
     {
-        $code = self::setStatusCode($code);
+        $this->setStatusCode($code);
 
-        $contentType = Config::get(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/plain');
-        $charset = Config::get(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8');
+        $contentType = $this->configService->getValue(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, 'text/plain');
+        $charset = $this->configService->getValue(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8');
 
-        $data = array(
-            'code' => $code,
-            'status' => self::$HTTP_STATUS_CODES[$code]
-        );
+        $data = [
+            'code' => $code->value,
+            'status' => $code->getStatusMessage()
+        ];
         if (!empty($message)) {
             $data['message'] = $message;
         }
 
-        self::setResponseContentType(null, $contentType, $charset);
+        $this->setResponseContentType(null, $contentType, $charset);
         switch ($contentType) {
             case 'application/json':
                 $reqResult = RequestResult::buildJSONRequestResult($data, false, $code);
-                self::outputJSON($reqResult);
+                $this->outputJSON($reqResult);
                 break;
             case 'application/xml':
                 $reqResult = RequestResult::buildXMLRequestResult($data, false, $code);
-                self::outputXML($reqResult);
+                $this->outputXML($reqResult);
                 break;
             default:
                 echo "{$data['code']} {$data['status']}";
@@ -498,13 +478,13 @@ final class CoreManager
      *
      * @since 1.0
      *
-     * @param int $code HTTP status code to emit (Defaults to 400 Bad Request)
+     * @param HttpStatusCodes $code HTTP status code to emit (Defaults to 400 Bad Request)
      * @param ?string $message Custom message to output with status code
      */
-    public static function dieWithStatusCode(int $code = 400, ?string $message = null)
+    private function dieWithStatusCode(HttpStatusCodes $code = HttpStatusCodes::badRequest, ?string $message = null): never
     {
-        self::outputStatusCode($code, $message);
-        ErrorManager::freeze();
+        $this->outputStatusCode($code, $message);
+        $this->errorManager->freeze();
         exit();
     }
 
@@ -515,7 +495,7 @@ final class CoreManager
      * @param string $default Content type to use if not provided by the route.
      * @param string $defaultCharset Charset to use if not provided by the route.
      */
-    private static function setResponseContentType(?RouteAttributesParser $routeAttributes, string $default, string $defaultCharset)
+    private function setResponseContentType(?RouteAttributesParser $routeAttributes, string $default, string $defaultCharset)
     {
         $ct = ($routeAttributes !== null && $routeAttributes->hasAttribute(ContentType::class)) ? $routeAttributes->getAttributeValue(ContentType::class) : $default;
         if (!preg_match('/;\s+charset=.+$/', $ct)) {
@@ -534,7 +514,7 @@ final class CoreManager
      * @param string $charset Attachment charset. If NULL, no charset is provided. This parameter is ignored if $addContentType is not set. (Defaults to UTF-8)
      * @param bool $addContentType If set, the function will add the Content-Type header. (Defaults to true)
      */
-    public static function setAttachmentHeaders(string $filename, string $mimeType, string $charset = 'UTF-8', bool $addContentType = true)
+    public function setAttachmentHeaders(string $filename, string $mimeType, string $charset = 'UTF-8', bool $addContentType = true)
     {
         if (!empty($addContentType)) {
             if ($charset !== null && is_string($charset)) {
@@ -547,29 +527,17 @@ final class CoreManager
     }
 
     /**
-     * Flushes all output buffers
-     *
-     * @since 1.0
-     */
-    public static function flushAllOutputBuffers()
-    {
-        $c = ob_get_level();
-        for ($i = 0; $i < $c; $i++) {
-            ob_end_flush();
-        }
-    }
-
-    /**
      * Uncaught exception handler
      *
      * @ignore
      *
      * @param \Throwable $exception Uncaught exception
      */
-    public static function exceptionHandler(\Throwable $exception)
+    public function exceptionHandler(\Throwable $exception)
     {
+        $code = ($exception instanceof MFXException) ? $exception->getHttpCode() : HttpStatusCodes::badRequest;
         $message = sprintf("Uncaught %s: %s\n%s", get_class($exception), $exception->getMessage(), $exception->getTraceAsString());
-        self::dieWithStatusCode(400, $message);
+        $this->dieWithStatusCode($code, $message);
     }
 
     /**
@@ -606,5 +574,3 @@ final class CoreManager
         }
     }
 }
-
-set_exception_handler(array(CoreManager::class, 'exceptionHandler'));

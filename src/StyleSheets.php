@@ -8,13 +8,15 @@
 
 namespace chsxf\MFX;
 
-use Twig\Environment;
+use chsxf\MFX\Exceptions\MFXException;
+use chsxf\MFX\Services\IStyleSheetService;
+use chsxf\MFX\Services\ITemplateService;
 
 /**
  * Exceptions dispatched by the StyleSheets class
  * @since 1.0
  */
-class StyleSheetException extends \Exception
+class StyleSheetException extends MFXException
 {
 }
 
@@ -22,12 +24,16 @@ class StyleSheetException extends \Exception
  * Helper class for managing style sheets
  * @since 1.0
  */
-class StyleSheets
+final class StyleSheets implements IStyleSheetService
 {
     /**
      * @var array Style sheets container
      */
-    private static array $styleSheets = array();
+    private array $styleSheets = array();
+
+    public function __construct(private readonly ITemplateService $templateService)
+    {
+    }
 
     /**
      * Adds a style sheets to the document
@@ -39,7 +45,7 @@ class StyleSheets
      * @param string $type Style sheet type (Defaults to text/css).
      * @throws StyleSheetException If the URL is empty, or if the file does not exists or is not readable for inline sheets.
      */
-    public static function add(string $url, string $media = 'screen', bool $inline = false, bool $prepend = false, string $type = 'text/css')
+    public function add(string $url, string $media = 'screen', bool $inline = false, bool $prepend = false, string $type = 'text/css')
     {
         if (empty($url)) {
             throw new StyleSheetException("'{$url} is not a valid style sheet URL.");
@@ -49,12 +55,11 @@ class StyleSheets
             $inline = true;
         }
 
-        $url = CoreManager::convertFakeProtocols($url);
+        $url = $this->templateService->convertFakeProtocols($url);
         if (!empty($inline) && (!file_exists($url) || !is_file($url) || !is_readable($url))) {
             throw new StyleSheetException("'{$url} is not a valid style sheet URL.");
         }
 
-        $url = CoreManager::convertFakeProtocols($url);
         if (empty($inline) && !preg_match('#^(.+:)?//#', $url)) {
             $regs = null;
             if (preg_match('/^(.+)\.(\w+)$/', $url, $regs) && file_exists($url)) {
@@ -71,20 +76,19 @@ class StyleSheets
             'content' => empty($inline) ? null : file_get_contents($url)
         );
         if ($prepend) {
-            array_unshift(self::$styleSheets, $obj);
+            array_unshift($this->styleSheets, $obj);
         } else {
-            self::$styleSheets[] = $obj;
+            $this->styleSheets[] = $obj;
         }
     }
 
     /**
      * Exports the HTML output for inclusion in the response `<head>` tag
      * @since 1.0
-     * @param \Twig_Environment $twig Twig environnement used for rendering HTML
      * @return string
      */
-    public static function export(Environment $twig): string
+    public function export(): string
     {
-        return $twig->render('@mfx/StyleSheets.twig', array('sheets' => self::$styleSheets));
+        return $this->templateService->getTwig()->render('@mfx/StyleSheets.twig', array('sheets' => $this->styleSheets));
     }
 }

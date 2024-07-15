@@ -8,6 +8,8 @@
 
 namespace chsxf\MFX;
 
+use chsxf\MFX\Exceptions\MFXException;
+
 /**
  * File management helper class
  * @since 1.0
@@ -35,7 +37,7 @@ class FileTools
                 return 'application/vnd.android.package-archive';
 
             default:
-                CoreManager::dieWithStatusCode(401);
+                throw new MFXException(HttpStatusCodes::unauthorized);
         }
     }
 }

@@ -2,7 +2,8 @@
 
 namespace chsxf\MFX\Attributes;
 
-use ErrorException;
+use chsxf\MFX\DataValidator\DataValidatorException;
+use chsxf\MFX\HttpStatusCodes;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -52,12 +53,12 @@ class RouteAttributesParser
      * @param string $class
      * @param null|string $defaultValue
      * @return null|string
-     * @throws ErrorException
+     * @throws DataValidatorException
      */
     public function getAttributeValue(string $class, ?string $defaultValue = null): ?string
     {
         if (!is_subclass_of($class, AbstractRouteStringAttribute::class)) {
-            throw new \ErrorException("Class '{$class}' is not a valid subclass of " . AbstractRouteStringAttribute::class);
+            throw new DataValidatorException(HttpStatusCodes::internalServerError, "Class '{$class}' is not a valid subclass of " . AbstractRouteStringAttribute::class);
         }
 
         foreach ($this->attributes as $attr) {

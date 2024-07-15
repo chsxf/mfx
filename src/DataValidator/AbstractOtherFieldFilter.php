@@ -1,15 +1,10 @@
 <?php
 
-/**
- * Data validation abstract field-matching filter class
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX\DataValidator;
 
 /**
- * Description of a filter validating when the field's matched another field's one
+ * Description of a filter validating if the field matches another one
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 abstract class AbstractOtherFieldFilter extends AbstractFilter

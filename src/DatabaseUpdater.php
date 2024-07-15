@@ -4,15 +4,15 @@ namespace chsxf\MFX;
 
 use chsxf\MFX\Attributes\AnonymousRoute;
 use chsxf\MFX\Attributes\Route;
-use chsxf\MFX\Routers\IRouteProvider;
+use chsxf\MFX\Routers\BaseRouteProvider;
 
 /**
  * @since 1.0
  */
-final class DatabaseUpdater implements IRouteProvider
+final class DatabaseUpdater extends BaseRouteProvider
 {
-    private static ?array $updatersData = null;
-    private static ?string $updatersDomain = null;
+    private ?array $updatersData = null;
+    private ?string $updatersDomain = null;
 
     /**
      * @since 1.0
@@ -20,24 +20,24 @@ final class DatabaseUpdater implements IRouteProvider
      */
     #[Route]
     #[AnonymousRoute]
-    public static function update(): RequestResult|false
+    public function update(): RequestResult|false
     {
-        $updaters = array_merge(array(FrameworkDatabaseUpdater::class), Config::get(ConfigConstants::DATABASE_UPDATERS_CLASSES, array()));
+        $updaters = array_merge(array(FrameworkDatabaseUpdater::class), $this->serviceProvider->getConfigService()->getValue(ConfigConstants::DATABASE_UPDATERS_CLASSES, array()));
         if (!is_array($updaters) || empty($updaters)) {
             return false;
         }
 
         // Retrieving updaters domain
-        self::$updatersDomain = Config::get(ConfigConstants::DATABASE_UPDATERS_DOMAIN, null);
-        if (!preg_match('/^[[:alnum:]_-]+$/', self::$updatersDomain)) {
-            self::$updatersDomain = null;
+        $this->updatersDomain = $this->serviceProvider->getConfigService()->getValue(ConfigConstants::DATABASE_UPDATERS_DOMAIN, null);
+        if (!preg_match('/^[[:alnum:]_-]+$/', $this->updatersDomain)) {
+            $this->updatersDomain = null;
         }
 
         // Initializing database manager
-        $dbm = DatabaseManager::open('__mfx');
+        $dbConn = $this->serviceProvider->getDatabaseService()->open('__mfx');
 
         // Creating updaters table
-        $dbm->exec("CREATE TABLE IF NOT EXISTS `mfx_database_updaters` (
+        $dbConn->exec("CREATE TABLE IF NOT EXISTS `mfx_database_updaters` (
 					`updater_key` varchar(255) COLLATE utf8_bin NOT NULL,
 					`updater_domain` varchar(255) COLLATE utf8_bin NOT NULL,
 					`updater_version` smallint(5) unsigned NOT NULL,
@@ -48,27 +48,27 @@ final class DatabaseUpdater implements IRouteProvider
         // Load versions and file modification times
         $sql = "SELECT `updater_key`, `updater_version`, UNIX_TIMESTAMP(`updater_file_modified`) AS `updater_filemtime`
 					FROM `mfx_database_updaters`";
-        if (self::$updatersDomain === null) {
+        if ($this->updatersDomain === null) {
             $sql .= " WHERE `updater_domain` IS NULL";
         } else {
             $sql .= " WHERE `updater_domain` = ?";
         }
-        self::$updatersData = $dbm->getIndexed($sql, 'updater_key', \PDO::FETCH_OBJ, self::$updatersDomain);
+        $this->updatersData = $dbConn->getIndexed($sql, 'updater_key', \PDO::FETCH_OBJ, $this->updatersDomain);
 
         foreach ($updaters as $updater) {
             $rc = new \ReflectionClass($updater);
             if (!$rc->implementsInterface(IDatabaseUpdater::class)) {
                 continue;
             }
-            if (self::ensureUpToDate($rc->newInstance(), $dbm) === false) {
+            if ($this->ensureUpToDate($rc->newInstance(), $dbConn) === false) {
                 break;
             }
         }
 
-        return RequestResult::buildStatusRequestResult(200);
+        return RequestResult::buildStatusRequestResult(HttpStatusCodes::ok);
     }
 
-    private static function ensureUpToDate(IDatabaseUpdater $updater, DatabaseManager $dbmMFX): bool
+    private function ensureUpToDate(IDatabaseUpdater $updater, DatabaseConnectionInstance $dbConn): bool
     {
         $key = $updater->key();
         $pathToSQL = $updater->pathToSQLFile();
@@ -81,7 +81,7 @@ final class DatabaseUpdater implements IRouteProvider
 
         // Checking file modification time
         $mtime = filemtime($pathToSQL);
-        if (array_key_exists($key, self::$updatersData) && self::$updatersData[$key]->updater_filemtime == $mtime) {
+        if (array_key_exists($key, $this->updatersData) && $this->updatersData[$key]->updater_filemtime == $mtime) {
             return true;
         }
 
@@ -102,22 +102,25 @@ final class DatabaseUpdater implements IRouteProvider
             if (preg_match('/^VERSION:\s*(\d+)$/', $chunk, $regs)) {
                 $version = intval($regs[1]);
             } elseif (preg_match('/^CONNECTION:\s*(\S+)$/', $chunk, $regs)) {
-                $dbm = DatabaseManager::open($regs[1]);
+                $dbm = $this->serviceProvider->getDatabaseService()->open($regs[1]);
             } else {
-                if (array_key_exists($key, self::$updatersData) && self::$updatersData[$key]->updater_version >= $version) {
+                if (array_key_exists($key, $this->updatersData) && $this->updatersData[$key]->updater_version >= $version) {
                     continue;
                 }
 
                 $chunk = str_replace(
                     array('__MFX_USER_ID_FIELD_NAME__', '__MFX_USERS_TABLE_NAME__'),
-                    array(Config::get(ConfigConstants::USER_MANAGEMENT_KEY_FIELD, 'user_id'), Config::get(ConfigConstants::USER_MANAGEMENT_TABLE, 'mfx_users')),
+                    array(
+                        $this->serviceProvider->getConfigService()->getValue(ConfigConstants::USER_MANAGEMENT_ID_FIELD, 'user_id'),
+                        $this->serviceProvider->getConfigService()->getValue(ConfigConstants::USER_MANAGEMENT_TABLE, 'mfx_users')
+                    ),
                     $chunk
                 );
 
                 $queries = preg_split('/;$/m', $chunk);
                 $queries = array_map('trim', $queries);
                 if ($dbm === null) {
-                    $dbm = DatabaseManager::open();
+                    $dbm = $this->serviceProvider->getDatabaseService()->open();
                 }
                 foreach ($queries as $query) {
                     if (!empty($query) && $dbm->exec($query) === false) {
@@ -129,7 +132,7 @@ final class DatabaseUpdater implements IRouteProvider
                 $sql = "INSERT INTO `mfx_database_updaters` (`updater_key`, `updater_domain`, `updater_version`, `updater_file_modified`)
 							VALUE (?, ?, ?, FROM_UNIXTIME(?))
 							ON DUPLICATE KEY UPDATE `updater_version` = VALUES(`updater_version`), `updater_file_modified` = VALUES(`updater_file_modified`)";
-                if ($dbmMFX->exec($sql, $key, self::$updatersDomain, $version, $mtime) === false) {
+                if ($dbConn->exec($sql, $key, $this->updatersDomain, $version, $mtime) === false) {
                     trigger_error(sprintf(dgettext('mfx', "An error has occured while processing DatabaseUpdater '%s'."), $key), E_USER_ERROR);
                     return false;
                 }

@@ -38,7 +38,7 @@ final class RequestResult
     /**
      * @var int HTTP status code of the response
      */
-    private int $statusCode;
+    private HttpStatusCodes $statusCode;
     /**
      * @var boolean Flag indicating if the XML and JSON data are preformatted or not
      */
@@ -55,12 +55,12 @@ final class RequestResult
      * @param mixed $data Response data. If a view, $data must be an array. (Defaults to NULL)
      * @param string $template Template to use as the response renderer. Don't add the .twig extension. Should be NULL if not a view. (Defaults to NULL)
      * @param string $redirectURL Target URL to which redirect the user (Defaults to NULL)
-     * @param int $statusCode HTTP status code of the response (Defaults to 200 - OK).
+     * @param HttpStatusCodes $statusCode HTTP status code of the response (Defaults to 200 - OK).
      * @param boolean $preformatted If set, this flag indicates that $data is preformatted for XML and JSON responses. (Defaults to false)
      *
      * @see RequestResultType
      */
-    public function __construct(?RequestResultType $type = null, mixed $data = null, ?string $template = null, ?string $redirectURL = null, int $statusCode = 200, bool $preformatted = false)
+    public function __construct(?RequestResultType $type = null, mixed $data = null, ?string $template = null, ?string $redirectURL = null, HttpStatusCodes $statusCode = HttpStatusCodes::ok, bool $preformatted = false)
     {
         $this->type = ($type ?? RequestResultType::VIEW);
         $this->template = $template;
@@ -114,9 +114,9 @@ final class RequestResult
     /**
      * Gets the HTTP status code of the response
      * @since 1.0
-     * @return int
+     * @return HttpStatusCodes
      */
-    public function statusCode(): int
+    public function statusCode(): HttpStatusCodes
     {
         return $this->statusCode;
     }
@@ -176,11 +176,11 @@ final class RequestResult
     /**
      * Helper function to build RequestResult instances for erroneous responses, providing the HTTP status code
      * @since 1.0
-     * @param int $statusCode HTTP status code of the response
+     * @param HttpStatusCodes $statusCode HTTP status code of the response
      * @param ?string $message Message
      * @return RequestResult
      */
-    public static function buildStatusRequestResult(int $statusCode = 400, ?string $message = null): RequestResult
+    public static function buildStatusRequestResult(HttpStatusCodes $statusCode = HttpStatusCodes::badRequest, ?string $message = null): RequestResult
     {
         return new RequestResult(RequestResultType::STATUS, $message, null, null, $statusCode, true);
     }
@@ -190,10 +190,10 @@ final class RequestResult
      * @since 1.0
      * @param mixed $data JSON data
      * @param bool $preformatted If set, $data contains preformatted JSON data
-     * @param int $statusCode HTTP status code of the response
+     * @param HttpStatusCodes $statusCode HTTP status code of the response
      * @return RequestResult
      */
-    public static function buildJSONRequestResult(mixed $data, bool $preformatted = false, int $statusCode = 200): RequestResult
+    public static function buildJSONRequestResult(mixed $data, bool $preformatted = false, HttpStatusCodes $statusCode = HttpStatusCodes::ok): RequestResult
     {
         return new RequestResult(RequestResultType::JSON, $data, null, null, $statusCode, $preformatted);
     }
@@ -203,10 +203,10 @@ final class RequestResult
      * @since 1.0
      * @param mixed $data XML data
      * @param bool $preformatted If set, $data contains preformatted XML data
-     * @param int $statusCode HTTP status code of the response
+     * @param HttpStatusCodes $statusCode HTTP status code of the response
      * @return RequestResult
      */
-    public static function buildXMLRequestResult(mixed $data, bool $preformatted = false, int $statusCode = 200): RequestResult
+    public static function buildXMLRequestResult(mixed $data, bool $preformatted = false, HttpStatusCodes $statusCode = HttpStatusCodes::ok): RequestResult
     {
         return new RequestResult(RequestResultType::XML, $data, null, null, $statusCode, $preformatted);
     }

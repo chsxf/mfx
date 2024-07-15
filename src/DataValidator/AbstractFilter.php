@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Data validation field filter class
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX\DataValidator;
 
 /**
@@ -13,6 +7,7 @@ namespace chsxf\MFX\DataValidator;
  *
  * All filters must inherit from this class.
  *
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 abstract class AbstractFilter

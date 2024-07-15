@@ -10,7 +10,8 @@ namespace chsxf\MFX\L10n;
 
 use chsxf\MFX\Config;
 use chsxf\MFX\ConfigConstants;
-use chsxf\MFX\SessionManager;
+use chsxf\MFX\Services\IConfigService;
+use chsxf\MFX\Services\ILocalizationService;
 
 if (!defined('LC_MESSAGES')) {
     define('LC_MESSAGES', 6);
@@ -20,76 +21,30 @@ if (!defined('LC_MESSAGES')) {
  * Helper class for managing localization
  * @since 1.0
  */
-class L10nManager
+final class L10nManager implements ILocalizationService
 {
-    /**
-     * Detects the locale to use based on the request
-     * @return string
-     */
-    private static function detectLocaleFromRequest(): string
+    private ?string $detectedLocaleFromRequest = null;
+
+    public function __construct(private readonly IConfigService $configService)
     {
-        // Locale from $_GET
-        $locale = trim(empty($_GET['locale']) ? '' : $_GET['locale']);
-        if (!empty($locale)) {
-            setcookie('mfx_locale', $locale, time() + 86400 * 365, SessionManager::getDefaultCookiePath());
-        }
-
-        // Locale from $_COOKIE
-        if (empty($locale) && !empty($_COOKIE['mfx_locale'])) {
-            $locale = $_COOKIE['mfx_locale'];
-        }
-
-        // Locale from $_SERVER
-        if (empty($locale) && !empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            $locales = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-            array_walk($locales, function (&$item) {
-                $item = preg_replace('/;.+$/', '', $item);
-            });
-            $locales = array_filter($locales, function ($item) {
-                return preg_match('/^[a-z]{2}-[a-z]{2}$/i', $item);
-            });
-            array_walk($locales, function (&$item) {
-                $chunks = explode('-', $item);
-                $item = sprintf("%s_%s", $chunks[0], strtoupper($chunks[1]));
-            });
-            $locales = array_unique(array_values($locales));
-            if (!empty($locales)) {
-                $locale = $locales[0];
-            }
-        }
-
-        // Default locale from config
-        if (empty($locale)) {
-            $locale = Config::get(ConfigConstants::DEFAULT_LOCALE, 'en_US');
-        }
-
-        return $locale;
-    }
-
-    /**
-     * Initializes the localization manager
-     * @ignore
-     */
-    public static function init()
-    {
-        $locale = self::getLocale();
+        $locale = $this->getLocale();
 
         if (PHP_OS_FAMILY == 'Windows' || PHP_OS_FAMILY == 'Darwin') {
             putenv("LANGUAGE={$locale}");
             putenv("LANG={$locale}");
         }
 
-        $locale = array("{$locale}.utf8", "{$locale}.UTF8", "{$locale}.utf-8", "{$locale}.UTF-8", $locale);
+        $locale = ["{$locale}.utf8", "{$locale}.UTF8", "{$locale}.utf-8", "{$locale}.UTF-8", $locale];
         setlocale(LC_MESSAGES, $locale);
         setlocale(LC_CTYPE, $locale);
 
         // Setting application specific text domains
         $hasDefault = false;
-        $appTextDomains = Config::get(ConfigConstants::TEXT_DOMAINS);
+        $appTextDomains = $configService->getValue(ConfigConstants::TEXT_DOMAINS);
         if (!empty($appTextDomains) && is_array($appTextDomains)) {
             $hasDefault = array_key_exists('__default', $appTextDomains);
             foreach ($appTextDomains as $k => $v) {
-                self::bindTextDomain($k, $v);
+                $this->bindTextDomain($k, $v);
             }
         }
         if ($hasDefault) {
@@ -98,13 +53,61 @@ class L10nManager
     }
 
     /**
+     * Detects the locale to use based on the request
+     * @return string
+     */
+    private function detectLocaleFromRequest(): string
+    {
+        if ($this->detectedLocaleFromRequest === null) {
+            // Locale from $_GET
+            $locale = trim(empty($_GET['locale']) ? '' : $_GET['locale']);
+            if (!empty($locale)) {
+                $sessionCookieParams = session_get_cookie_params();
+                setcookie('mfx_locale', $locale, time() + 86400 * 365, $sessionCookieParams['path']);
+            }
+
+            // Locale from $_COOKIE
+            if (empty($locale) && !empty($_COOKIE['mfx_locale'])) {
+                $locale = $_COOKIE['mfx_locale'];
+            }
+
+            // Locale from $_SERVER
+            if (empty($locale) && !empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+                $locales = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+                array_walk($locales, function (&$item) {
+                    $item = preg_replace('/;.+$/', '', $item);
+                });
+                $locales = array_filter($locales, function ($item) {
+                    return preg_match('/^[a-z]{2}-[a-z]{2}$/i', $item);
+                });
+                array_walk($locales, function (&$item) {
+                    $chunks = explode('-', $item);
+                    $item = sprintf("%s_%s", $chunks[0], strtoupper($chunks[1]));
+                });
+                $locales = array_unique(array_values($locales));
+                if (!empty($locales)) {
+                    $locale = $locales[0];
+                }
+            }
+
+            // Default locale from config
+            if (empty($locale)) {
+                $locale = $this->configService->getValue(ConfigConstants::DEFAULT_LOCALE, 'en_US');
+            }
+
+            $this->detectedLocaleFromRequest = $locale;
+        }
+        return $this->detectedLocaleFromRequest;
+    }
+
+    /**
      * Binds a new text domain
-     * @since 1.0
+     * @since 2.0
      * @param string $key Text domain key
      * @param string $path Text domain path
      * @param string $charset Text domain charset (Defaults to UTF-8)
      */
-    public static function bindTextDomain(string $key, string $path, string $charset = 'UTF-8')
+    public function bindTextDomain(string $key, string $path, string $charset = 'UTF-8')
     {
         bindtextdomain($key, $path);
         bind_textdomain_codeset($key, $charset);
@@ -112,23 +115,23 @@ class L10nManager
 
     /**
      * Gets the current locale from environment
-     * @since 1.0
+     * @since 2.0
      * @return string
      */
-    public static function getLocale(): string
+    public function getLocale(): string
     {
         $locale_env = getenv('LANG');
-        return ($locale_env === false) ? self::detectLocaleFromRequest() : $locale_env;
+        return ($locale_env === false) ? $this->detectLocaleFromRequest() : $locale_env;
     }
 
     /**
      * Gets the current language from the current locale
-     * @since 1.0
+     * @since 2.0
      * @return string
      */
-    public static function getLanguage(): string
+    public function getLanguage(): string
     {
-        $locale = explode('_', self::getLocale());
+        $locale = explode('_', $this->getLocale());
         return $locale[0];
     }
 }

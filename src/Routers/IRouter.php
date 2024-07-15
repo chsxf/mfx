@@ -8,6 +8,8 @@
 
 namespace chsxf\MFX\Routers;
 
+use chsxf\MFX\Services\ICoreServiceProvider;
+
 /**
  * @since 1.0
  */
@@ -19,5 +21,5 @@ interface IRouter
      * @param string $defaultRoute
      * @return RouterData
      */
-    public function parseRoute(string $filteredPathInfo, string $defaultRoute): RouterData;
+    function parseRoute(ICoreServiceProvider $coreServiceProvider, string $filteredPathInfo, string $defaultRoute): RouterData;
 }

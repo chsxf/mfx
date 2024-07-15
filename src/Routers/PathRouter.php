@@ -8,8 +8,9 @@
 
 namespace chsxf\MFX\Routers;
 
-use chsxf\MFX\Attributes\RouteAttributesParser;
-use chsxf\MFX\CoreManager;
+use chsxf\MFX\Exceptions\MFXException;
+use chsxf\MFX\HttpStatusCodes;
+use chsxf\MFX\Services\ICoreServiceProvider;
 
 /**
  * @since 1.0
@@ -23,14 +24,13 @@ class PathRouter implements IRouter
      * @param string $filteredPathInfo
      * @param string $defaultRoute
      * @return RouterData
-     * @throws ErrorException
-     * @throws ReflectionException
+     * @throws MFXException
      */
-    public function parseRoute(string $filteredPathInfo, string $defaultRoute): RouterData
+    public function parseRoute(ICoreServiceProvider $coreServiceProvider, string $filteredPathInfo, string $defaultRoute): RouterData
     {
         if (empty($filteredPathInfo)) {
             if ($defaultRoute === 'none') {
-                CoreManager::dieWithStatusCode(404);
+                throw new MFXException(HttpStatusCodes::notFound);
             }
 
             $route = $defaultRoute;
@@ -39,7 +39,7 @@ class PathRouter implements IRouter
             $chunks = explode('/', $filteredPathInfo);
             if (count($chunks) < 2) {
                 if ($defaultRoute === 'none') {
-                    CoreManager::dieWithStatusCode(404);
+                    throw new MFXException(HttpStatusCodes::notFound);
                 } else {
                     $route = $defaultRoute;
                     $routeParams = $chunks;
@@ -53,27 +53,10 @@ class PathRouter implements IRouter
         // Checking route
         if (!preg_match(self::ROUTE_REGEXP, $route)) {
             RouterHelpers::check404file(array_merge([$route], $routeParams));
-            throw new \ErrorException("'{$route}' is not a valid route.");
+            throw new MFXException(message: "'{$route}' is not a valid route.");
         }
         list($providerClassName, $routeMethodName) = explode('/', $route);
 
-        $providerClass = RouterHelpers::getRouteProviderClass($providerClassName);
-        if ($providerClass === null) {
-            RouterHelpers::check404file($routeParams);
-        }
-        if ($providerClass === null || !$providerClass->implementsInterface(IRouteProvider::class)) {
-            throw new \ErrorException("'{$providerClassName}' is not a valid route provider.");
-        }
-        $providerAttributes = new RouteAttributesParser($providerClass);
-
-        // Checking sub-route
-        $routeMethod = $providerClass->getMethod($routeMethodName);
-        $routeAttributes = RouterHelpers::isMethodValidRoute($routeMethod);
-        if (false === $routeAttributes) {
-            throw new \ErrorException("'{$routeMethodName}' is not a valid route of the '{$providerClassName}' provider.");
-        }
-
-        $defaultTemplate = "{$providerClass->getName()}/{$routeMethod->getName()}";
-        return new RouterData($route, $providerAttributes, $routeAttributes, $routeParams, $routeMethod, $defaultTemplate);
+        return RouterData::create($coreServiceProvider, $route, $routeParams, $providerClassName, $routeMethodName);
     }
 }

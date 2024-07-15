@@ -18,7 +18,7 @@ use chsxf\MFX\DataValidator\FieldTypeRegistry;
  */
 class File extends Field
 {
-    private static array $requiredKeys = array(
+    private const REQUIRED_KEYS = array(
         'name',
         'type',
         'tmp_name',
@@ -73,8 +73,8 @@ class File extends Field
     {
         $isValid = false;
         if (is_array($data)) {
-            $intersect = array_intersect(self::$requiredKeys, array_keys($data));
-            $isValid = (count($intersect) == count(self::$requiredKeys));
+            $intersect = array_intersect(self::REQUIRED_KEYS, array_keys($data));
+            $isValid = (count($intersect) == count(self::REQUIRED_KEYS));
 
             if ($isValid) {
                 $isValid = ($data['error'] == 0);

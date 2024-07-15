@@ -14,21 +14,8 @@ namespace chsxf\MFX;
  *
  * @since 1.0
  */
-class CommandLine
+final class CommandLine
 {
-    /**
-     * @var array Arguments list
-     */
-    private static array $argv;
-    /**
-     * @var int Argument count
-     */
-    private static int $argc;
-    /**
-     * @var int Argument current index
-     */
-    private static int $argi;
-
     /**
      * Tells if PHP is running on the command-line interface (CLI) server API
      *
@@ -45,71 +32,52 @@ class CommandLine
      * Handles command-line invocation and the parsing of MicroFX specific options from the arguments list
      * @ignore
      */
-    public static function handleInvocation()
+    public static function handleInvocation(): ?array
     {
+        global $argv;
+
         if (!self::isCLI()) {
-            return;
+            return null;
         }
 
-        self::initArgs();
+        $arguments = array_slice($argv, 1);
+        $argumentCount = count($arguments);
 
-        // Options
-        while (self::hasArgument()) {
-            $opt = self::getNextArgument();
+        $configFilePath = null;
+        $route = '/';
+
+        for ($i = 0; $i < $argumentCount; $i++) {
+            $opt = $arguments[$i];
 
             if (preg_match('/^-/', $opt)) {
                 switch ($opt) {
                     case '--config':
-                        define('MFX_CONFIG_FILE_PATH', self::getNextArgument());
+                        if ($i >= $argumentCount - 1) {
+                            self::dieUsage('Missing configuration file path');
+                        }
+                        $configFilePath = $arguments[++$i];
                         break;
 
                     default:
-                        self::dieUsage();
+                        self::dieUsage("Invalid option {$opt}");
                 }
             } else {
-                $_SERVER['REQUEST_URI'] = "{$_SERVER['PHP_SELF']}/{$opt}";
+                $route = "/{$opt}";
                 break;
             }
         }
-    }
 
-    /**
-     * Initializes the arguments list from the global $argc and $argv variables
-     */
-    private static function initArgs()
-    {
-        global $argv;
-        self::$argv = array_slice($argv, 1);
-        self::$argc = count(self::$argv);
-        self::$argi = 0;
-    }
-
-    /**
-     * Tells if the arguments list contains further argument
-     * @return boolean
-     */
-    private static function hasArgument(): bool
-    {
-        return (self::$argi < self::$argc);
-    }
-
-    /**
-     * Retrieves the next argument in the list
-     * @return string
-     */
-    private static function getNextArgument(): string
-    {
-        if (!self::hasArgument()) {
-            self::dieUsage();
-        }
-        return self::$argv[self::$argi++];
+        return [$configFilePath, $route];
     }
 
     /**
      * Terminates the script when incorrectedly used and display the usage message
      */
-    private static function dieUsage()
+    private static function dieUsage(?string $message = null): never
     {
+        if ($message != null) {
+            printf("%s\n\n", $message);
+        }
         printf("Usage: php /path/to/mfx/entrypoint.php [options] [route]\n\n");
         printf("\t--config <file>\t\tPath to custom config file\n");
         printf("\n");

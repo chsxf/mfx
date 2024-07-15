@@ -8,21 +8,19 @@
 
 namespace chsxf\MFX;
 
+use chsxf\MFX\Services\IProfilingService;
+use Twig\Environment;
+
 /**
  * Core profiler class
  * @since 1.0
  */
-final class CoreProfiler
+final class CoreProfiler implements IProfilingService
 {
-    /**
-     * @var CoreProfiler Singleton instance
-     */
-    private static ?CoreProfiler $singleInstance = null;
-
     /**
      * @var boolean Flag indicating if the class should fill the profiling data
      */
-    private bool $ticking = true;
+    private bool $ticking;
     /**
      * @var float Profiling start time as returned by microtime(true);
      */
@@ -43,11 +41,24 @@ final class CoreProfiler
     /**
      * Constructor
      */
-    private function __construct()
+    public function __construct(private readonly bool $active)
     {
         $this->profilingStartTime = microtime(true);
         $this->profilingEndTime = 0;
         $this->profilingData = array();
+        $this->ticking = $active;
+
+        if ($active) {
+            register_tick_function($this->tickHandler(...));
+            ob_start();
+
+            declare(ticks=1);
+        }
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
     }
 
     /**
@@ -57,38 +68,20 @@ final class CoreProfiler
      *
      * @param string $event Custom event annotation to identify event times during profiling. If NULL, no event is provided (Defaults to NULL).
      */
-    public function tickHandler(?string $event = null)
+    private function tickHandler(?string $event = null)
     {
         if ($this->ticking || !empty($event)) {
-            $this->profilingData[] = array(
+            $tickData = array(
                 microtime(true) - $this->profilingStartTime,
                 memory_get_usage(),
-                memory_get_usage(true),
-                empty($event) ? 'null' : sprintf('"%d"', ++$this->lastAnnotation),
-                empty($event) ? 'null' : "\"$event\""
+                memory_get_usage(true)
             );
+            if (!empty($event)) {
+                $tickData[] = ++$this->lastAnnotation;
+                $tickData[] = $event;
+            }
+            $this->profilingData[] = $tickData;
         }
-    }
-
-    /**
-     * Initiliases profiling
-     *
-     * This function enables output buffering.
-     *
-     * @since 1.0
-     */
-    public static function init()
-    {
-        if (self::$singleInstance !== null) {
-            return;
-        }
-
-        self::$singleInstance = new CoreProfiler();
-        register_tick_function(array(&self::$singleInstance, 'tickHandler'));
-        Scripts::add('https://www.google.com/jsapi');
-        ob_start();
-
-        declare(ticks=1);
     }
 
     /**
@@ -96,31 +89,25 @@ final class CoreProfiler
      * @since 1.0
      * @param string $event Name of the even
      */
-    public static function pushEvent(string $event)
+    public function pushEvent(string $event)
     {
-        if (self::$singleInstance === null || !empty(self::$singleInstance->profilingEndTime)) {
-            return;
+        if ($this->active && empty($this->profilingEndTime)) {
+            $this->tickHandler($event);
         }
-
-        self::$singleInstance->ticking = false;
-        if (self::$singleInstance !== null) {
-            self::$singleInstance->tickHandler($event);
-        }
-        self::$singleInstance->ticking = true;
     }
 
     /**
      * Terminates profiling and output buffering and echoes the result
      * @since 1.0
      */
-    public static function stop()
+    public function stop(Environment $twig)
     {
-        if (self::$singleInstance === null) {
+        if (!$this->active) {
             return;
         }
 
-        unregister_tick_function(array(&self::$singleInstance, 'tickHandler'));
-        self::$singleInstance->profilingEndTime = microtime(true);
+        unregister_tick_function($this->tickHandler(...));
+        $this->profilingEndTime = microtime(true);
 
         $peak = memory_get_usage();
         $realPeak = memory_get_peak_usage(true);
@@ -162,19 +149,34 @@ final class CoreProfiler
             }
         }
 
+        $preparedProfilingData = $this->profilingData;
+        if ($contentType != 'application/json' && $contentType != 'application/xml') {
+            $preparedProfilingData = array_map(function ($item) use ($contentType) {
+                if (count($item) < 5) {
+                    $item = array_pad($item, 5, 'null');
+                } else {
+                    if ($contentType == 'text/html') {
+                        $item[3] = sprintf('"%d"', $item[3]);
+                    }
+                    $item[4] = sprintf('"%s"', $item[4]);
+                }
+                return $item;
+            }, $preparedProfilingData);
+        }
+
         $context = array(
-            'duration' => self::getProfilingDuration(),
-            'opCount' => count(self::$singleInstance->profilingData),
+            'duration' => $this->getProfilingDuration(),
+            'opCount' => count($this->profilingData),
             'memPeakUsage' => $peak,
             'memPeakUsageRatio' => $peak / $memlimit,
             'memRealPeakUsage' => $realPeak,
             'memRealPeakUsageRatio' => $realPeak / $memlimit,
-            'data' => self::$singleInstance->profilingData
+            'data' => $preparedProfilingData
         );
 
         // HTML
         if ($contentType == 'text/html') {
-            $str = CoreManager::getTwig()->render('@mfx/Profiler_HTML.twig', $context);
+            $str = $twig->render('@mfx/Profiler_HTML.twig', $context);
             echo preg_replace('/<!--\s+--MFX_PROFILING_OUTPUT--\s+-->/', $str, $buffer);
         }
         // JSON
@@ -200,8 +202,10 @@ final class CoreProfiler
                         $dataRow->addAttribute('timing', $row[0]);
                         $dataRow->addAttribute('memory_usage', $row[1]);
                         $dataRow->addAttribute('memore_real_usage', $row[2]);
-                        $dataRow->addAttribute('annotation_index', $row[3]);
-                        $dataRow->addChild('event', $row[4]);
+                        if (count($row) > 3) {
+                            $dataRow->addAttribute('annotation_index', $row[3]);
+                            $dataRow->addChild('event', $row[4]);
+                        }
                     }
                 } else {
                     $profilerRoot->addChild($k, $v);
@@ -212,7 +216,7 @@ final class CoreProfiler
         }
         // Text plain
         elseif ($contentType == 'text/plain') {
-            $str = CoreManager::getTwig()->render('@mfx/Profiler_Plain.twig', $context);
+            $str = $twig->render('@mfx/Profiler_Plain.twig', $context);
             echo "{$buffer}\n\n{$str}";
         }
         // Unsupported content-type
@@ -226,11 +230,11 @@ final class CoreProfiler
      * @since 1.0
      * @return boolean|float false if profiling is not initialized or complete, or the duration in milliseconds
      */
-    public static function getProfilingDuration(): float|false
+    public function getProfilingDuration(): float|false
     {
-        if (self::$singleInstance === null || empty(self::$singleInstance->profilingEndTime)) {
+        if (!$this->active || empty($this->profilingEndTime)) {
             return false;
         }
-        return (self::$singleInstance->profilingEndTime - self::$singleInstance->profilingStartTime);
+        return ($this->profilingEndTime - $this->profilingStartTime);
     }
 }

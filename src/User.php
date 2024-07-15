@@ -1,33 +1,26 @@
 <?php
 
-/**
- * User descriptor
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
+
+use chsxf\MFX\Services\IAuthenticationService;
+use chsxf\MFX\Services\IDatabaseService;
 
 /**
  * User description class
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 class User
 {
-    /**
-     * @var User Current registered user reference
-     */
-    private static ?User $currentUser = null;
-
     /**
      * @var boolean If set, the current registered is a valid user. Either, the user is a guest
      */
     private bool $valid;
 
     /**
-     * @var string User key. NULL for guests and most commonly the user database ID for valid users.
+     * @var string User identifier. NULL for guests and most commonly the user database ID for valid users.
      */
-    private ?string $key;
+    private ?string $id;
 
     /**
      * @var array User data fetched from the database
@@ -39,140 +32,60 @@ class User
      */
     private bool $dataFetched;
 
-    /**
-     * Validates user session
-     * @since 1.0
-     */
-    public static function validate()
-    {
-        // Authenticator class
-        $rc = new \ReflectionClass(Config::get(ConfigConstants::USER_MANAGEMENT_CLASS, __CLASS__));
-        self::$currentUser = $rc->newInstance();
-
-        // Validating
-        if (!empty($_SESSION['logged_user'])) {
-            list($key, $ip) = explode('|', $_SESSION['logged_user'], 2);
-
-            if ($ip != $_SERVER['REMOTE_ADDR'] || !self::$currentUser->registerFromKey($key)) {
-                unset($_SESSION['logged_user']);
-            }
-        }
-    }
-
-    /**
-     * Validates a user session using database fields
-     * @since 1.0
-     * @param array $fields Key-value pairs for database validation
-     * @return boolean true if the session has been validated, false either
-     */
-    public static function validateWithFields(array $fields): bool
-    {
-        if (!self::$currentUser->isValid() && self::$currentUser->registerWithFields($fields)) {
-            self::setSessionWithUserKey(self::$currentUser->getKey());
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Sets in session the current user's key if not already set
-     * @since 1.0
-     * @param string $key Current user's key
-     */
-    protected static function setSessionWithUserKey(string $key)
-    {
-        if (!isset($_SESSION['logged_user'])) {
-            $_SESSION['logged_user'] = sprintf("%s|%s", $key, $_SERVER['REMOTE_ADDR']);
-        }
-    }
-
-    /**
-     * Invalidates user session.
-     * Logs out the current valid user if existing
-     * @since 1.0
-     */
-    public static function invalidate()
-    {
-        unset($_SESSION['logged_user']);
-    }
-
-    /**
-     * Gets the current user reference
-     * @since 1.0
-     * @return User
-     */
-    public static function currentUser(): ?User
-    {
-        return self::$currentUser;
-    }
+    protected readonly IAuthenticationService $authenticationService;
+    protected readonly IDatabaseService $databaseService;
 
     /**
      * Constructor
      * @since 1.0
-     * @param string $key User key
      */
-    public function __construct(string $key = null)
+    public function __construct(IAuthenticationService $authenticationService, IDatabaseService $databaseService)
     {
+        $this->authenticationService = $authenticationService;
+        $this->databaseService = $databaseService;
+
         $this->valid = false;
-        $this->key = null;
+        $this->id = null;
 
         $this->data = null;
         $this->dataFetched = false;
-
-        if ($key !== null) {
-            $this->registerFromKey($key);
-        }
     }
 
     /**
-     * Retrieves users management key field name
+     * Validates the user from its identifier
      * @since 1.0
-     * @throws \InvalidArgumentException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
-     * @return string
+     * @param string $id User identifier to validate
+     * @return boolean true if the user identifier is valid, false either
      */
-    public static function getKeyField(): string
+    public function validateWithId(string $id): bool
     {
-        $keyFieldName = Config::get(ConfigConstants::USER_MANAGEMENT_KEY_FIELD, 'user_id');
-        if (!is_string($keyFieldName)) {
-            throw new \InvalidArgumentException("Users management key field name is not a string.");
+        if ($this->valid && $this->id === $id) {
+            return true;
         }
-        if (!preg_match('/^[[:alnum:]_]+$/', $keyFieldName)) {
-            throw new \InvalidArgumentException("Users management key field name contains invalid characters (only underscores and alphanumeric characters are accepted).");
+
+        $dbConn = $this->databaseService->open("__mfx");
+        $nb = $dbConn->getValue(sprintf('SELECT COUNT(`%1$s`) FROM `%2$s` WHERE `%1$s` = ?', $this->authenticationService->getIdField(), $this->authenticationService->getTableName()), $id);
+        if (empty($nb)) {
+            return false;
         }
-        return $keyFieldName;
+
+        $this->id = $id;
+        return ($this->valid = $this->validate());
     }
 
     /**
-     * Retrieves users management table name
-     * @since 1.0
-     * @throws \InvalidArgumentException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
-     * @return string
-     */
-    public static function getTableName(): string
-    {
-        $tableName = Config::get(ConfigConstants::USER_MANAGEMENT_TABLE, 'mfx_users');
-        if (!is_string($tableName)) {
-            throw new \InvalidArgumentException("Users management table name is not a string.");
-        }
-        if (!preg_match('/^[[:alnum:]_]+$/', $tableName)) {
-            throw new \InvalidArgumentException("Users management table name contains invalid characters (only underscores and alphanumeric characters are accepted).");
-        }
-        return $tableName;
-    }
-
-    /**
-     * Register a user from database fields
+     * Validates a user from database fields
      * @since 1.0
      * @param array $fields Database fields used to identify the user
      * @return boolean true if the user is valid, false either
      */
-    public function registerWithFields(array $fields): bool
+    public function validateWithFields(array $fields): bool
     {
         if (empty($fields)) {
             return false;
         }
 
-        $sql = sprintf("SELECT `%s` FROM `%s` WHERE ", self::getKeyField(), self::getTableName());
+        $sql = sprintf("SELECT `%s` FROM `%s` WHERE ", $this->authenticationService->getIdField(), $this->authenticationService->getTableName());
         $validFields = array();
         $values = array();
         foreach ($fields as $f) {
@@ -210,33 +123,15 @@ class User
         $sql .= implode(' AND ', $validFields) . ' LIMIT 1';
         array_unshift($values, $sql);
 
-        $dbm = DatabaseManager::open("__mfx");
-        $key = call_user_func_array(array(
-            &$dbm,
-            'getValue'
-        ), $values);
-        $dbm = null;
-        if ($key === false) {
+        $dbConn = $this->databaseService->open("__mfx");
+        $id = call_user_func_array($dbConn->getValue(...), $values);
+        if ($id === false) {
             return false;
         }
 
-        $this->key = $key;
-        $this->valid = $this->validateUser();
+        $this->id = $id;
+        $this->valid = $this->validate();
         return true;
-    }
-
-    /**
-     * Validates the user key
-     * @since 1.0
-     * @param string $key User key to validate
-     * @return boolean true if the user key is valid, false either
-     * @used-by User::registerFromKey()
-     */
-    protected function validateKey(string $key): bool
-    {
-        $dbm = DatabaseManager::open("__mfx");
-        $nb = $dbm->getValue(sprintf('SELECT COUNT(`%1$s`) FROM `%2$s` WHERE `%1$s` = ?', self::getKeyField(), self::getTableName()), $key);
-        return !empty($nb);
     }
 
     /**
@@ -244,36 +139,19 @@ class User
      * @since 1.0
      * @return boolean true if the user is valid, false either
      */
-    protected function validateUser(): bool
+    protected function validate(): bool
     {
-        return $this->key !== null;
+        return $this->id !== null;
     }
 
     /**
-     * Register a user from its key
-     * @since 1.0
-     * @param string $key User key
-     * @return boolean true is the key is valid, false either
-     * @uses User::_validateKey()
-     */
-    public function registerFromKey($key): bool
-    {
-        if ($this->validateKey($key)) {
-            $this->key = $key;
-            $this->valid = $this->validateUser();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Gets the current user key
+     * Gets the current user identifier
      * @since 1.0
      * @return string The function returns NULL if no valid user is currently registered
      */
-    public function getKey(): string
+    public function getId(): string
     {
-        return $this->key;
+        return $this->id;
     }
 
     /**
@@ -318,9 +196,8 @@ class User
      */
     protected function fetchData(): mixed
     {
-        $dbm = DatabaseManager::open('__mfx');
-        $row = $dbm->getRow($this->getFetchDataQuery(), \PDO::FETCH_ASSOC, $this->key);
-        $dbm = null;
+        $dbConn = $this->databaseService->open('__mfx');
+        $row = $dbConn->getRow($this->getFetchDataQuery(), \PDO::FETCH_ASSOC, $this->id);
         return $row;
     }
 
@@ -331,7 +208,7 @@ class User
      */
     protected function getFetchDataQuery(): string
     {
-        return sprintf("SELECT * FROM `%s` WHERE `%s` = ?", self::getTableName(), self::getKeyField());
+        return sprintf("SELECT * FROM `%s` WHERE `%s` = ?", $this->authenticationService->getTableName(), $this->authenticationService->getIdField());
     }
 
     /**
