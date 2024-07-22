@@ -13,4 +13,5 @@ interface ICoreServiceProvider
     function getStyleSheetService(): IStyleSheetService;
     function getAuthenticationService(): IAuthenticationService;
     function getDatabaseService(): IDatabaseService;
+    function getSessionService(): ISessionService;
 }

@@ -63,8 +63,6 @@ final class ConfigConstants
     public const SESSION_NAME = self::SESSION . '.name';
     /** @since 1.0 */
     public const SESSION_PATH = self::SESSION . '.path';
-    /** @since 1.0 */
-    public const SESSION_USE_COOKIES = self::SESSION . '.use_cookies';
 
     /** @since 1.0 */
     public const TWIG = 'twig';

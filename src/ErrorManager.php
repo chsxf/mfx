@@ -10,6 +10,7 @@ namespace chsxf\MFX;
 
 use chsxf\MFX\Exceptions\MFXException;
 use chsxf\MFX\Services\IConfigService;
+use chsxf\MFX\Services\ISessionService;
 use Twig\Environment;
 
 /**
@@ -45,7 +46,7 @@ final class ErrorManager
 
     private static ?ErrorManager $singleInstance = null;
 
-    public function __construct(private readonly IConfigService $configService)
+    public function __construct(private readonly IConfigService $configService, private readonly ISessionService $sessionService)
     {
         if (self::$singleInstance !== null) {
             throw new MFXException(HttpStatusCodes::internalServerError, "ErrorManager has already been instantiated");
@@ -146,7 +147,20 @@ final class ErrorManager
      */
     public function freeze(bool $flush = false)
     {
-        $_SESSION[__CLASS__] = serialize(array('errors' => $this->errors, 'notifs' => $this->notifs));
+        if ($this->hasError() || $this->hasNotif()) {
+            $arr = [];
+            if ($this->hasError()) {
+                $arr['errors'] = $this->errors;
+            }
+            if ($this->hasNotif()) {
+                $arr['notifs'] = $this->notifs;
+            }
+
+            $this->sessionService[__CLASS__] = $arr;
+        } else {
+            unset($this->sessionService[__CLASS__]);
+        }
+
         if (!empty($flush)) {
             $this->flush();
         }
@@ -158,13 +172,16 @@ final class ErrorManager
      */
     private function unfreeze()
     {
-        if (!empty($_SESSION[__CLASS__])) {
-            $arr = @unserialize($_SESSION[__CLASS__]);
-            if (!empty($arr)) {
+        if (isset($this->sessionService[__CLASS__])) {
+            $arr = $this->sessionService[__CLASS__];
+            if (!empty($arr['errors'])) {
                 $this->errors = array_merge($this->errors, $arr['errors']);
+            }
+            if (!empty($arr['notifs'])) {
                 $this->notifs = array_merge($this->notifs, $arr['notifs']);
             }
-            unset($_SESSION[__CLASS__]);
+
+            unset($this->sessionService[__CLASS__]);
         }
     }
 

@@ -11,6 +11,7 @@ use chsxf\MFX\Services\ITemplateService;
 use chsxf\MFX\Services\ILocalizationService;
 use chsxf\MFX\Services\IProfilingService;
 use chsxf\MFX\Services\IScriptService;
+use chsxf\MFX\Services\ISessionService;
 use chsxf\MFX\Services\IStyleSheetService;
 
 final class CoreServiceProviderImplementation implements ICoreServiceProvider
@@ -24,7 +25,8 @@ final class CoreServiceProviderImplementation implements ICoreServiceProvider
         private readonly IScriptService $scriptService,
         private readonly IStyleSheetService $styleSheetService,
         private readonly IAuthenticationService $authenticationService,
-        private readonly IDatabaseService $databaseService
+        private readonly IDatabaseService $databaseService,
+        private readonly ISessionService $sessionService
     ) {
     }
 
@@ -71,5 +73,10 @@ final class CoreServiceProviderImplementation implements ICoreServiceProvider
     public function getDatabaseService(): IDatabaseService
     {
         return $this->databaseService;
+    }
+
+    public function getSessionService(): ISessionService
+    {
+        return $this->sessionService;
     }
 }

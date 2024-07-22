@@ -6,6 +6,7 @@ use chsxf\MFX\Exceptions\MFXException;
 use chsxf\MFX\Services\IAuthenticationService;
 use chsxf\MFX\Services\IConfigService;
 use chsxf\MFX\Services\IDatabaseService;
+use chsxf\MFX\Services\ISessionService;
 
 /**
  * User management class
@@ -14,6 +15,9 @@ use chsxf\MFX\Services\IDatabaseService;
  */
 final class UserManager implements IAuthenticationService
 {
+    private const LOGGED_USER_ID = 'logged_user_id';
+    private const LOGGED_FROM_IP = 'logged_from_ip';
+
     /**
      * @var User Current registered user reference
      */
@@ -23,15 +27,19 @@ final class UserManager implements IAuthenticationService
      * Constructor
      * @since 2.0
      */
-    public function __construct(private readonly IConfigService $configService, private readonly IDatabaseService $databaseService)
-    {
+    public function __construct(
+        private readonly IConfigService $configService,
+        private readonly IDatabaseService $databaseService,
+        private readonly ISessionService $sessionService
+    ) {
         // Validating
-        if (!empty($_SESSION['logged_user'])) {
+        if (!empty($this->sessionService[self::LOGGED_USER_ID]) && !empty($this->sessionService[self::LOGGED_FROM_IP])) {
             $newUser = $this->instantiateUser();
 
-            list($userId, $ip) = explode('|', $_SESSION['logged_user'], 2);
+            $userId = $this->sessionService[self::LOGGED_USER_ID];
+            $ip = $this->sessionService[self::LOGGED_FROM_IP];
             if ($ip != $_SERVER['REMOTE_ADDR'] || !$newUser->validateWithId($userId)) {
-                unset($_SESSION['logged_user']);
+                $this->invalidate();
             } else {
                 $this->currentAuthenticatedUser = $newUser;
             }
@@ -94,9 +102,10 @@ final class UserManager implements IAuthenticationService
      */
     private function setSessionWithUserId(string $id)
     {
-        if (!isset($_SESSION['logged_user'])) {
-            $_SESSION['logged_user'] = sprintf("%s|%s", $id, $_SERVER['REMOTE_ADDR']);
-        }
+        $this->sessionService->setInSession([
+            self::LOGGED_USER_ID => $id,
+            self::LOGGED_FROM_IP => $_SERVER['REMOTE_ADDR']
+        ]);
     }
 
     /**
@@ -106,7 +115,7 @@ final class UserManager implements IAuthenticationService
      */
     public function invalidate()
     {
-        unset($_SESSION['logged_user']);
+        $this->sessionService->unsetInSession(self::LOGGED_USER_ID, self::LOGGED_FROM_IP);
         $this->currentAuthenticatedUser = null;
     }
 

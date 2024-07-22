@@ -45,16 +45,24 @@ final class Framework
 
         $profiler = new CoreProfiler($configManager->getValue(ConfigConstants::PROFILING, false));
 
-        self::startSession($configManager);
-        $errorManager = new ErrorManager($configManager);
+        $sessionManager = new SessionManager($configManager);
+        $errorManager = new ErrorManager($configManager, $sessionManager);
 
         $profiler->pushEvent('Starting session / Authenticating user');
-        $userManager = new UserManager($configManager, $databaseManager);
+        $userManager = new UserManager($configManager, $databaseManager, $sessionManager);
 
         $localizationService = new L10nManager($configManager);
         $localizationService->bindTextDomain('mfx', ROOT . '/messages');
 
-        $coreManager = new CoreManager($errorManager, $configManager, $localizationService, $profiler, $userManager, $databaseManager);
+        $coreManager = new CoreManager(
+            $errorManager,
+            $configManager,
+            $localizationService,
+            $profiler,
+            $userManager,
+            $databaseManager,
+            $sessionManager
+        );
         set_exception_handler($coreManager->exceptionHandler(...));
 
         $iniTimezone = ini_get('date.timezone');
@@ -68,30 +76,6 @@ final class Framework
         $errorManager->freeze();
         if ($profiler->isActive()) {
             $profiler->stop($coreManager->getTwig());
-        }
-    }
-
-    private static function startSession(ConfigManager $configManager)
-    {
-        if (empty($configManager->getValue(ConfigConstants::SESSION_ENABLED, true))) {
-            return;
-        }
-
-        // Setting session parameters
-        session_name($configManager->getValue(ConfigConstants::SESSION_NAME, 'MFXSESSION'));
-        if ($configManager->getValue(ConfigConstants::SESSION_USE_COOKIES, true)) {
-            ini_set('session.use_cookies', '1');
-            ini_set('session.use_trans_id', '0');
-            session_set_cookie_params($configManager->getValue(ConfigConstants::SESSION_LIFETIME, 0), $configManager->getValue(ConfigConstants::SESSION_PATH, ''), $configManager->getValue(ConfigConstants::SESSION_DOMAIN, ''));
-            session_start();
-        } else {
-            ini_set('session.use_cookies', '0');
-            ini_set('session.use_trans_id', '1');
-            if (!empty($_REQUEST[session_name()])) {
-                session_id($_REQUEST[session_name()]);
-            }
-            session_start();
-            output_add_rewrite_var(session_name(), session_id());
         }
     }
 }

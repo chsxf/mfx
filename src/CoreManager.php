@@ -21,6 +21,7 @@ use chsxf\MFX\Services\IDatabaseService;
 use chsxf\MFX\Services\ILocalizationService;
 use chsxf\MFX\Services\IProfilingService;
 use chsxf\MFX\Services\IRequestService;
+use chsxf\MFX\Services\ISessionService;
 use chsxf\MFX\Services\ITemplateService;
 use chsxf\Twig\Extension\Gettext;
 use chsxf\Twig\Extension\Lazy;
@@ -72,7 +73,8 @@ final class CoreManager implements IRequestService, ITemplateService
         private readonly ILocalizationService $localizationService,
         private readonly IProfilingService $profilingService,
         private readonly IAuthenticationService $authenticationService,
-        private readonly IDatabaseService $databaseService
+        private readonly IDatabaseService $databaseService,
+        private readonly ISessionService $sessionService
     ) {
         // Fake protocols
         $this->fakeProtocols = array(
@@ -99,7 +101,7 @@ final class CoreManager implements IRequestService, ITemplateService
 
         $this->initializeScriptsAndStylsheets();
 
-        $this->coreServiceProvider = new CoreServiceProviderImplementation($configService, $this, $this, $localizationService, $profilingService, $this->scripts, $this->styleSheets, $authenticationService, $databaseService);
+        $this->coreServiceProvider = new CoreServiceProviderImplementation($configService, $this, $this, $localizationService, $profilingService, $this->scripts, $this->styleSheets, $authenticationService, $databaseService, $sessionService);
     }
 
     private function initializeScriptsAndStylsheets()
