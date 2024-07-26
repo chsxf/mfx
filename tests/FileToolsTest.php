@@ -2,11 +2,13 @@
 
 use chsxf\MFX\Exceptions\MFXException;
 use chsxf\MFX\FileTools;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class FileToolsTest extends TestCase
 {
-    public function testMimeTypeFromExtension(): void
+    #[Test]
+    public function mimeTypeFromExtension(): void
     {
         $parametersAndExpectedResults = [
             'zip' => 'application/zip',

@@ -2,12 +2,13 @@
 
 use chsxf\MFX\StringTools;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class StringToolsTest extends TestCase
 {
-    #[DataProvider('emailAddressProvider')]
-    public function testIsValidEmailAddress(string $testedAddress, bool $expectedResult): void
+    #[Test, DataProvider('emailAddressProvider')]
+    public function isValidEmailAddress(string $testedAddress, bool $expectedResult): void
     {
         $expectedResultAsString = json_encode($expectedResult);
         $this->assertSame($expectedResult, StringTools::isValidEmailAddress($testedAddress), "Test failed for address {$testedAddress} - Should be {$expectedResultAsString}");
@@ -65,8 +66,8 @@ final class StringToolsTest extends TestCase
         ];
     }
 
-    #[DataProvider('positiveIntegerProvider')]
-    public function testIsPositiveInteger(string $str, bool $canBeZero, bool $expectedResult)
+    #[Test, DataProvider('positiveIntegerProvider')]
+    public function isPositiveInteger(string $str, bool $canBeZero, bool $expectedResult)
     {
         $this->assertSame($expectedResult, StringTools::isPositiveInteger($str, $canBeZero));
     }
@@ -85,8 +86,8 @@ final class StringToolsTest extends TestCase
         ];
     }
 
-    #[DataProvider('negativeIntegerProvider')]
-    public function testIsNegativeInteger(string $str, bool $canBeZero, bool $expectedResult)
+    #[Test, DataProvider('negativeIntegerProvider')]
+    public function isNegativeInteger(string $str, bool $canBeZero, bool $expectedResult)
     {
         $this->assertSame($expectedResult, StringTools::isNegativeInteger($str, $canBeZero));
     }
@@ -107,8 +108,8 @@ final class StringToolsTest extends TestCase
         ];
     }
 
-    #[DataProvider('tntegerProvider')]
-    public function testIsInteger(string $str, bool $expectedResult)
+    #[Test, DataProvider('tntegerProvider')]
+    public function isInteger(string $str, bool $expectedResult)
     {
         $this->assertSame($expectedResult, StringTools::isInteger($str));
     }
@@ -129,8 +130,8 @@ final class StringToolsTest extends TestCase
         ];
     }
 
-    #[DataProvider('randomStringProvider')]
-    public function testGenerateRandomString(?string $charset, int $length): void
+    #[Test, DataProvider('randomStringProvider')]
+    public function generateRandomString(?string $charset, int $length): void
     {
         if ($charset === NULL) {
             $generatedString = StringTools::generateRandomString($length);
@@ -161,8 +162,8 @@ final class StringToolsTest extends TestCase
         ];
     }
 
-    #[DataProvider('implodeProvide')]
-    public function testImplode(string $separator, array $elements, ?string $lastSeparator, ?string $firstSeparator, string $expectedResult): void
+    #[Test, DataProvider('implodeProvide')]
+    public function implode(string $separator, array $elements, ?string $lastSeparator, ?string $firstSeparator, string $expectedResult): void
     {
         $implodedString = StringTools::implode($separator, $elements, $lastSeparator, $firstSeparator);
         $this->assertSame($expectedResult, $implodedString);
@@ -180,8 +181,8 @@ final class StringToolsTest extends TestCase
         ];
     }
 
-    #[DataProvider('snakeToCamelCaseProvider')]
-    public function testSnakeToCamelCase(string $str, string $expectedResult): void
+    #[Test, DataProvider('snakeToCamelCaseProvider')]
+    public function snakeToCamelCase(string $str, string $expectedResult): void
     {
         $generatedString = StringTools::snakeToCamelCase($str);
         $this->assertSame($expectedResult, $generatedString);
@@ -196,8 +197,8 @@ final class StringToolsTest extends TestCase
         ];
     }
 
-    #[DataProvider('snakeToPascalCaseProvider')]
-    public function testSnakeToPascalCase(string $str, string $expectedResult): void
+    #[Test, DataProvider('snakeToPascalCaseProvider')]
+    public function snakeToPascalCase(string $str, string $expectedResult): void
     {
         $generatedString = StringTools::snakeToPascalCase($str);
         $this->assertSame($expectedResult, $generatedString);
@@ -212,8 +213,8 @@ final class StringToolsTest extends TestCase
         ];
     }
 
-    #[DataProvider('snakeCaseProvider')]
-    public function testSnakeCase(string $str, bool $upperCase, $expectedResult): void
+    #[Test, DataProvider('snakeCaseProvider')]
+    public function snakeCase(string $str, bool $upperCase, $expectedResult): void
     {
         $generatedString = StringTools::toSnakeCase($str, $upperCase);
         $this->assertSame($expectedResult, $generatedString);
@@ -235,8 +236,8 @@ final class StringToolsTest extends TestCase
         ];
     }
 
-    #[DataProvider('sanitizeProvider')]
-    public function testSanitize(string $str, ?string $placeholder, string $expectedResult): void
+    #[Test, DataProvider('sanitizeProvider')]
+    public function sanitize(string $str, ?string $placeholder, string $expectedResult): void
     {
         if ($placeholder === NULL) {
             $generatedString = StringTools::sanitize($str);
@@ -262,8 +263,8 @@ final class StringToolsTest extends TestCase
         ];
     }
 
-    #[DataProvider('removeAccentsProvider')]
-    public function testRemoveAccents(string $str, string $expectedResult): void
+    #[Test, DataProvider('removeAccentsProvider')]
+    public function removeAccents(string $str, string $expectedResult): void
     {
         $generatedString = StringTools::removeAccents($str);
         $this->assertSame($expectedResult, $generatedString);

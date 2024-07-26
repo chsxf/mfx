@@ -1,11 +1,13 @@
 <?php
 
 use chsxf\MFX\ArrayTools;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class ArrayToolsTest extends TestCase
 {
-    public function testReverseArrays(): void
+    #[Test]
+    public function reverseArrays(): void
     {
         $expectedResult = [
             'column1' => [10, 15],
@@ -20,7 +22,8 @@ final class ArrayToolsTest extends TestCase
         $this->assertSame($expectedResult, $dstArrays);
     }
 
-    public function testConcatArrays(): void
+    #[Test]
+    public function concatArrays(): void
     {
         $expectedResult = [1, 2, 3, 4, 5, 6, 7];
 
@@ -32,7 +35,8 @@ final class ArrayToolsTest extends TestCase
         $this->assertSame($expectedResult, $result2);
     }
 
-    public function testShuffle(): void
+    #[Test]
+    public function shuffle(): void
     {
         $srcArray = range(1, 100);
         $shuffledArray = range(1, 100);
@@ -45,7 +49,8 @@ final class ArrayToolsTest extends TestCase
         }
     }
 
-    public function testIsParameterArray(): void
+    #[Test]
+    public function isParameterArray(): void
     {
         $rc = new ReflectionClass(get_class($this));
         $rm = $rc->getMethod('isParameterArrayReflectionMethod');

@@ -1,17 +1,19 @@
 <?php
 
 use chsxf\MFX\XMLTools;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class XMLToolsTest extends TestCase
 {
-    public function testBuild(): void
-    {
-        $srcData = ['b' => 'true', 'i' => '10', 'f' => '12.34', 's' => 'test string'];
+	#[Test]
+	public function build(): void
+	{
+		$srcData = ['b' => 'true', 'i' => '10', 'f' => '12.34', 's' => 'test string'];
 
-        $builtValue = XMLTools::build($srcData);
+		$builtValue = XMLTools::build($srcData);
 
-        $expectedValue = '<?xml version="1.0" encoding="UTF-8"?>
+		$expectedValue = '<?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<array>
 		<key><![CDATA[b]]></key>
@@ -26,6 +28,6 @@ final class XMLToolsTest extends TestCase
 </root>
 ';
 
-        $this->assertSame($expectedValue, $builtValue);
-    }
+		$this->assertSame($expectedValue, $builtValue);
+	}
 }

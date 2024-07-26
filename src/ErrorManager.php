@@ -51,6 +51,7 @@ final class ErrorManager
         if (self::$singleInstance !== null) {
             throw new MFXException(HttpStatusCodes::internalServerError, "ErrorManager has already been instantiated");
         }
+        self::$singleInstance = $this;
 
         $this->previousHandler = set_error_handler($this->handleError(...));
         $this->unfreeze();
@@ -211,7 +212,7 @@ final class ErrorManager
     public function flushToArrayOrObject(array|object &$arrOrObject)
     {
         if (is_array($arrOrObject)) {
-            if (!array_is_list($arrOrObject)) {
+            if (empty($arrOrObject) || !array_is_list($arrOrObject)) {
                 $this->flushToArray($arrOrObject);
             }
         } elseif (is_object($arrOrObject)) {

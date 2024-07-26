@@ -1,11 +1,13 @@
 <?php
 
 use chsxf\MFX\JSONTools;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class JSONToolsTest extends TestCase
 {
-    public function testFilterAndEncode(): void
+    #[Test]
+    public function filterAndEncode(): void
     {
         $srcData = ['b' => 'true', 'i' => '10', 'f' => '12.34', 's' => 'test string'];
 

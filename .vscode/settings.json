@@ -5,6 +5,6 @@
     "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
   },
   "formatFiles.extensionsToInclude": "php",
-  "phpunit.args": ["--testdox"],
+  "phpunit.args": ["tests", "--color=always"],
   "phpunit.phpunit": "vendor/bin/phpunit"
 }
