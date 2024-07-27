@@ -11,7 +11,7 @@ use chsxf\MFX\Routers\IRouteProvider;
  * @since 1.0
  * @package chsxf\MFX
  */
-final class Status implements IRouteProvider
+final class AppStatus implements IRouteProvider
 {
     /**
      * @since 1.0
