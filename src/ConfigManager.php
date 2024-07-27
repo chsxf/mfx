@@ -5,6 +5,11 @@ namespace chsxf\MFX;
 use chsxf\MFX\Exceptions\ConfigException;
 use chsxf\MFX\Services\IConfigService;
 
+/**
+ * Configuration directives manager, acting as the default configuration service implementation
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
+ * @since 2.0
+ */
 final class ConfigManager implements IConfigService
 {
     private const DOMAIN_NAME_REGEX = '/^[a-z0-9_]+$/i';
@@ -15,6 +20,9 @@ final class ConfigManager implements IConfigService
      */
     private array $configDataByDomain;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->configDataByDomain = [];
@@ -22,9 +30,7 @@ final class ConfigManager implements IConfigService
 
     /**
      * Loads configuration properties
-     *
-     * @since 1.0
-     *
+     * 
      * @param Config $configData Config data
      * @param string $domain Domain name
      */
@@ -42,6 +48,14 @@ final class ConfigManager implements IConfigService
         $this->configDataByDomain[$trimmedDomain] = $configData;
     }
 
+    /**
+     * Try getting a value from the currently loaded configuration directives
+     * @param string $property Path of the property we're trying to get the value of
+     * @param mixed $outValue Output value reference
+     * @param null|string $domain Domain name (defaults to null, therefore using the default domain)
+     * @return bool <code>true</code> if the value exists, <code>false</code> either
+     * @throws ConfigException if the requested domain is not loaded, or the property path or the domain uses invalid syntax
+     */
     public function tryGetValue(string $property, mixed &$outValue, ?string $domain = null): bool
     {
         if ($domain === null) {
@@ -85,8 +99,9 @@ final class ConfigManager implements IConfigService
     /**
      * Gets the value of a configuration property
      *
-     * @param string $property Name of the propery
-     * @param mixed $default Default value if the property has not been provided (Defaults to NULL)
+     * @param string $property Path of the property we're trying to get the value of
+     * @param mixed $default Default value if the property has not been found (Defaults to NULL)
+     * @param null|string $domain Domain name (defaults to null, therefore using the default domain)
      * @return mixed
      */
     public function getValue(string $property, mixed $default = null, ?string $domain = null): mixed
@@ -97,7 +112,8 @@ final class ConfigManager implements IConfigService
     /**
      * Determines if a configuration property has been provided in the configuration file
      *
-     * @param string $property Name of the propery
+     * @param string $property Path of the property we're trying to get the value of
+     * @param null|string $domain Domain name (defaults to null, therefore using the default domain)
      * @return boolean true if the property has been provided, false either
      */
     public function hasValue(string $property, ?string $domain = null): bool

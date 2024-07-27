@@ -1,15 +1,10 @@
 <?php
 
-/**
- * JSON tools
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 /**
  * Class containing utility functions for encoding data in JSON
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 class JSONTools

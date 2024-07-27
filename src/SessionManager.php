@@ -6,6 +6,11 @@ use chsxf\MFX\Exceptions\MFXException;
 use chsxf\MFX\Services\IConfigService;
 use chsxf\MFX\Services\ISessionService;
 
+/**
+ * Session management class
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
+ * @since 2.0
+ */
 final class SessionManager implements ISessionService
 {
     private const STATUS = 'status';
@@ -16,6 +21,11 @@ final class SessionManager implements ISessionService
 
     private bool $enabled;
 
+    /**
+     * Constructor
+     * @param IConfigService $configService Config service instance
+     * @throws MFXException 
+     */
     public function __construct(private readonly IConfigService $configService)
     {
         if (self::$singleInstance !== null) {
@@ -122,6 +132,10 @@ final class SessionManager implements ISessionService
         $_SESSION[self::LAST_UPDATE] = time();
     }
 
+    /**
+     * Set multiple values in session at once
+     * @param array $values Values as an associative array
+     */
     public function setInSession(array $values)
     {
         if ($this->enabled && !empty($values)) {
@@ -133,6 +147,10 @@ final class SessionManager implements ISessionService
         }
     }
 
+    /**
+     * Unsets multiple values in session at once
+     * @param array $keys List of session variable names to unset
+     */
     public function unsetInSession(string ...$keys)
     {
         if ($this->enabled && !empty($keys)) {
@@ -144,16 +162,25 @@ final class SessionManager implements ISessionService
         }
     }
 
+    /**
+     * @ignore
+     */
     public function offsetExists(mixed $offset): bool
     {
         return $this->enabled && isset($_SESSION[$offset]);
     }
 
+    /**
+     * @ignore
+     */
     public function offsetGet(mixed $offset): mixed
     {
         return $this->enabled ? $_SESSION[$offset] : null;
     }
 
+    /**
+     * @ignore
+     */
     public function offsetSet(mixed $offset, mixed $value): void
     {
         if ($this->enabled) {
@@ -163,6 +190,9 @@ final class SessionManager implements ISessionService
         }
     }
 
+    /**
+     * @ignore
+     */
     public function offsetUnset(mixed $offset): void
     {
         if ($this->enabled) {

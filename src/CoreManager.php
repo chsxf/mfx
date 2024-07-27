@@ -35,13 +35,13 @@ use Wikimedia\Minify\CSSMin;
 use Wikimedia\Minify\JavaScriptMinifier;
 
 /**
- * Core manager singleton class
+ * Core manager class
  *
- * Handles all requests and responses.
+ * Handles requests and responses.
  *
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  * 
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
 final class CoreManager implements IRequestService, ITemplateService
 {
@@ -67,6 +67,17 @@ final class CoreManager implements IRequestService, ITemplateService
 
     private ICoreServiceProvider $coreServiceProvider;
 
+    /**
+     * Constructor
+     * @since 2.0
+     * @param ErrorManager $errorManager Error manager instance
+     * @param IConfigService $configService Config service instance
+     * @param ILocalizationService $localizationService Localization service instance
+     * @param IProfilingService $profilingService Profiling service instance
+     * @param IAuthenticationService $authenticationService Authentication service instance
+     * @param IDatabaseService $databaseService Database service instance
+     * @param ISessionService $sessionService Session service instance
+     */
     public function __construct(
         private readonly ErrorManager $errorManager,
         private readonly IConfigService $configService,
@@ -104,6 +115,9 @@ final class CoreManager implements IRequestService, ITemplateService
         $this->coreServiceProvider = new CoreServiceProviderImplementation($configService, $this, $this, $localizationService, $profilingService, $this->scripts, $this->styleSheets, $authenticationService, $databaseService, $sessionService);
     }
 
+    /**
+     * @since 2.0
+     */
     private function initializeScriptsAndStylsheets()
     {
         if ($this->configService->getValue(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, self::HTML_CONTENT_TYPE) == self::HTML_CONTENT_TYPE) {
@@ -139,10 +153,8 @@ final class CoreManager implements IRequestService, ITemplateService
     /**
      * Converts the fake protocols in the input strings
      *
-     * @since 1.0
-     *
+     * @since 2.0
      * @param string $str Input string
-     *
      * @return string
      */
     public function convertFakeProtocols(string $str): string
@@ -157,8 +169,7 @@ final class CoreManager implements IRequestService, ITemplateService
     /**
      * Gets the Twig environment for the current request
      *
-     * @since 1.0
-     *
+     * @since 2.0
      * @return \Twig\Environment
      */
     public function getTwig(): ?Environment
@@ -193,7 +204,7 @@ final class CoreManager implements IRequestService, ITemplateService
      * Handles the request sent to the server
      *
      * @ignore
-     *
+     * @since 2.0
      * @param string $defaultRoute Route to use if none can be guessed from request
      */
     public function handleRequest(string $requestURI, string $defaultRoute)
@@ -344,6 +355,9 @@ final class CoreManager implements IRequestService, ITemplateService
         $this->profilingService->pushEvent('Post-route callbacks completed');
     }
 
+    /**
+     * @since 2.0
+     */
     private function outputJSON(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = null, Environment $twig = null)
     {
         $this->setStatusCode($reqResult->statusCode());
@@ -359,6 +373,9 @@ final class CoreManager implements IRequestService, ITemplateService
         }
     }
 
+    /**
+     * @since 2.0
+     */
     private function outputXML(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = null, Environment $twig = null)
     {
         $this->setStatusCode($reqResult->statusCode());
@@ -377,8 +394,7 @@ final class CoreManager implements IRequestService, ITemplateService
     /**
      * Builds the root URL from server information (protocol, host and PHP_SELF)
      *
-     * @since 1.0
-     *
+     * @since 2.0
      * @return string
      */
     public function getRootURL(): string
@@ -401,10 +417,9 @@ final class CoreManager implements IRequestService, ITemplateService
     }
 
     /**
-     * Redirects the user the specified URL, the HTTP referer if defined and same host or the website root
+     * Redirects the user to the specified URL, the HTTP referer if defined and same host, or the website root
      *
-     * @since 1.0
-     *
+     * @since 2.0
      * @param string $redirectURL Target redirection URL (Defaults to NULL)
      */
     private function redirect(string $redirectURL = null): never
@@ -429,6 +444,7 @@ final class CoreManager implements IRequestService, ITemplateService
 
     /**
      * Sets the HTTP status code
+     * @since 2.0
      * @param int $code HTTP status code to emit (Defaults to 200 OK)
      */
     private function setStatusCode(HttpStatusCodes $code = HttpStatusCodes::ok)
@@ -438,6 +454,8 @@ final class CoreManager implements IRequestService, ITemplateService
 
     /**
      * Emits a HTTP status code
+     * 
+     * @since 2.0
      * @param HttpStatusCodes $code HTTP status code to emit (Defaults to 400 Bad Request)
      * @param ?string $message Custom message to output with status code
      */
@@ -478,8 +496,7 @@ final class CoreManager implements IRequestService, ITemplateService
     /**
      * Terminates the script and emits a HTTP status code
      *
-     * @since 1.0
-     *
+     * @since 2.0
      * @param HttpStatusCodes $code HTTP status code to emit (Defaults to 400 Bad Request)
      * @param ?string $message Custom message to output with status code
      */
@@ -492,7 +509,8 @@ final class CoreManager implements IRequestService, ITemplateService
 
     /**
      * Sets the response Content-Type header from the route attributes
-     *
+     * 
+     * @since 2.0
      * @param RouteAttributesParser $routerData->routeAttributes Attributes of the route
      * @param string $default Content type to use if not provided by the route.
      * @param string $defaultCharset Charset to use if not provided by the route.
@@ -509,8 +527,7 @@ final class CoreManager implements IRequestService, ITemplateService
     /**
      * Sets attachment headers for file downloads
      *
-     * @since 1.0
-     *
+     * @since 2.0
      * @param string $filename Downlaoded file name
      * @param string $mimeType Attachment MIME type. This parameter is ignored if $addContentType is not set.
      * @param string $charset Attachment charset. If NULL, no charset is provided. This parameter is ignored if $addContentType is not set. (Defaults to UTF-8)
@@ -531,8 +548,8 @@ final class CoreManager implements IRequestService, ITemplateService
     /**
      * Uncaught exception handler
      *
+     * @since 2.0
      * @ignore
-     *
      * @param \Throwable $exception Uncaught exception
      */
     public function exceptionHandler(\Throwable $exception)
@@ -543,6 +560,7 @@ final class CoreManager implements IRequestService, ITemplateService
     }
 
     /**
+     * @since 1.0.1
      * @ignore
      */
     public static function minifyStaticFiles()

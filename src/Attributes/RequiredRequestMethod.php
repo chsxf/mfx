@@ -12,7 +12,6 @@ use chsxf\MFX\RequestMethod;
 class RequiredRequestMethod extends AbstractRouteStringAttribute
 {
     /**
-     * @since 1.0
      * @param RequestMethod $_requestMethod
      */
     public function __construct(RequestMethod $_requestMethod)

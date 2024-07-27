@@ -8,15 +8,12 @@ use chsxf\MFX\RequestResult;
 use chsxf\MFX\Routers\IRouteProvider;
 
 /**
- * @since 1.0
- * @package chsxf\MFX
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
+ * @since 2.0
+ * @ignore
  */
 final class AppStatus implements IRouteProvider
 {
-    /**
-     * @since 1.0
-     * @return RequestResult
-     */
     #[Route]
     #[AnonymousRoute]
     public static function ping(): RequestResult

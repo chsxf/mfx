@@ -1,17 +1,12 @@
 <?php
 
-/**
- * Pagination management class
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 use chsxf\MFX\DataValidator\FieldType;
 
 /**
  * Helper class for managing pagination
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 final class PaginationManager

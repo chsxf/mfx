@@ -15,7 +15,6 @@ class RouteAttributesParser
     private array $attributes = array();
 
     /**
-     * @since 1.0
      * @param ReflectionClass|ReflectionMethod $reflectedElement
      */
     public function __construct(\ReflectionClass|\ReflectionMethod $reflectedElement)
@@ -34,7 +33,6 @@ class RouteAttributesParser
     }
 
     /**
-     * @since 1.0
      * @param string $class
      * @return bool
      */
@@ -49,7 +47,6 @@ class RouteAttributesParser
     }
 
     /**
-     * @since 1.0
      * @param string $class
      * @param null|string $defaultValue
      * @return null|string

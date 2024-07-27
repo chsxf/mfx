@@ -1,15 +1,10 @@
 <?php
 
-/**
- * Class and helper functions for math
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 /**
- * Math helper class
+ * Math helpers
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 final class MathTools

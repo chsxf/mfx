@@ -13,7 +13,6 @@ final class RouterHelpers
     /**
      * Checks if the request could be referring to a missing file and replies a 404 HTTP error code
      * @param array $routeParams Request route parameters
-     * @since 1.0
      */
     public static function check404file(array $routeParams)
     {

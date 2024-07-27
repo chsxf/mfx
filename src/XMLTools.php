@@ -1,15 +1,10 @@
 <?php
 
-/**
- * XML tools
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 /**
  * Class containing utility functions for encoding data in XML
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 class XMLTools
@@ -126,7 +121,6 @@ class XMLTools
 
     /**
      * Build XML tree from a variable
-     * @since 1.0
      * @param mixed $var Variable from which building the XML tree
      * @param string $encoding Encoding charset (Defaults to UTF-8).
      * @return string the XML tree string

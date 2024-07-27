@@ -15,8 +15,7 @@ final class Framework
     private static bool $initialized = false;
 
     /**
-     * @since 1.0
-     * @param string $configFilePath
+     * @param string $configFilePath Path of the config file to load
      */
     public static function init(string $configFilePath)
     {

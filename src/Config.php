@@ -5,9 +5,9 @@ namespace chsxf\MFX;
 use chsxf\MFX\Exceptions\ConfigException;
 
 /**
- * Singleton configuration management helper class
+ * Configuration data structure
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- * @since 1.0
+ * @since 2.0
  */
 final class Config
 {

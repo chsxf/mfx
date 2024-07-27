@@ -1,27 +1,14 @@
 <?php
 
-/**
- * Scripts management helper
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
-use chsxf\MFX\Exceptions\MFXException;
+use chsxf\MFX\Exceptions\ScriptException;
 use chsxf\MFX\Services\IScriptService;
 use chsxf\MFX\Services\ITemplateService;
 
 /**
- * Exceptions dispatched by the Scripts class
- * @since 1.0
- */
-class ScriptException extends MFXException
-{
-}
-
-/**
  * Helper class for managing scripts
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 final class Scripts implements IScriptService
@@ -37,7 +24,6 @@ final class Scripts implements IScriptService
 
     /**
      * Adds a script to the document
-     * @since 1.0
      * @param string $url Script URL or path for inline scripts
      * @param string $inline If set, the script is included inline in the response (Defaults to false).
      * @param string $prepend If set, the script is added before any other (Defaults to false).
@@ -47,7 +33,7 @@ final class Scripts implements IScriptService
     public function add(string $url, bool $inline = false, bool $prepend = false, string $type = 'text/javascript')
     {
         if (empty($url)) {
-            throw new ScriptException("'{$url} is not a valid script URL.");
+            throw new ScriptException(HttpStatusCodes::internalServerError, "'{$url} is not a valid script URL.");
         }
 
         if (preg_match('#^mfx(css|js)://#', $url)) {
@@ -56,7 +42,7 @@ final class Scripts implements IScriptService
 
         $url = $this->templateService->convertFakeProtocols($url);
         if (!empty($inline) && (!file_exists($url) || !is_file($url) || !is_readable($url))) {
-            throw new ScriptException("'{$url} is not a valid script URL.");
+            throw new ScriptException(HttpStatusCodes::internalServerError, "'{$url} is not a valid script URL.");
         }
 
         if (empty($inline) && !preg_match('#^(.+:)?//#', $url) && strtolower(pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION)) == 'js') {
@@ -82,7 +68,6 @@ final class Scripts implements IScriptService
 
     /**
      * Exports the HTML output for inclusion in the response `<head>` tag
-     * @since 1.0
      * @return string
      */
     public function export(): string

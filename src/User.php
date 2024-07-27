@@ -37,7 +37,9 @@ class User
 
     /**
      * Constructor
-     * @since 1.0
+     * @since 2.0
+     * @param IAuthenticationService $authenticationService Authentication service instance
+     * @param IDatabaseService $databaseService Database service instance
      */
     public function __construct(IAuthenticationService $authenticationService, IDatabaseService $databaseService)
     {
@@ -53,7 +55,7 @@ class User
 
     /**
      * Validates the user from its identifier
-     * @since 1.0
+     * @since 2.0
      * @param string $id User identifier to validate
      * @return boolean true if the user identifier is valid, false either
      */
@@ -75,7 +77,7 @@ class User
 
     /**
      * Validates a user from database fields
-     * @since 1.0
+     * @since 2.0
      * @param array $fields Database fields used to identify the user
      * @return boolean true if the user is valid, false either
      */
@@ -136,7 +138,7 @@ class User
 
     /**
      * Validates the user
-     * @since 1.0
+     * @since 2.0
      * @return boolean true if the user is valid, false either
      */
     protected function validate(): bool
@@ -146,7 +148,7 @@ class User
 
     /**
      * Gets the current user identifier
-     * @since 1.0
+     * @since 2.0
      * @return string The function returns NULL if no valid user is currently registered
      */
     public function getId(): string
@@ -156,7 +158,6 @@ class User
 
     /**
      * Gets the current user status.
-     * @since 1.0
      * @return boolean true if the current user is valid, false for guests
      */
     public function isValid(): bool
@@ -166,7 +167,6 @@ class User
 
     /**
      * Fetches user data from the database
-     * @since 1.0
      * @return boolean true if data has been successfully fetched, false either
      */
     final protected function fetch(): bool
@@ -191,7 +191,6 @@ class User
     /**
      * Fetches user data from the database.
      * This function can be overridden.
-     * @since 1.0
      * @return mixed An associative array if data could be fetched, false either.
      */
     protected function fetchData(): mixed
@@ -203,7 +202,6 @@ class User
 
     /**
      * Builds the user data's fetch query
-     * @since 1.0
      * @return string
      */
     protected function getFetchDataQuery(): string
@@ -213,7 +211,6 @@ class User
 
     /**
      * Tells if data has been fetched and is ready to use
-     * @since 1.0
      * @return boolean true if data is ready to use, false either.
      */
     final protected function isDataReady(): bool

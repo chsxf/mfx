@@ -4,6 +4,7 @@ use chsxf\MFX\ErrorManager;
 
 /**
  * Triggers a notification message
+ * @since 1.0
  * @param string $message Notification message
  *
  * @uses ErrorManager::handleNotif()
@@ -15,6 +16,7 @@ function trigger_notif(string $message)
 
 /**
  * Triggers notification messages from an array
+ * @since 1.0
  * @param array $notifs
  */
 function trigger_notifs(array $notifs)

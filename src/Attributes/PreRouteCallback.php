@@ -12,7 +12,6 @@ use Attribute;
 class PreRouteCallback extends AbstractRouteStringAttribute
 {
     /**
-     * @since 1.0
      * @param string $value
      * @throws Error
      */

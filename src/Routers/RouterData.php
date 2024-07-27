@@ -17,6 +17,7 @@ use chsxf\MFX\RequestResult;
 use chsxf\MFX\Services\IConfigService;
 use chsxf\MFX\Services\ICoreServiceProvider;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 
 /**
@@ -25,8 +26,9 @@ use ReflectionMethod;
 final class RouterData
 {
     /**
-     * @since 1.0
-     * @param string $route
+     * Constructor
+     * @since 2.0
+     * @param string $route 
      * @param RouteAttributesParser $routeProviderAttributes
      * @param RouteAttributesParser $routeAttributes
      * @param array $routeParams
@@ -57,6 +59,18 @@ final class RouterData
         return $this->routeMethod->invoke($instance, $this->routeParams);
     }
 
+    /**
+     * Create a new RouterData instance
+     * @since 2.0
+     * @param ICoreServiceProvider $coreServiceProvider Core service provider instance
+     * @param string $route Parsed route name
+     * @param array $routeParams Route parameters
+     * @param string $providerClassName Route provider class name
+     * @param string $routeMethodName Route method to invoke
+     * @return RouterData 
+     * @throws MFXException 
+     * @throws ReflectionException 
+     */
     public static function create(ICoreServiceProvider $coreServiceProvider, string $route, array $routeParams, string $providerClassName, string $routeMethodName): RouterData
     {
         $providerClass = self::getRouteProviderClass($coreServiceProvider->getConfigService(), $providerClassName);

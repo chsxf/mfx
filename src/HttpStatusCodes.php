@@ -2,6 +2,11 @@
 
 namespace chsxf\MFX;
 
+/**
+ * Enumeration of HTTP status codes
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
+ * @since 2.0
+ */
 enum HttpStatusCodes: int
 {
     case continue = 100;
@@ -56,6 +61,10 @@ enum HttpStatusCodes: int
     case networkAuthenticationRequired = 511;
     case webServerIsReturningAnUnknownError = 520;
 
+    /**
+     * Returns sur the status message associated with the code
+     * @return string 
+     */
     public function getStatusMessage(): string
     {
         static $httpStatusCodes = array(

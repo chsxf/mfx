@@ -1,17 +1,12 @@
 <?php
 
-/**
- * Class and helper functions for file management
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 use chsxf\MFX\Exceptions\MFXException;
 
 /**
- * File management helper class
+ * File management helpers
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 class FileTools

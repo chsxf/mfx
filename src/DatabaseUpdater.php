@@ -15,7 +15,6 @@ final class DatabaseUpdater extends BaseRouteProvider
     private ?string $updatersDomain = null;
 
     /**
-     * @since 1.0
      * @return RequestResult|false
      */
     #[Route]

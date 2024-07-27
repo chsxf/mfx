@@ -1,27 +1,14 @@
 <?php
 
-/**
- * Style sheets management helper
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
-use chsxf\MFX\Exceptions\MFXException;
+use chsxf\MFX\Exceptions\StyleSheetException;
 use chsxf\MFX\Services\IStyleSheetService;
 use chsxf\MFX\Services\ITemplateService;
 
 /**
- * Exceptions dispatched by the StyleSheets class
- * @since 1.0
- */
-class StyleSheetException extends MFXException
-{
-}
-
-/**
  * Helper class for managing style sheets
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 final class StyleSheets implements IStyleSheetService
@@ -37,7 +24,6 @@ final class StyleSheets implements IStyleSheetService
 
     /**
      * Adds a style sheets to the document
-     * @since 1.0
      * @param string $url Style sheet URL or path for inline sheets
      * @param string $media Media type (Defaults to screen)
      * @param bool $inline If set, the style sheet is included inline in the response (Defaults to false).
@@ -48,7 +34,7 @@ final class StyleSheets implements IStyleSheetService
     public function add(string $url, string $media = 'screen', bool $inline = false, bool $prepend = false, string $type = 'text/css')
     {
         if (empty($url)) {
-            throw new StyleSheetException("'{$url} is not a valid style sheet URL.");
+            throw new StyleSheetException(HttpStatusCodes::internalServerError, "'{$url} is not a valid style sheet URL.");
         }
 
         if (preg_match('#^mfx(css|js)://#', $url)) {
@@ -57,7 +43,7 @@ final class StyleSheets implements IStyleSheetService
 
         $url = $this->templateService->convertFakeProtocols($url);
         if (!empty($inline) && (!file_exists($url) || !is_file($url) || !is_readable($url))) {
-            throw new StyleSheetException("'{$url} is not a valid style sheet URL.");
+            throw new StyleSheetException(HttpStatusCodes::internalServerError, "'{$url} is not a valid style sheet URL.");
         }
 
         if (empty($inline) && !preg_match('#^(.+:)?//#', $url)) {
@@ -84,7 +70,6 @@ final class StyleSheets implements IStyleSheetService
 
     /**
      * Exports the HTML output for inclusion in the response `<head>` tag
-     * @since 1.0
      * @return string
      */
     public function export(): string

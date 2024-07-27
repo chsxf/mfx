@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Localization manager class
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX\L10n;
 
 use chsxf\MFX\Config;
@@ -19,12 +13,17 @@ if (!defined('LC_MESSAGES')) {
 
 /**
  * Helper class for managing localization
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 final class L10nManager implements ILocalizationService
 {
     private ?string $detectedLocaleFromRequest = null;
 
+    /**
+     * Constructor
+     * @param IConfigService $configService Config service instance
+     */
     public function __construct(private readonly IConfigService $configService)
     {
         $locale = $this->getLocale();

@@ -1,15 +1,10 @@
 <?php
 
-/**
- * Pagination provider interface
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 /**
  * Interface describing objects that provide pagination information
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 interface IPaginationProvider

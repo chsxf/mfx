@@ -1,15 +1,10 @@
 <?php
 
-/**
- * Class and helper functions for network management
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 /**
- * Network management helper class
+ * Network management helpers
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 final class NetworkTools

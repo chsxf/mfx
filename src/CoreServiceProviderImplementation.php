@@ -14,6 +14,12 @@ use chsxf\MFX\Services\IScriptService;
 use chsxf\MFX\Services\ISessionService;
 use chsxf\MFX\Services\IStyleSheetService;
 
+/**
+ * Default implementation of a core service provider
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
+ * @since 2.0
+ * @ignore
+ */
 final class CoreServiceProviderImplementation implements ICoreServiceProvider
 {
     public function __construct(

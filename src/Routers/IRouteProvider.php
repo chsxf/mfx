@@ -1,15 +1,10 @@
 <?php
 
-/**
- * IRouteProvider interface
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX\Routers;
 
 /**
- * Interface that route provider class must implement
+ * Interface that route providers must implement
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 interface IRouteProvider

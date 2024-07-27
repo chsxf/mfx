@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Data validation helper
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 use chsxf\MFX\DataValidator\DataValidatorException;
@@ -17,6 +11,7 @@ use chsxf\MFX\DataValidator\FieldType;
  *
  * Instances of this class are used as a entry point for data validation procedures.
  *
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 final class DataValidator implements \ArrayAccess

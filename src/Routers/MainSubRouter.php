@@ -8,13 +8,13 @@
 
 namespace chsxf\MFX\Routers;
 
-use chsxf\MFX\Config;
 use chsxf\MFX\ConfigConstants;
 use chsxf\MFX\Exceptions\MFXException;
 use chsxf\MFX\HttpStatusCodes;
 use chsxf\MFX\Services\ICoreServiceProvider;
 
 /**
+ * @ignore
  * @since 1.0
  */
 class MainSubRouter implements IRouter
@@ -22,11 +22,7 @@ class MainSubRouter implements IRouter
     private const ROUTE_REGEXP = '/^[[:alnum:]_]+\.[[:alnum:]_]+?$/';
 
     /**
-     * @since 1.0
-     * @param string $filteredPathInfo
-     * @param string $defaultRoute
-     * @return RouterData
-     * @throws MFXException
+     * @see chsxf\MFX\IRouter::parseRoute()
      */
     public function parseRoute(ICoreServiceProvider $coreServiceProvider, string $filteredPathInfo, string $defaultRoute): RouterData
     {

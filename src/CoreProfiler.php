@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Profiling tool
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 use chsxf\MFX\Services\IProfilingService;
@@ -13,6 +7,7 @@ use Twig\Environment;
 
 /**
  * Core profiler class
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 final class CoreProfiler implements IProfilingService
@@ -40,6 +35,7 @@ final class CoreProfiler implements IProfilingService
 
     /**
      * Constructor
+     * @since 2.0
      */
     public function __construct(private readonly bool $active)
     {
@@ -56,6 +52,11 @@ final class CoreProfiler implements IProfilingService
         }
     }
 
+    /**
+     * Tells if the profiler is active or not
+     * @since 2.0
+     * @return bool 
+     */
     public function isActive(): bool
     {
         return $this->active;
@@ -64,8 +65,8 @@ final class CoreProfiler implements IProfilingService
     /**
      * Tick handler used for gathering profiling data
      *
+     * @since 2.0
      * @ignore
-     *
      * @param string $event Custom event annotation to identify event times during profiling. If NULL, no event is provided (Defaults to NULL).
      */
     private function tickHandler(?string $event = null)
@@ -86,7 +87,7 @@ final class CoreProfiler implements IProfilingService
 
     /**
      * Push a custom event into profiling data
-     * @since 1.0
+     * @since 2.0
      * @param string $event Name of the even
      */
     public function pushEvent(string $event)
@@ -98,7 +99,8 @@ final class CoreProfiler implements IProfilingService
 
     /**
      * Terminates profiling and output buffering and echoes the result
-     * @since 1.0
+     * @since 2.0
+     * @ignore
      */
     public function stop(Environment $twig)
     {
@@ -227,7 +229,7 @@ final class CoreProfiler implements IProfilingService
 
     /**
      * Evaluates how long was the profiling
-     * @since 1.0
+     * @since 2.0
      * @return boolean|float false if profiling is not initialized or complete, or the duration in milliseconds
      */
     public function getProfilingDuration(): float|false

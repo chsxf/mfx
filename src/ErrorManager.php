@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Global error manager
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 use chsxf\MFX\Exceptions\MFXException;
@@ -15,6 +9,7 @@ use Twig\Environment;
 
 /**
  * Integrated error management class
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 final class ErrorManager
@@ -46,6 +41,13 @@ final class ErrorManager
 
     private static ?ErrorManager $singleInstance = null;
 
+    /**
+     * Constructor
+     * @since 2.0
+     * @param IConfigService $configService Config service instance
+     * @param ISessionService $sessionService Session service instance
+     * @throws MFXException 
+     */
     public function __construct(private readonly IConfigService $configService, private readonly ISessionService $sessionService)
     {
         if (self::$singleInstance !== null) {
@@ -59,6 +61,7 @@ final class ErrorManager
 
     /**
      * Gets the constant name string from the error number
+     * @since 2.0
      * @param int $errno Error number
      * @return string|boolean the name string of false if the error number is not catchable
      */
@@ -74,7 +77,7 @@ final class ErrorManager
 
     /**
      * Tells if the manager holds at least one error.
-     * @since 1.0
+     * @since 2.0
      * @return boolean
      */
     public function hasError(): bool
@@ -84,7 +87,7 @@ final class ErrorManager
 
     /**
      * Tells if the manager holds at least one notification.
-     * @since 1.0
+     * @since 2.0
      * @return boolean
      */
     public function hasNotif(): bool
@@ -96,6 +99,7 @@ final class ErrorManager
      * Handles errors
      *
      * @ignore
+     * @since 2.0
      *
      * @param int $errno Error number/level
      * @param string $errstr Error message
@@ -143,7 +147,7 @@ final class ErrorManager
 
     /**
      * Freezes the error manager state into session data
-     * @since 1.0
+     * @since 2.0
      * @param bool $flush If set, flushes error containers. (Defaults to false)
      */
     public function freeze(bool $flush = false)
@@ -169,7 +173,7 @@ final class ErrorManager
 
     /**
      * Unfreezes the error manager state from session data if applying
-     * @since 1.0
+     * @since 2.0
      */
     private function unfreeze()
     {
@@ -188,7 +192,7 @@ final class ErrorManager
 
     /**
      * Flushes error and notification messages for template display
-     * @since 1.0
+     * @since 2.0
      * @param \Twig_Environment $twig Twig environment. If NULL, the function flushes containers only and returns an empty string
      * @return string
      */
@@ -206,7 +210,7 @@ final class ErrorManager
 
     /**
      * Flushes error and notification messages to an array or an object
-     * @since 1.0
+     * @since 2.0
      * @param array|object $arrOrObject Array or object to modify
      */
     public function flushToArrayOrObject(array|object &$arrOrObject)
@@ -223,7 +227,7 @@ final class ErrorManager
 
     /**
      * Flushes error and notification messages to an array
-     * @since 1.0
+     * @since 2.0
      * @param array $arr
      */
     private function flushToArray(array &$arr)
@@ -238,7 +242,7 @@ final class ErrorManager
 
     /**
      * Flushes error and notification messages to an object
-     * @since 1.0
+     * @since 2.0
      * @param object $object
      */
     private function flushToObject(object $object)

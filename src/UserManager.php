@@ -7,6 +7,7 @@ use chsxf\MFX\Services\IAuthenticationService;
 use chsxf\MFX\Services\IConfigService;
 use chsxf\MFX\Services\IDatabaseService;
 use chsxf\MFX\Services\ISessionService;
+use ReflectionException;
 
 /**
  * User management class
@@ -25,7 +26,9 @@ final class UserManager implements IAuthenticationService
 
     /**
      * Constructor
-     * @since 2.0
+     * @param IConfigService $configService Config service instance
+     * @param IDatabaseService $databaseService Database service instance
+     * @param ISessionService $sessionService Session service instance
      */
     public function __construct(
         private readonly IConfigService $configService,
@@ -48,7 +51,6 @@ final class UserManager implements IAuthenticationService
 
     /**
      * Gets the current user reference
-     * @since 2.0
      * @return User
      */
     public function getCurrentAuthenticatedUser(): ?User
@@ -58,7 +60,6 @@ final class UserManager implements IAuthenticationService
 
     /**
      * Tells if an authenticated user currently exists
-     * @since 2.0
      * @return bool 
      */
     public function hasAuthenticatedUser(): bool
@@ -77,7 +78,6 @@ final class UserManager implements IAuthenticationService
 
     /**
      * Validates a user session using database fields
-     * @since 2.0
      * @param array $fields Key-value pairs for database validation
      * @return boolean true if the session has been validated, false either
      */
@@ -97,7 +97,6 @@ final class UserManager implements IAuthenticationService
 
     /**
      * Sets in session the current user's identifier if not already set
-     * @since 2.0
      * @param string $id Current user's identifier
      */
     private function setSessionWithUserId(string $id)
@@ -111,7 +110,6 @@ final class UserManager implements IAuthenticationService
     /**
      * Invalidates user session.
      * Logs out the current valid user if existing
-     * @since 2.0
      */
     public function invalidate()
     {
@@ -121,7 +119,6 @@ final class UserManager implements IAuthenticationService
 
     /**
      * Retrieves users management identifier field name
-     * @since 2.0
      * @throws MFXException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
      * @return string
      */
@@ -139,7 +136,6 @@ final class UserManager implements IAuthenticationService
 
     /**
      * Retrieves users management table name
-     * @since 2.0
      * @throws MFXException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
      * @return string
      */

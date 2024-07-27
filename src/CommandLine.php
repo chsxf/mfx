@@ -1,26 +1,18 @@
 <?php
 
-/**
- * Command-line invocation management
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 /**
  * Command-line invocation handling class.
  * Eases the use of the framework with command-line scripts
  *
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 final class CommandLine
 {
     /**
      * Tells if PHP is running on the command-line interface (CLI) server API
-     *
-     * @since 1.0
-     *
      * @return boolean true is the current server API is the command-line interface, false either
      */
     public static function isCLI(): bool

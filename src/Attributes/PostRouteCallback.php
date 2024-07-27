@@ -12,7 +12,6 @@ use Attribute;
 class PostRouteCallback extends AbstractRouteStringAttribute
 {
     /**
-     * @since 1.0
      * @param string $value
      * @throws Error
      */

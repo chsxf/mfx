@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Database management helpers
- *
- * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
- */
-
 namespace chsxf\MFX;
 
 use chsxf\MFX\Services\IConfigService;
@@ -13,20 +7,26 @@ use chsxf\MFX\Services\IDatabaseService;
 use chsxf\PDO\DatabaseManagerException;
 
 /**
- * Database manager class
+ * Database manager class, acting as the default database service implementation
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
  */
 final class DatabaseManager implements IDatabaseService
 {
     private array $openConnections;
 
+    /**
+     * Constructor
+     * @since 2.0
+     * @param IConfigService $configService 
+     */
     public function __construct(private readonly IConfigService $configService)
     {
         $this->openConnections = [];
     }
 
     /**
-     * Opens a connection to a database server, or returns the currently active connection to this server
+     * Opens a connection to a database server, or returns the currently active instance to this server
      * @since 2.0
      * @param string $server Server configuration key (Defaults to __default).
      * @param bool $forceNew If set, a new connection is open even if a previous similar one exists in the cache (Defaults to false)
@@ -70,8 +70,9 @@ final class DatabaseManager implements IDatabaseService
     }
 
     /**
+     * Closes a database server connection
      * @since 2.0
-     * @param DatabaseConnectionInstance $_manager
+     * @param DatabaseConnectionInstance $connectionInstance Reference to a database connection instance
      */
     public function close(DatabaseConnectionInstance &$connectionInstance)
     {
