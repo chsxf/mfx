@@ -4,7 +4,7 @@
   "[php]": {
     "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
   },
-  "formatFiles.extensionsToInclude": "php",
   "phpunit.args": ["tests", "--color=always"],
-  "phpunit.phpunit": "vendor/bin/phpunit"
+  "phpunit.phpunit": "vendor/bin/phpunit",
+  "files.trimTrailingWhitespace": true
 }
