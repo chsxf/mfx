@@ -28,7 +28,7 @@ final class RouterData
     /**
      * Constructor
      * @since 2.0
-     * @param string $route 
+     * @param string $route
      * @param RouteAttributesParser $routeProviderAttributes
      * @param RouteAttributesParser $routeAttributes
      * @param array $routeParams
@@ -51,7 +51,7 @@ final class RouterData
     {
         if ($this->routeMethod->isStatic()) {
             $instance = null;
-        } else if ($this->providerClass->isSubclassOf(BaseRouteProvider::class)) {
+        } elseif ($this->providerClass->isSubclassOf(BaseRouteProvider::class)) {
             $instance = $this->providerClass->newInstance($this->coreServiceProvider);
         } else {
             $instance = $this->providerClass->newInstance();
@@ -67,9 +67,9 @@ final class RouterData
      * @param array $routeParams Route parameters
      * @param string $providerClassName Route provider class name
      * @param string $routeMethodName Route method to invoke
-     * @return RouterData 
-     * @throws MFXException 
-     * @throws ReflectionException 
+     * @return RouterData
+     * @throws MFXException
+     * @throws ReflectionException
      */
     public static function create(ICoreServiceProvider $coreServiceProvider, string $route, array $routeParams, string $providerClassName, string $routeMethodName): RouterData
     {

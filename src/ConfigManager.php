@@ -30,7 +30,7 @@ final class ConfigManager implements IConfigService
 
     /**
      * Loads configuration properties
-     * 
+     *
      * @param Config $configData Config data
      * @param string $domain Domain name
      */

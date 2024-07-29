@@ -32,7 +32,7 @@ class DatabaseConnectionInstance extends PDODatabaseManager
 
     /**
      * Returns the server configuration key
-     * @return string 
+     * @return string
      */
     public function getServerConfigurationKey()
     {

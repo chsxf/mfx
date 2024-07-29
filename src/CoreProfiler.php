@@ -55,7 +55,7 @@ final class CoreProfiler implements IProfilingService
     /**
      * Tells if the profiler is active or not
      * @since 2.0
-     * @return bool 
+     * @return bool
      */
     public function isActive(): bool
     {

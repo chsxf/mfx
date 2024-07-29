@@ -63,7 +63,7 @@ enum HttpStatusCodes: int
 
     /**
      * Returns sur the status message associated with the code
-     * @return string 
+     * @return string
      */
     public function getStatusMessage(): string
     {

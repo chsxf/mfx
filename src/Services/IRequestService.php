@@ -4,6 +4,6 @@ namespace chsxf\MFX\Services;
 
 interface IRequestService
 {
-    function getRootURL(): string;
-    function setAttachmentHeaders(string $filename, string $mimeType, string $charset = 'UTF-8', bool $addContentType = true);
+    public function getRootURL(): string;
+    public function setAttachmentHeaders(string $filename, string $mimeType, string $charset = 'UTF-8', bool $addContentType = true);
 }

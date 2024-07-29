@@ -4,7 +4,7 @@ namespace chsxf\MFX\Services;
 
 interface IProfilingService
 {
-    function isActive(): bool;
-    function getProfilingDuration(): float|false;
-    function pushEvent(string $event);
+    public function isActive(): bool;
+    public function getProfilingDuration(): float|false;
+    public function pushEvent(string $event);
 }

@@ -4,14 +4,14 @@ namespace chsxf\MFX\Services;
 
 interface ICoreServiceProvider
 {
-    function getConfigService(): IConfigService;
-    function getRequestService(): IRequestService;
-    function getTemplateService(): ITemplateService;
-    function getLocalizationService(): ILocalizationService;
-    function getProfilingService(): IProfilingService;
-    function getScriptService(): IScriptService;
-    function getStyleSheetService(): IStyleSheetService;
-    function getAuthenticationService(): IAuthenticationService;
-    function getDatabaseService(): IDatabaseService;
-    function getSessionService(): ISessionService;
+    public function getConfigService(): IConfigService;
+    public function getRequestService(): IRequestService;
+    public function getTemplateService(): ITemplateService;
+    public function getLocalizationService(): ILocalizationService;
+    public function getProfilingService(): IProfilingService;
+    public function getScriptService(): IScriptService;
+    public function getStyleSheetService(): IStyleSheetService;
+    public function getAuthenticationService(): IAuthenticationService;
+    public function getDatabaseService(): IDatabaseService;
+    public function getSessionService(): ISessionService;
 }

@@ -6,6 +6,6 @@ use ArrayAccess;
 
 interface ISessionService extends ArrayAccess
 {
-    function setInSession(array $values);
-    function unsetInSession(string ...$keys);
+    public function setInSession(array $values);
+    public function unsetInSession(string ...$keys);
 }

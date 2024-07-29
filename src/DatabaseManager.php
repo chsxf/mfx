@@ -18,7 +18,7 @@ final class DatabaseManager implements IDatabaseService
     /**
      * Constructor
      * @since 2.0
-     * @param IConfigService $configService 
+     * @param IConfigService $configService
      */
     public function __construct(private readonly IConfigService $configService)
     {

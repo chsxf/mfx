@@ -6,7 +6,7 @@ use chsxf\MFX\DatabaseConnectionInstance;
 
 interface IDatabaseService
 {
-    public final const DEFAULT_CONNECTION = '__default';
+    final public const DEFAULT_CONNECTION = '__default';
 
     /**
      * Opens a connection to a database server, or returns the currently active connection to this server
@@ -16,11 +16,11 @@ interface IDatabaseService
      * @throws DatabaseManagerException If no configuration is available nor valid for this server key
      * @return DatabaseConnectionInstance
      */
-    function open(string $server = self::DEFAULT_CONNECTION, bool $forceNew = false): DatabaseConnectionInstance;
+    public function open(string $server = self::DEFAULT_CONNECTION, bool $forceNew = false): DatabaseConnectionInstance;
 
     /**
      * @since 2.0
      * @param DatabaseConnectionInstance $connectionInstance
      */
-    function close(DatabaseConnectionInstance &$connectionInstance);
+    public function close(DatabaseConnectionInstance &$connectionInstance);
 }

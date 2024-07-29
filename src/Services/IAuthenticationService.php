@@ -14,14 +14,14 @@ interface IAuthenticationService
      * @since 2.0
      * @return User
      */
-    function getCurrentAuthenticatedUser();
+    public function getCurrentAuthenticatedUser();
 
     /**
      * Tells if an authenticated user currently exists
      * @since 2.0
-     * @return bool 
+     * @return bool
      */
-    function hasAuthenticatedUser(): bool;
+    public function hasAuthenticatedUser(): bool;
 
     /**
      * Validates a user session using database fields
@@ -29,14 +29,14 @@ interface IAuthenticationService
      * @param array $fields Key-value pairs for database validation
      * @return boolean true if the session has been validated, false either
      */
-    function validateWithFields(array $fields): bool;
+    public function validateWithFields(array $fields): bool;
 
     /**
      * Invalidates user session.
      * Logs out the current valid user if existing
      * @since 2.0
      */
-    function invalidate();
+    public function invalidate();
 
     /**
      * Retrieves users management identifier field name
@@ -44,7 +44,7 @@ interface IAuthenticationService
      * @throws MFXException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
      * @return string
      */
-    function getIdField(): string;
+    public function getIdField(): string;
 
     /**
      * Retrieves users management table name
@@ -52,5 +52,5 @@ interface IAuthenticationService
      * @throws MFXException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
      * @return string
      */
-    function getTableName(): string;
+    public function getTableName(): string;
 }

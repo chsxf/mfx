@@ -41,7 +41,7 @@ use Wikimedia\Minify\JavaScriptMinifier;
  *
  * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  * @since 1.0
- * 
+ *
  */
 final class CoreManager implements IRequestService, ITemplateService
 {
@@ -282,7 +282,7 @@ final class CoreManager implements IRequestService, ITemplateService
             $reqResult = $routerData->getResult();
         }
         switch ($reqResult->type()) {
-                // Views
+            // Views
             case RequestResultType::VIEW:
                 if (!in_array($reqResult->statusCode(), [HttpStatusCodes::ok, HttpStatusCodes::created, HttpStatusCodes::accepted])) {
                     $this->dieWithStatusCode($reqResult->statusCode(), $reqResult->statusCode()->getStatusMessage());
@@ -454,7 +454,7 @@ final class CoreManager implements IRequestService, ITemplateService
 
     /**
      * Emits a HTTP status code
-     * 
+     *
      * @since 2.0
      * @param HttpStatusCodes $code HTTP status code to emit (Defaults to 400 Bad Request)
      * @param ?string $message Custom message to output with status code
@@ -509,7 +509,7 @@ final class CoreManager implements IRequestService, ITemplateService
 
     /**
      * Sets the response Content-Type header from the route attributes
-     * 
+     *
      * @since 2.0
      * @param RouteAttributesParser $routerData->routeAttributes Attributes of the route
      * @param string $default Content type to use if not provided by the route.

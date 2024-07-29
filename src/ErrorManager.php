@@ -46,7 +46,7 @@ final class ErrorManager
      * @since 2.0
      * @param IConfigService $configService Config service instance
      * @param ISessionService $sessionService Session service instance
-     * @throws MFXException 
+     * @throws MFXException
      */
     public function __construct(private readonly IConfigService $configService, private readonly ISessionService $sessionService)
     {

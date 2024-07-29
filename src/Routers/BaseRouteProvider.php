@@ -11,7 +11,7 @@ use chsxf\MFX\Services\ICoreServiceProvider;
 abstract class BaseRouteProvider implements IRouteProvider
 {
     /**
-     * Constructor 
+     * Constructor
      * @param ICoreServiceProvider $serviceProvider Core service provider instance
      */
     public function __construct(protected readonly ICoreServiceProvider $serviceProvider)

@@ -24,7 +24,7 @@ final class SessionManager implements ISessionService
     /**
      * Constructor
      * @param IConfigService $configService Config service instance
-     * @throws MFXException 
+     * @throws MFXException
      */
     public function __construct(private readonly IConfigService $configService)
     {
@@ -73,15 +73,15 @@ final class SessionManager implements ISessionService
         if (empty($_SESSION[self::STATUS])) {
             $this->setSessionActive();
             session_commit();
-        } else if ($_SESSION[self::STATUS] == SessionStatus::deleted->value) {
+        } elseif ($_SESSION[self::STATUS] == SessionStatus::deleted->value) {
             $this->initializeNewSession(false);
             session_commit();
-        } else if ($_SESSION[self::STATUS] == SessionStatus::migrated->value) {
+        } elseif ($_SESSION[self::STATUS] == SessionStatus::migrated->value) {
             if ($_SESSION[self::LAST_UPDATE] < time() - 30) {
                 $this->markSessionAsDeleted();
                 $this->initializeNewSession(true);
                 session_commit();
-            } else if (!empty($_SESSION[self::NEW_SESSION_ID])) {
+            } elseif (!empty($_SESSION[self::NEW_SESSION_ID])) {
                 $migratedId = $_SESSION[self::NEW_SESSION_ID];
                 session_abort();
                 session_id($migratedId);
@@ -90,7 +90,7 @@ final class SessionManager implements ISessionService
                 $this->initializeNewSession(false);
                 session_commit();
             }
-        } else if ($_SESSION[self::STATUS] == SessionStatus::active->value && $_SESSION[self::LAST_UPDATE] < time() - 900) {
+        } elseif ($_SESSION[self::STATUS] == SessionStatus::active->value && $_SESSION[self::LAST_UPDATE] < time() - 900) {
             $sessionCopy = $_SESSION;
 
             $migratedId = session_create_id();

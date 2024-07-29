@@ -6,6 +6,6 @@ use Twig\Environment;
 
 interface ITemplateService
 {
-    function getTwig(): ?Environment;
-    function convertFakeProtocols(string $str): string;
+    public function getTwig(): ?Environment;
+    public function convertFakeProtocols(string $str): string;
 }

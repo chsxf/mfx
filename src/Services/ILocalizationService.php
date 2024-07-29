@@ -16,19 +16,19 @@ interface ILocalizationService
      * @param string $path Text domain path
      * @param string $charset Text domain charset (Defaults to UTF-8)
      */
-    function bindTextDomain(string $key, string $path, string $charset = 'UTF-8');
+    public function bindTextDomain(string $key, string $path, string $charset = 'UTF-8');
 
     /**
      * Gets the current locale from environment
      * @since 2.0
      * @return string
      */
-    function getLocale(): string;
+    public function getLocale(): string;
 
     /**
      * Gets the current language from the current locale
      * @since 2.0
      * @return string
      */
-    function getLanguage(): string;
+    public function getLanguage(): string;
 }

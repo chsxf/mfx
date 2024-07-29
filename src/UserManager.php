@@ -60,7 +60,7 @@ final class UserManager implements IAuthenticationService
 
     /**
      * Tells if an authenticated user currently exists
-     * @return bool 
+     * @return bool
      */
     public function hasAuthenticatedUser(): bool
     {
@@ -68,7 +68,7 @@ final class UserManager implements IAuthenticationService
     }
 
     /**
-     * @return User 
+     * @return User
      */
     private function instantiateUser(): User
     {

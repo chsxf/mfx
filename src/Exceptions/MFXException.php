@@ -15,9 +15,9 @@ class MFXException extends Exception
 {
     /**
      * Constructor
-     * 
+     *
      * @since 2.0
-     * 
+     *
      * @param HttpStatusCodes $code HTTP status code associated to the Exception (defaults to 400 Bad Request)
      * @param string $message The exception message
      * @param null|Throwable $previous The previously thrown exception
@@ -32,10 +32,10 @@ class MFXException extends Exception
 
     /**
      * Returns the HTTP status code associated with the exception
-     * 
+     *
      * @since 2.0
-     * 
-     * @return HttpStatusCodes 
+     *
+     * @return HttpStatusCodes
      */
     public function getHttpCode(): HttpStatusCodes
     {

@@ -19,5 +19,5 @@ interface IRouter
      * @param string $defaultRoute Default route to use if none provided
      * @return RouterData
      */
-    function parseRoute(ICoreServiceProvider $coreServiceProvider, string $filteredPathInfo, string $defaultRoute): RouterData;
+    public function parseRoute(ICoreServiceProvider $coreServiceProvider, string $filteredPathInfo, string $defaultRoute): RouterData;
 }
