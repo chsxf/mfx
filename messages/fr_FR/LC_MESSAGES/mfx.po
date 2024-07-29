@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PHP-MicroFX\n"
-"POT-Creation-Date: 2024-07-09 21:44+0200\n"
-"PO-Revision-Date: 2024-07-09 21:44+0200\n"
+"POT-Creation-Date: 2024-07-29 22:07+0200\n"
+"PO-Revision-Date: 2024-07-29 22:07+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -28,38 +28,38 @@ msgstr[1] "%d erreurs sont survenues :"
 msgid "Close"
 msgstr "Fermer"
 
-#: standard input:5 input:21
+#: standard input:5 input:22
 msgid "PHP version"
 msgstr "Version de PHP"
 
-#: standard input:6 input:22
+#: standard input:6 input:23
 msgid "Duration"
 msgstr "Durée"
 
-#: standard input:7 input:23
+#: standard input:7 input:24
 #, php-format
 msgid "%0.4f s"
 msgstr ""
 
-#: standard input:8 input:24
+#: standard input:8 input:25
 msgid "Operation count"
 msgstr "Nombre d'opérations"
 
-#: standard input:9 input:25
+#: standard input:9 input:26
 msgid "Memory peak usage"
 msgstr "Pic d'utilisation mémoire"
 
-#: standard input:10 input:13 input:26 input:29
+#: standard input:10 input:13 input:27 input:30
 #, php-format
 msgid "%s bytes"
 msgstr "%s octets"
 
-#: standard input:11 input:14 input:27 input:30
+#: standard input:11 input:14 input:28 input:31
 #, php-format
 msgid "%s%% of allowed memory"
 msgstr "%s%% de la mémoire autorisée"
 
-#: standard input:12 input:28
+#: standard input:12 input:29
 msgid "Memory real peak usage"
 msgstr "Pic réel d'utilisation mémoire"
 
@@ -83,15 +83,15 @@ msgstr "Chronologie du profilage (octets par millisecondes)"
 msgid "Show / hide profiler"
 msgstr "Afficher / masquer le profileur"
 
-#: standard input:20
+#: standard input:20 input:21
 msgid "Profiling results"
 msgstr "Résultats du profilage"
 
-#: src/DataValidator.php:307
+#: src/DataValidator.php:302
 msgid "Field values cannot be removed."
 msgstr "Les valeurs des champs ne peuvent être supprimées."
 
-#: src/DataValidator/AbstractOtherFieldFilter.php:45
+#: src/DataValidator/AbstractOtherFieldFilter.php:40
 msgid ""
 "References to other fields must be provided as a Field instance or an array "
 "containing only instances of this class."
@@ -296,7 +296,7 @@ msgstr ""
 "La valeur du champ ‘%%s’ doit être comprise dans l’intervalle entre %d et %d "
 "(%s)"
 
-#: src/DataValidator/Filters/IsOfType.php:39
+#: src/DataValidator/Filters/IsOfType.php:41
 #, php-format
 msgid "The '%%s' field value must be of type '%s'."
 msgstr "La valeur du champ ‘%%s’ doit être du type ‘%s’."
@@ -413,14 +413,14 @@ msgstr "Le champ '%%s' est requis quand les champs %s sont fournis."
 msgid "The field '%s' must contain unique values."
 msgstr "Le champ '%s' doit contenir des valeurs uniques."
 
-#: src/DatabaseUpdater.php:78
+#: src/DatabaseUpdater.php:77
 #, php-format
 msgid "Wrong SQL update file path for DatabaseUpdater '%s'."
 msgstr ""
 "Le chemin du fichier SQL de mise à jour pour le DatabaseUpdater ‘%s’ est "
 "incorrect."
 
-#: src/DatabaseUpdater.php:98
+#: src/DatabaseUpdater.php:97
 #, php-format
 msgid ""
 "The SQL update file should start with a VERSION token (updater key: '%s')."
@@ -428,7 +428,7 @@ msgstr ""
 "Le fichier SQL de mise à jour devrait débuter avec un marqueur VERSION (clé "
 "d’actualiseur : ‘%s’)."
 
-#: src/DatabaseUpdater.php:124 src/DatabaseUpdater.php:133
+#: src/DatabaseUpdater.php:126 src/DatabaseUpdater.php:135
 #, php-format
 msgid "An error has occured while processing DatabaseUpdater '%s'."
 msgstr "Une erreur est survenue pendant l’exécution du DatabaseUpdater ‘%s’."
