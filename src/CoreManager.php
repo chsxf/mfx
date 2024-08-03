@@ -289,7 +289,7 @@ final class CoreManager implements IRequestService, ITemplateService
             $reqResult = $routerData->getResult();
         }
         switch ($reqResult->type()) {
-            // Views
+                // Views
             case RequestResultType::VIEW:
                 if (!in_array($reqResult->statusCode(), [HttpStatusCodes::ok, HttpStatusCodes::created, HttpStatusCodes::accepted])) {
                     $this->dieWithStatusCode($reqResult->statusCode(), $reqResult->statusCode()->getStatusMessage());
@@ -562,7 +562,10 @@ final class CoreManager implements IRequestService, ITemplateService
     public function exceptionHandler(\Throwable $exception)
     {
         $code = ($exception instanceof MFXException) ? $exception->getHttpCode() : HttpStatusCodes::badRequest;
-        $message = sprintf("Uncaught %s: %s\n%s", get_class($exception), $exception->getMessage(), $exception->getTraceAsString());
+        $message = null;
+        if (!empty($this->configService->getValue(ConfigConstants::RESPONSE_FULL_ERRORS, false))) {
+            $message = sprintf("Uncaught %s: %s\n%s", get_class($exception), $exception->getMessage(), $exception->getTraceAsString());
+        }
         $this->dieWithStatusCode($code, $message);
     }
 
