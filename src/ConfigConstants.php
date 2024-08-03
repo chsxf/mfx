@@ -46,6 +46,7 @@ final class ConfigConstants
     public const TWIG_TEMPLATES = self::TWIG . '.templates';
 
     public const USER_MANAGEMENT = 'user_management';
+    public const USER_MANAGEMENT_ENABLED = self::USER_MANAGEMENT . '.enabled';
     public const USER_MANAGEMENT_CLASS = self::USER_MANAGEMENT . '.class';
     public const USER_MANAGEMENT_ID_FIELD = self::USER_MANAGEMENT . '.id_field';
     public const USER_MANAGEMENT_TABLE = self::USER_MANAGEMENT . '.table';

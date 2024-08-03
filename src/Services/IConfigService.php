@@ -10,9 +10,6 @@ interface IConfigService
 
     /**
      * Loads configuration properties
-     *
-     * @since 1.0
-     *
      * @param Config $configData Config data
      * @param string $domain Domain name
      */

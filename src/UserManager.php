@@ -7,7 +7,6 @@ use chsxf\MFX\Services\IAuthenticationService;
 use chsxf\MFX\Services\IConfigService;
 use chsxf\MFX\Services\IDatabaseService;
 use chsxf\MFX\Services\ISessionService;
-use ReflectionException;
 
 /**
  * User management class
@@ -36,7 +35,7 @@ final class UserManager implements IAuthenticationService
         private readonly ISessionService $sessionService
     ) {
         // Validating
-        if (!empty($this->sessionService[self::LOGGED_USER_ID]) && !empty($this->sessionService[self::LOGGED_FROM_IP])) {
+        if ($this->isEnabled() && !empty($this->sessionService[self::LOGGED_USER_ID]) && !empty($this->sessionService[self::LOGGED_FROM_IP])) {
             $newUser = $this->instantiateUser();
 
             $userId = $this->sessionService[self::LOGGED_USER_ID];
@@ -47,6 +46,15 @@ final class UserManager implements IAuthenticationService
                 $this->currentAuthenticatedUser = $newUser;
             }
         }
+    }
+
+    /**
+     * Tells if user management is enabled
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return $this->configService->getValue(ConfigConstants::USER_MANAGEMENT_ENABLED, true);
     }
 
     /**
@@ -83,6 +91,10 @@ final class UserManager implements IAuthenticationService
      */
     public function validateWithFields(array $fields): bool
     {
+        if (!$this->isEnabled()) {
+            return false;
+        }
+
         $this->invalidate();
 
         $newUser = $this->instantiateUser();
@@ -113,8 +125,10 @@ final class UserManager implements IAuthenticationService
      */
     public function invalidate()
     {
-        $this->sessionService->unsetInSession(self::LOGGED_USER_ID, self::LOGGED_FROM_IP);
-        $this->currentAuthenticatedUser = null;
+        if ($this->isEnabled()) {
+            $this->sessionService->unsetInSession(self::LOGGED_USER_ID, self::LOGGED_FROM_IP);
+            $this->currentAuthenticatedUser = null;
+        }
     }
 
     /**

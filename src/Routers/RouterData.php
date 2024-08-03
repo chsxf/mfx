@@ -10,10 +10,10 @@ namespace chsxf\MFX\Routers;
 
 use chsxf\MFX\ArrayTools;
 use chsxf\MFX\Attributes\Route;
-use chsxf\MFX\Attributes\RouteAttributesParser;
 use chsxf\MFX\ConfigConstants;
 use chsxf\MFX\Exceptions\MFXException;
 use chsxf\MFX\RequestResult;
+use chsxf\MFX\Routers\RouteAttributesParser;
 use chsxf\MFX\Services\IConfigService;
 use chsxf\MFX\Services\ICoreServiceProvider;
 use ReflectionClass;

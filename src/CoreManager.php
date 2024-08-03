@@ -2,18 +2,19 @@
 
 namespace chsxf\MFX;
 
+use chsxf\MFX\Attributes\AnonymousRoute;
 use chsxf\MFX\Attributes\ContentType;
 use chsxf\MFX\Attributes\PreRouteCallback;
 use chsxf\MFX\Attributes\PostRouteCallback;
 use chsxf\MFX\Attributes\RedirectURL;
 use chsxf\MFX\Attributes\RequiredContentType;
 use chsxf\MFX\Attributes\RequiredRequestMethod;
-use chsxf\MFX\Attributes\RouteAttributesParser;
 use chsxf\MFX\Attributes\Template;
 use chsxf\MFX\DataValidator\Twig\Extension;
 use chsxf\MFX\Exceptions\MFXException;
 use chsxf\MFX\Routers\IRouter;
 use chsxf\MFX\Routers\PathRouter;
+use chsxf\MFX\Routers\RouteAttributesParser;
 use chsxf\MFX\Services\IAuthenticationService;
 use chsxf\MFX\Services\IConfigService;
 use chsxf\MFX\Services\ICoreServiceProvider;
@@ -235,6 +236,11 @@ final class CoreManager implements IRequestService, ITemplateService
         $routerData = $router->parseRoute($this->coreServiceProvider, $routePathInfo, $defaultRoute);
 
         // Checking pre-conditions
+        // -- Anonymous route
+        $isAnonymous = $routerData->routeAttributes->hasAttribute(AnonymousRoute::class) || $routerData->routeProviderAttributes->hasAttribute(AnonymousRoute::class);
+        if (!$isAnonymous && $this->authenticationService->isEnabled() && !$this->authenticationService->hasAuthenticatedUser()) {
+            throw new MFXException(HttpStatusCodes::forbidden);
+        }
         // -- Request method
         $requiredRequestMethod = $routerData->routeAttributes->getAttributeValue(RequiredRequestMethod::class);
         if (!empty($requiredRequestMethod) && $_SERVER['REQUEST_METHOD'] !== $requiredRequestMethod) {
@@ -282,7 +288,7 @@ final class CoreManager implements IRequestService, ITemplateService
             $reqResult = $routerData->getResult();
         }
         switch ($reqResult->type()) {
-            // Views
+                // Views
             case RequestResultType::VIEW:
                 if (!in_array($reqResult->statusCode(), [HttpStatusCodes::ok, HttpStatusCodes::created, HttpStatusCodes::accepted])) {
                     $this->dieWithStatusCode($reqResult->statusCode(), $reqResult->statusCode()->getStatusMessage());

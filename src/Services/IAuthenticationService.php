@@ -10,22 +10,25 @@ use chsxf\MFX\User;
 interface IAuthenticationService
 {
     /**
+     * Tells if user management is enabled
+     * @return bool
+     */
+    public function isEnabled(): bool;
+
+    /**
      * Gets the current user reference
-     * @since 2.0
      * @return User
      */
     public function getCurrentAuthenticatedUser();
 
     /**
      * Tells if an authenticated user currently exists
-     * @since 2.0
      * @return bool
      */
     public function hasAuthenticatedUser(): bool;
 
     /**
      * Validates a user session using database fields
-     * @since 2.0
      * @param array $fields Key-value pairs for database validation
      * @return boolean true if the session has been validated, false either
      */
@@ -34,13 +37,11 @@ interface IAuthenticationService
     /**
      * Invalidates user session.
      * Logs out the current valid user if existing
-     * @since 2.0
      */
     public function invalidate();
 
     /**
      * Retrieves users management identifier field name
-     * @since 2.0
      * @throws MFXException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
      * @return string
      */
@@ -48,7 +49,6 @@ interface IAuthenticationService
 
     /**
      * Retrieves users management table name
-     * @since 2.0
      * @throws MFXException If the provided value is not a string or contains invalid characters (only underscores and alphanumeric characters are accepted)
      * @return string
      */
