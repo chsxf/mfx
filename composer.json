@@ -23,7 +23,8 @@
   },
   "scripts": {
     "test": "vendor/bin/phpunit --testdox tests",
-    "minify": "chsxf\\MFX\\CoreManager::minifyStaticFiles"
+    "minify": "chsxf\\MFX\\CoreManager::minifyStaticFiles",
+    "fixcs": "vendor/bin/php-cs-fixer fix src"
   },
   "authors": [
     {
