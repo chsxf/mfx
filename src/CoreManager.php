@@ -24,6 +24,7 @@ use chsxf\MFX\Services\IProfilingService;
 use chsxf\MFX\Services\IRequestService;
 use chsxf\MFX\Services\ISessionService;
 use chsxf\MFX\Services\ITemplateService;
+use chsxf\MFX\Services\Proxies\CoreServiceProviderProxy;
 use chsxf\Twig\Extension\Gettext;
 use chsxf\Twig\Extension\Lazy;
 use chsxf\Twig\Extension\SwitchCase;
@@ -113,7 +114,7 @@ final class CoreManager implements IRequestService, ITemplateService
 
         $this->initializeScriptsAndStylsheets();
 
-        $this->coreServiceProvider = new CoreServiceProviderImplementation($configService, $this, $this, $localizationService, $profilingService, $this->scripts, $this->styleSheets, $authenticationService, $databaseService, $sessionService);
+        $this->coreServiceProvider = new CoreServiceProviderProxy($configService, $this, $this, $localizationService, $profilingService, $this->scripts, $this->styleSheets, $authenticationService, $databaseService, $sessionService);
     }
 
     /**
@@ -288,7 +289,7 @@ final class CoreManager implements IRequestService, ITemplateService
             $reqResult = $routerData->getResult();
         }
         switch ($reqResult->type()) {
-                // Views
+            // Views
             case RequestResultType::VIEW:
                 if (!in_array($reqResult->statusCode(), [HttpStatusCodes::ok, HttpStatusCodes::created, HttpStatusCodes::accepted])) {
                     $this->dieWithStatusCode($reqResult->statusCode(), $reqResult->statusCode()->getStatusMessage());

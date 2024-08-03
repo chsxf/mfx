@@ -19,7 +19,7 @@ interface IAuthenticationService
      * Gets the current user reference
      * @return User
      */
-    public function getCurrentAuthenticatedUser();
+    public function getCurrentAuthenticatedUser(): ?User;
 
     /**
      * Tells if an authenticated user currently exists
