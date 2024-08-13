@@ -5,6 +5,10 @@ namespace chsxf\MFX\Services\Proxies;
 use chsxf\MFX\Config;
 use chsxf\MFX\Services\IConfigService;
 
+/**
+ * @since 2.0
+ * @ignore
+ */
 final class ConfigServiceProxy implements IConfigService
 {
     public function __construct(private readonly IConfigService $configService)

@@ -5,7 +5,9 @@ namespace chsxf\MFX\Services;
 use chsxf\MFX\User;
 
 /**
+ * Authentication service interface
  * @since 2.0
+ * @author Christophe SAUVEUR <chsxf.pro@gmail.com>
  */
 interface IAuthenticationService
 {
@@ -16,7 +18,7 @@ interface IAuthenticationService
     public function isEnabled(): bool;
 
     /**
-     * Gets the current user reference
+     * Gets the current user reference, if an authenticated user exists
      * @return User
      */
     public function getCurrentAuthenticatedUser(): ?User;
@@ -36,7 +38,7 @@ interface IAuthenticationService
 
     /**
      * Invalidates user session.
-     * Logs out the current valid user if existing
+     * Logs out the current authenticated user if existing
      */
     public function invalidate();
 

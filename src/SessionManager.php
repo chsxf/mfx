@@ -136,7 +136,7 @@ final class SessionManager implements ISessionService
      * Set multiple values in session at once
      * @param array $values Values as an associative array
      */
-    public function setInSession(array $values)
+    public function setInSession(array $values): void
     {
         if ($this->enabled && !empty($values)) {
             session_start();
@@ -151,7 +151,7 @@ final class SessionManager implements ISessionService
      * Unsets multiple values in session at once
      * @param array $keys List of session variable names to unset
      */
-    public function unsetInSession(string ...$keys)
+    public function unsetInSession(string ...$keys): void
     {
         if ($this->enabled && !empty($keys)) {
             session_start();

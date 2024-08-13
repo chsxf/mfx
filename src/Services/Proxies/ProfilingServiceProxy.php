@@ -4,6 +4,10 @@ namespace chsxf\MFX\Services\Proxies;
 
 use chsxf\MFX\Services\IProfilingService;
 
+/**
+ * @since 2.0
+ * @ignore
+ */
 final class ProfilingServiceProxy implements IProfilingService
 {
     public function __construct(private readonly IProfilingService $profilingService)
@@ -20,7 +24,7 @@ final class ProfilingServiceProxy implements IProfilingService
         return $this->profilingService->getProfilingDuration();
     }
 
-    public function pushEvent(string $event)
+    public function pushEvent(string $event): void
     {
         $this->profilingService->pushEvent($event);
     }

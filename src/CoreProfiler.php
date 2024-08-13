@@ -90,7 +90,7 @@ final class CoreProfiler implements IProfilingService
      * @since 2.0
      * @param string $event Name of the even
      */
-    public function pushEvent(string $event)
+    public function pushEvent(string $event): void
     {
         if ($this->active && empty($this->profilingEndTime)) {
             $this->tickHandler($event);

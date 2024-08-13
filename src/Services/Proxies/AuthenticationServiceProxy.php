@@ -5,6 +5,10 @@ namespace chsxf\MFX\Services\Proxies;
 use chsxf\MFX\Services\IAuthenticationService;
 use chsxf\MFX\User;
 
+/**
+ * @since 2.0
+ * @ignore
+ */
 final class AuthenticationServiceProxy implements IAuthenticationService
 {
     public function __construct(private readonly IAuthenticationService $authenticationService)

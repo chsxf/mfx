@@ -4,6 +4,10 @@ namespace chsxf\MFX\Services\Proxies;
 
 use chsxf\MFX\Services\IScriptService;
 
+/**
+ * @since 2.0
+ * @ignore
+ */
 final class ScriptServiceProxy implements IScriptService
 {
     public function __construct(private readonly IScriptService $scriptService)
@@ -11,7 +15,7 @@ final class ScriptServiceProxy implements IScriptService
     }
 
 
-    public function add(string $url, bool $inline = false, bool $prepend = false, string $type = 'text/javascript')
+    public function add(string $url, bool $inline = false, bool $prepend = false, string $type = 'text/javascript'): void
     {
         $this->scriptService->add($url, $inline, $prepend, $type);
     }

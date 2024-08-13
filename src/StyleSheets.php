@@ -31,7 +31,7 @@ final class StyleSheets implements IStyleSheetService
      * @param string $type Style sheet type (Defaults to text/css).
      * @throws StyleSheetException If the URL is empty, or if the file does not exists or is not readable for inline sheets.
      */
-    public function add(string $url, string $media = 'screen', bool $inline = false, bool $prepend = false, string $type = 'text/css')
+    public function add(string $url, string $media = 'screen', bool $inline = false, bool $prepend = false, string $type = 'text/css'): void
     {
         if (empty($url)) {
             throw new StyleSheetException(HttpStatusCodes::internalServerError, "'{$url} is not a valid style sheet URL.");

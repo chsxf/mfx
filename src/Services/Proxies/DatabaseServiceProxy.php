@@ -5,6 +5,10 @@ namespace chsxf\MFX\Services\Proxies;
 use chsxf\MFX\DatabaseConnectionInstance;
 use chsxf\MFX\Services\IDatabaseService;
 
+/**
+ * @since 2.0
+ * @ignore
+ */
 final class DatabaseServiceProxy implements IDatabaseService
 {
     public function __construct(private readonly IDatabaseService $databaseService)

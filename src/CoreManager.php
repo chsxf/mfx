@@ -540,7 +540,7 @@ final class CoreManager implements IRequestService, ITemplateService
      * @param string $charset Attachment charset. If NULL, no charset is provided. This parameter is ignored if $addContentType is not set. (Defaults to UTF-8)
      * @param bool $addContentType If set, the function will add the Content-Type header. (Defaults to true)
      */
-    public function setAttachmentHeaders(string $filename, string $mimeType, string $charset = 'UTF-8', bool $addContentType = true)
+    public function setAttachmentHeaders(string $filename, string $mimeType, string $charset = 'UTF-8', bool $addContentType = true): void
     {
         if (!empty($addContentType)) {
             if ($charset !== null && is_string($charset)) {

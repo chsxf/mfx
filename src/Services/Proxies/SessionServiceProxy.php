@@ -4,18 +4,22 @@ namespace chsxf\MFX\Services\Proxies;
 
 use chsxf\MFX\Services\ISessionService;
 
+/**
+ * @since 2.0
+ * @ignore
+ */
 final class SessionServiceProxy implements ISessionService
 {
     public function __construct(private readonly ISessionService $sessionService)
     {
     }
 
-    public function setInSession(array $values)
+    public function setInSession(array $values): void
     {
         $this->sessionService->setInSession($values);
     }
 
-    public function unsetInSession(string ...$keys)
+    public function unsetInSession(string ...$keys): void
     {
         $this->sessionService->unsetInSession(...$keys);
     }

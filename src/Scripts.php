@@ -30,7 +30,7 @@ final class Scripts implements IScriptService
      * @param string $type Script type (Defaults to text/javascript).
      * @throws ScriptException If the URL is empty, or if the file does not exists or is not readable for inline scripts.
      */
-    public function add(string $url, bool $inline = false, bool $prepend = false, string $type = 'text/javascript')
+    public function add(string $url, bool $inline = false, bool $prepend = false, string $type = 'text/javascript'): void
     {
         if (empty($url)) {
             throw new ScriptException(HttpStatusCodes::internalServerError, "'{$url} is not a valid script URL.");

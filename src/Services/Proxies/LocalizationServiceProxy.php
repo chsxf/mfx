@@ -4,6 +4,10 @@ namespace chsxf\MFX\Services\Proxies;
 
 use chsxf\MFX\Services\ILocalizationService;
 
+/**
+ * @since 2.0
+ * @ignore
+ */
 final class LocalizationServiceProxy implements ILocalizationService
 {
     public function __construct(private readonly ILocalizationService $localizationService)
