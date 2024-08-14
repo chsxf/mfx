@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chsxf\MFX;
 
 use chsxf\MFX\Exceptions\ConfigException;
@@ -24,8 +26,9 @@ final class Config
 
     private function validateData(array $dataArray): void
     {
+        $dataArrayIsList = array_is_list($dataArray);
         foreach ($dataArray as $k => $v) {
-            if (!preg_match(self::KEY_REGEX, $k)) {
+            if (!$dataArrayIsList && !preg_match(self::KEY_REGEX, $k)) {
                 throw new ConfigException("'{$k}' is not a valid config data key");
             }
 

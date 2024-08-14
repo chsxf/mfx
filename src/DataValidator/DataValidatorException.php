@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chsxf\MFX\DataValidator;
 
 use chsxf\MFX\Exceptions\MFXException;

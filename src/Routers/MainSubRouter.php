@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * MainSub (RouteProvider.Route) Router Implementation
  *

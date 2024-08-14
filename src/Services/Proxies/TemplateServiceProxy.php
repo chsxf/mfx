@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace chsxf\MFX\Services\Proxies;
 
 use chsxf\MFX\Services\ITemplateService;

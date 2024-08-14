@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * PathRouter (route_provider/route) Router Implementation
  *
