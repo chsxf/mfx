@@ -291,7 +291,7 @@ final class CoreManager implements IRequestService, ITemplateService
             $reqResult = $routerData->getResult();
         }
         switch ($reqResult->type()) {
-                // Views
+            // Views
             case RequestResultType::VIEW:
                 if (!in_array($reqResult->statusCode(), [HttpStatusCodes::ok, HttpStatusCodes::created, HttpStatusCodes::accepted])) {
                     $this->dieWithStatusCode($reqResult->statusCode(), $reqResult->statusCode()->getStatusMessage());
