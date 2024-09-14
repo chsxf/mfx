@@ -94,8 +94,7 @@ final class CoreManager implements IRequestService, ITemplateService
         // Fake protocols
         $this->fakeProtocols = array(
             'mfxjs' => ROOT . '/static/js/',
-            'mfxcss' => ROOT . '/static/css/',
-            'mfximg' => ROOT . '/static/img/'
+            'mfxcss' => ROOT . '/static/css/'
         );
         $fakeProtocolsFromConfig = $configService->getValue(ConfigConstants::FAKE_PROTOCOLS, array());
         if (is_array($fakeProtocolsFromConfig)) {
@@ -291,7 +290,7 @@ final class CoreManager implements IRequestService, ITemplateService
             $reqResult = $routerData->getResult();
         }
         switch ($reqResult->type()) {
-            // Views
+                // Views
             case RequestResultType::VIEW:
                 if (!in_array($reqResult->statusCode(), [HttpStatusCodes::ok, HttpStatusCodes::created, HttpStatusCodes::accepted])) {
                     $this->dieWithStatusCode($reqResult->statusCode(), $reqResult->statusCode()->getStatusMessage());
@@ -454,7 +453,7 @@ final class CoreManager implements IRequestService, ITemplateService
     /**
      * Sets the HTTP status code
      * @since 2.0
-     * @param int $code HTTP status code to emit (Defaults to 200 OK)
+     * @param HttpStatusCodes $code HTTP status code to emit (Defaults to 200 OK)
      */
     private function setStatusCode(HttpStatusCodes $code = HttpStatusCodes::ok)
     {
