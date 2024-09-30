@@ -134,20 +134,75 @@ final class CoreManager implements IRequestService, ITemplateService
             if ($this->profilingService->isActive()) {
                 $this->scripts->add('https://www.google.com/jsapi');
             }
-            $userScripts = $this->configService->getValue(ConfigConstants::SCRIPTS, array());
-            if (is_array($userScripts)) {
-                foreach ($userScripts as $s) {
-                    $this->scripts->add($s);
-                }
-            }
+            $this->initializeUserScripts();
 
             // Adding stylesheets
             $this->styleSheets = new StyleSheets($this);
             $this->styleSheets->add('mfxcss://framework.min.css');
-            $userSheets = $this->configService->getValue(ConfigConstants::STYLESHEETS, array());
-            if (is_array($userSheets)) {
-                foreach ($userSheets as $s) {
-                    $this->styleSheets->add($s);
+            $this->initializeUserStyleSheets();
+        }
+    }
+
+    /**
+     * @since 2.0
+     */
+    private function initializeUserScripts()
+    {
+        $userScripts = $this->configService->getValue(ConfigConstants::SCRIPTS, array());
+        if (is_array($userScripts)) {
+            foreach ($userScripts as $script) {
+                if (is_string($script)) {
+                    $this->scripts->add($script);
+                } else if (is_array($script)) {
+                    $args = [
+                        'url' => '',
+                        'inline' => false,
+                        'prepend' => false,
+                        'type' => Scripts::DEFAULT_TYPE,
+                        'extras' => []
+                    ];
+                    foreach ($script as $key => $value) {
+                        if ($key != 'extras' && array_key_exists($key, $args)) {
+                            $args[$key] = $value;
+                        } else {
+                            $args['extras'][$key] = $value;
+                        }
+                    }
+
+                    $this->scripts->add($args['url'], $args['inline'], $args['prepend'], $args['type'], $args['extras']);
+                }
+            }
+        }
+    }
+
+    /**
+     * @since 2.0
+     */
+    private function initializeUserStyleSheets()
+    {
+        $userSheets = $this->configService->getValue(ConfigConstants::STYLESHEETS, array());
+        if (is_array($userSheets)) {
+            foreach ($userSheets as $sheet) {
+                if (is_string($sheet)) {
+                    $this->styleSheets->add($sheet);
+                } else if (is_array($sheet)) {
+                    $args = [
+                        'url' => '',
+                        'media' => StyleSheets::DEFAULT_MEDIA,
+                        'inline' => false,
+                        'prepend' => false,
+                        'type' => StyleSheets::DEFAULT_TYPE,
+                        'extras' => []
+                    ];
+                    foreach ($sheet as $key => $value) {
+                        if ($key != 'extras' && array_key_exists($key, $args)) {
+                            $args[$key] = $value;
+                        } else {
+                            $args['extras'][$key] = $value;
+                        }
+                    }
+
+                    $this->styleSheets->add($args['url'], $args['media'], $args['inline'], $args['prepend'], $args['type'], $args['extras']);
                 }
             }
         }

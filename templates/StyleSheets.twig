@@ -1,9 +1,9 @@
 {% for sheet in sheets %}
 	{% if sheet.inline %}
-<style type="{{ sheet.type }}" media="{{ sheet.media }}">
-{{ sheet.content }}
-</style>
+		<style type="{{ sheet.type }}" media="{{ sheet.media }}">
+			{{ sheet.content }}
+		</style>
 	{% else %}
-<link rel="stylesheet" type="{{ sheet.type }}" href="{{ sheet.url|e('html_attr') }}" media="{{ sheet.media }}">
+		<link rel="stylesheet" type="{{ sheet.type }}" href="{{ sheet.url|e('html_attr') }}" media="{{ sheet.media }}" {% for extra_key, extra_value in sheet.extras %} {{ extra_key }}="{{ extra_value|e('html_attr') }}" {% endfor %}>
 	{% endif %}
 {% endfor %}

@@ -15,14 +15,14 @@ use chsxf\MFX\Services\ITemplateService;
  */
 final class Scripts implements IScriptService
 {
+    public const DEFAULT_TYPE = 'text/javascript';
+
     /**
      * @var array Scripts container
      */
     private array $scripts = array();
 
-    public function __construct(private readonly ITemplateService $templateService)
-    {
-    }
+    public function __construct(private readonly ITemplateService $templateService) {}
 
     /**
      * Adds a script to the document
@@ -30,9 +30,10 @@ final class Scripts implements IScriptService
      * @param string $inline If set, the script is included inline in the response (Defaults to false).
      * @param string $prepend If set, the script is added before any other (Defaults to false).
      * @param string $type Script type (Defaults to text/javascript).
+     * @param array $extras Extra arguments to add to the script tag
      * @throws ScriptException If the URL is empty, or if the file does not exists or is not readable for inline scripts.
      */
-    public function add(string $url, bool $inline = false, bool $prepend = false, string $type = 'text/javascript'): void
+    public function add(string $url, bool $inline = false, bool $prepend = false, string $type = self::DEFAULT_TYPE, array $extras = []): void
     {
         if (empty($url)) {
             throw new ScriptException(HttpStatusCodes::internalServerError, "'{$url} is not a valid script URL.");
@@ -59,7 +60,8 @@ final class Scripts implements IScriptService
             'url' => $url,
             'inline' => !empty($inline),
             'type' => $type,
-            'content' => empty($inline) ? null : file_get_contents($url)
+            'content' => empty($inline) ? null : file_get_contents($url),
+            'extras' => $extras
         );
         if ($prepend) {
             array_unshift($this->scripts, $obj);

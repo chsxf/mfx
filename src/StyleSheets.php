@@ -15,14 +15,15 @@ use chsxf\MFX\Services\ITemplateService;
  */
 final class StyleSheets implements IStyleSheetService
 {
+    public const DEFAULT_MEDIA = 'screen';
+    public const DEFAULT_TYPE = 'text/css';
+
     /**
      * @var array Style sheets container
      */
     private array $styleSheets = array();
 
-    public function __construct(private readonly ITemplateService $templateService)
-    {
-    }
+    public function __construct(private readonly ITemplateService $templateService) {}
 
     /**
      * Adds a style sheets to the document
@@ -31,9 +32,10 @@ final class StyleSheets implements IStyleSheetService
      * @param bool $inline If set, the style sheet is included inline in the response (Defaults to false).
      * @param bool $prepend If set, the style sheet is added before any other (Defaults to false).
      * @param string $type Style sheet type (Defaults to text/css).
+     * @param array $extras Extra arguments
      * @throws StyleSheetException If the URL is empty, or if the file does not exists or is not readable for inline sheets.
      */
-    public function add(string $url, string $media = 'screen', bool $inline = false, bool $prepend = false, string $type = 'text/css'): void
+    public function add(string $url, string $media = self::DEFAULT_MEDIA, bool $inline = false, bool $prepend = false, string $type = self::DEFAULT_TYPE, array $extras = []): void
     {
         if (empty($url)) {
             throw new StyleSheetException(HttpStatusCodes::internalServerError, "'{$url} is not a valid style sheet URL.");
@@ -61,7 +63,8 @@ final class StyleSheets implements IStyleSheetService
             'media' => $media,
             'inline' => !empty($inline),
             'type' => $type,
-            'content' => empty($inline) ? null : file_get_contents($url)
+            'content' => empty($inline) ? null : file_get_contents($url),
+            'extras' => $extras
         );
         if ($prepend) {
             array_unshift($this->styleSheets, $obj);
