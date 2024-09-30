@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace chsxf\MFX\Services\Proxies;
 
+use chsxf\MFX\RequestMethod;
 use chsxf\MFX\Services\IRequestService;
 
 /**
@@ -12,13 +13,16 @@ use chsxf\MFX\Services\IRequestService;
  */
 final class RequestServiceProxy implements IRequestService
 {
-    public function __construct(private readonly IRequestService $requestService)
-    {
-    }
+    public function __construct(private readonly IRequestService $requestService) {}
 
     public function getRootURL(): string
     {
         return $this->requestService->getRootURL();
+    }
+
+    public function getRequestMethod(): RequestMethod
+    {
+        return $this->requestService->getRequestMethod();
     }
 
     public function setAttachmentHeaders(string $filename, string $mimeType, string $charset = 'UTF-8', bool $addContentType = true): void

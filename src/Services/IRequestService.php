@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace chsxf\MFX\Services;
 
+use chsxf\MFX\RequestMethod;
+
 /**
  * Request service interface
  * @since 2.0
@@ -16,6 +18,13 @@ interface IRequestService
      * @return string
      */
     public function getRootURL(): string;
+
+    /**
+     * Get the method used by the request
+     * (ex: GET, POST...)
+     * @return RequestMethod 
+     */
+    public function getRequestMethod(): RequestMethod;
 
     /**
      * Sets the attachment headers to use in response to the request

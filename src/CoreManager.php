@@ -480,6 +480,16 @@ final class CoreManager implements IRequestService, ITemplateService
     }
 
     /**
+     * Get the method used by the request
+     * (ex: GET, POST...)
+     * @return RequestMethod 
+     */
+    public function getRequestMethod(): RequestMethod
+    {
+        return RequestMethod::from($_SERVER['REQUEST_METHOD']);
+    }
+
+    /**
      * Redirects the user to the specified URL, the HTTP referer if defined and same host, or the website root
      *
      * @since 2.0
