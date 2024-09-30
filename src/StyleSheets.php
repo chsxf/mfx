@@ -15,7 +15,13 @@ use chsxf\MFX\Services\ITemplateService;
  */
 final class StyleSheets implements IStyleSheetService
 {
+    /**
+     * @since 2.0
+     */
     public const DEFAULT_MEDIA = 'screen';
+    /**
+     * @since 2.0
+     */
     public const DEFAULT_TYPE = 'text/css';
 
     /**

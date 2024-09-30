@@ -15,6 +15,9 @@ use chsxf\MFX\Services\ITemplateService;
  */
 final class Scripts implements IScriptService
 {
+    /**
+     * @since 2.0
+     */
     public const DEFAULT_TYPE = 'text/javascript';
 
     /**

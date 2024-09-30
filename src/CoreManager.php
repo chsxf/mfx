@@ -482,7 +482,8 @@ final class CoreManager implements IRequestService, ITemplateService
     /**
      * Get the method used by the request
      * (ex: GET, POST...)
-     * @return RequestMethod 
+     * @since 2.0
+     * @return RequestMethod
      */
     public function getRequestMethod(): RequestMethod
     {

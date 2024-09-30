@@ -16,6 +16,9 @@ final class DatabaseUpdater extends BaseRouteProvider
     private ?array $updatersData = null;
     private ?string $updatersDomain = null;
 
+    /**
+     * @since 2.0
+     */
     public const DEFAULT_DOMAIN = 'application';
 
     /**
