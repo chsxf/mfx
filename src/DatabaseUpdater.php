@@ -30,7 +30,7 @@ final class DatabaseUpdater extends BaseRouteProvider
 
         // Retrieving updaters domain
         $this->updatersDomain = $this->serviceProvider->getConfigService()->getValue(ConfigConstants::DATABASE_UPDATERS_DOMAIN, null);
-        if (!preg_match('/^[[:alnum:]_-]+$/', $this->updatersDomain)) {
+        if ($this->updatersDomain !== null && !preg_match('/^[[:alnum:]_-]+$/', $this->updatersDomain)) {
             $this->updatersDomain = null;
         }
 
