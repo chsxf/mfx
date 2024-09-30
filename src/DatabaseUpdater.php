@@ -16,6 +16,8 @@ final class DatabaseUpdater extends BaseRouteProvider
     private ?array $updatersData = null;
     private ?string $updatersDomain = null;
 
+    public const DEFAULT_DOMAIN = 'application';
+
     /**
      * @return RequestResult|false
      */
@@ -29,9 +31,9 @@ final class DatabaseUpdater extends BaseRouteProvider
         }
 
         // Retrieving updaters domain
-        $this->updatersDomain = $this->serviceProvider->getConfigService()->getValue(ConfigConstants::DATABASE_UPDATERS_DOMAIN, null);
-        if ($this->updatersDomain !== null && !preg_match('/^[[:alnum:]_-]+$/', $this->updatersDomain)) {
-            $this->updatersDomain = null;
+        $this->updatersDomain = $this->serviceProvider->getConfigService()->getValue(ConfigConstants::DATABASE_UPDATERS_DOMAIN, self::DEFAULT_DOMAIN);
+        if (!preg_match('/^[[:alnum:]_-]+$/', $this->updatersDomain)) {
+            $this->updatersDomain = self::DEFAULT_DOMAIN;
         }
 
         // Initializing database manager
@@ -48,13 +50,10 @@ final class DatabaseUpdater extends BaseRouteProvider
 
         // Load versions and file modification times
         $sql = "SELECT `updater_key`, `updater_version`, UNIX_TIMESTAMP(`updater_file_modified`) AS `updater_filemtime`
-					FROM `mfx_database_updaters`";
-        if ($this->updatersDomain === null) {
-            $sql .= " WHERE `updater_domain` IS NULL";
-        } else {
-            $sql .= " WHERE `updater_domain` = ?";
-        }
-        $this->updatersData = $dbConn->getIndexed($sql, 'updater_key', \PDO::FETCH_OBJ, $this->updatersDomain);
+					FROM `mfx_database_updaters`
+                    WHERE `updater_domain` = ?";
+        $fetchedUpdatersData = $dbConn->getIndexed($sql, 'updater_key', \PDO::FETCH_OBJ, $this->updatersDomain);
+        $this->updatersData = is_array($fetchedUpdatersData) ? $fetchedUpdatersData : [];
 
         foreach ($updaters as $updater) {
             $rc = new \ReflectionClass($updater);
