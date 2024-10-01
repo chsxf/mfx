@@ -82,7 +82,7 @@ final class UserManager implements IAuthenticationService
      */
     private function instantiateUser(): User
     {
-        $rc = new \ReflectionClass($this->configService->getValue(ConfigConstants::USER_MANAGEMENT_CLASS, __CLASS__));
+        $rc = new \ReflectionClass($this->configService->getValue(ConfigConstants::USER_MANAGEMENT_CLASS, User::class));
         return $rc->newInstance($this, $this->databaseService);
     }
 
@@ -101,8 +101,8 @@ final class UserManager implements IAuthenticationService
 
         $newUser = $this->instantiateUser();
         if ($newUser->validateWithFields($fields)) {
-            $this->setSessionWithUserId($this->currentAuthenticatedUser->getId());
             $this->currentAuthenticatedUser = $newUser;
+            $this->setSessionWithUserId($this->currentAuthenticatedUser->getId());
             return true;
         }
 
@@ -111,9 +111,9 @@ final class UserManager implements IAuthenticationService
 
     /**
      * Sets in session the current user's identifier if not already set
-     * @param string $id Current user's identifier
+     * @param string|int|null $id Current user's identifier
      */
-    private function setSessionWithUserId(string $id)
+    private function setSessionWithUserId(string|int|null $id)
     {
         $this->sessionService->setInSession([
             self::LOGGED_USER_ID => $id,

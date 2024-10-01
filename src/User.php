@@ -20,9 +20,9 @@ class User
     private bool $valid;
 
     /**
-     * @var string User identifier. NULL for guests and most commonly the user database ID for valid users.
+     * @var string|int|null User identifier. NULL for guests and most commonly the user database ID for valid users.
      */
-    private ?string $id;
+    private string|int|null $id;
 
     /**
      * @var array User data fetched from the database
@@ -58,10 +58,10 @@ class User
     /**
      * Validates the user from its identifier
      * @since 2.0
-     * @param string $id User identifier to validate
+     * @param string|int|null $id User identifier to validate
      * @return boolean true if the user identifier is valid, false either
      */
-    public function validateWithId(string $id): bool
+    public function validateWithId(string|int|null $id): bool
     {
         if ($this->valid && $this->id === $id) {
             return true;
@@ -151,9 +151,9 @@ class User
     /**
      * Gets the current user identifier
      * @since 2.0
-     * @return string The function returns NULL if no valid user is currently registered
+     * @return string|int|null The function returns NULL if no valid user is currently registered
      */
-    public function getId(): string
+    public function getId(): string|int|null
     {
         return $this->id;
     }
