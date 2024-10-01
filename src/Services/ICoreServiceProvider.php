@@ -19,55 +19,55 @@ interface ICoreServiceProvider
 
     /**
      * Gets the current request service
-     * @return IConfigService
+     * @return IRequestService
      */
     public function getRequestService(): IRequestService;
 
     /**
      * Gets the current template service
-     * @return IConfigService
+     * @return ITemplateService
      */
     public function getTemplateService(): ITemplateService;
 
     /**
      * Gets the current localization service
-     * @return IConfigService
+     * @return ILocalizationService
      */
     public function getLocalizationService(): ILocalizationService;
 
     /**
      * Gets the current profiling service
-     * @return IConfigService
+     * @return IProfilingService
      */
     public function getProfilingService(): IProfilingService;
 
     /**
      * Gets the current script service
-     * @return IConfigService
+     * @return IScriptService
      */
     public function getScriptService(): IScriptService;
 
     /**
      * Gets the current stylesheet service
-     * @return IConfigService
+     * @return IStyleSheetService
      */
     public function getStyleSheetService(): IStyleSheetService;
 
     /**
      * Gets the current authentication service
-     * @return IConfigService
+     * @return IAuthenticationService
      */
     public function getAuthenticationService(): IAuthenticationService;
 
     /**
      * Gets the current database service
-     * @return IConfigService
+     * @return IDatabaseService
      */
     public function getDatabaseService(): IDatabaseService;
 
     /**
      * Gets the current session service
-     * @return IConfigService
+     * @return ISessionService
      */
     public function getSessionService(): ISessionService;
 }
