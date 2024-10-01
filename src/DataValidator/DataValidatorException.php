@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace chsxf\MFX\DataValidator;
 
 use chsxf\MFX\Exceptions\MFXException;
+use chsxf\MFX\HttpStatusCodes;
+use Throwable;
 
 /**
  * Data validator exception class
@@ -13,4 +15,8 @@ use chsxf\MFX\Exceptions\MFXException;
  */
 class DataValidatorException extends MFXException
 {
+    public function __construct(string $message = '', ?Throwable $previous = null)
+    {
+        parent::__construct(HttpStatusCodes::internalServerError, $message, $previous);
+    }
 }
