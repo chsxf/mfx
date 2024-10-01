@@ -92,18 +92,22 @@ final class SessionManager implements ISessionService
                 $this->initializeNewSession(false);
                 session_commit();
             }
-        } elseif ($_SESSION[self::STATUS] == SessionStatus::active->value && $_SESSION[self::LAST_UPDATE] < time() - 900) {
-            $sessionCopy = $_SESSION;
+        } elseif ($_SESSION[self::STATUS] == SessionStatus::active->value) {
+            if ($_SESSION[self::LAST_UPDATE] < time() - 900) {
+                $sessionCopy = $_SESSION;
 
-            $migratedId = session_create_id();
-            $_SESSION[self::STATUS] = SessionStatus::migrated->value;
-            $_SESSION[self::NEW_SESSION_ID] = $migratedId;
-            $_SESSION[self::LAST_UPDATE] = time();
-            session_commit();
+                $migratedId = session_create_id();
+                $_SESSION[self::STATUS] = SessionStatus::migrated->value;
+                $_SESSION[self::NEW_SESSION_ID] = $migratedId;
+                $_SESSION[self::LAST_UPDATE] = time();
+                session_commit();
 
-            session_id($migratedId);
-            session_start();
-            $_SESSION = $sessionCopy;
+                session_id($migratedId);
+                session_start();
+                $_SESSION = $sessionCopy;
+                $_SESSION[self::LAST_UPDATE] = time();
+            }
+
             $_SESSION[self::LAST_UPDATE] = time();
             session_commit();
         } else {
