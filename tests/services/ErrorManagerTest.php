@@ -9,13 +9,9 @@ use PHPUnit\Framework\TestCase;
 
 final class DummySessionService implements ISessionService
 {
-    public function setInSession(array $values)
-    {
-    }
+    public function setInSession(array $values): void {}
 
-    public function unsetInSession(string ...$keys)
-    {
-    }
+    public function unsetInSession(string ...$keys): void {}
 
     public function offsetExists(mixed $offset): bool
     {
@@ -27,13 +23,9 @@ final class DummySessionService implements ISessionService
         return null;
     }
 
-    public function offsetSet(mixed $offset, mixed $value): void
-    {
-    }
+    public function offsetSet(mixed $offset, mixed $value): void {}
 
-    public function offsetUnset(mixed $offset): void
-    {
-    }
+    public function offsetUnset(mixed $offset): void {}
 }
 
 final class ErrorManagerTest extends TestCase
