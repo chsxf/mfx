@@ -7,14 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2024-10-02
+
 ### Added
 
 - Add tests for some of the services
+- Support for additional configuration options for scripts and stylesheets
 
 ### Changed
 
-- Modernized session management
 - Refactored most static classes as services
+- Modernized session management
+- Renamed the built-in `Status` route to `AppStatus` for clarity
+
+### Improved
+
+- Enabled strict types
+- The unhandled exception handler now outputs full exception stack in accordance with the `response.full_errors` configuration directive
+
+### Fixed
+
+- Fixed some bugs within the database updater
 
 ## [1.0.2] - 2024-07-13
 
