@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2024-11-23
+
+### Added
+
+- `getRequestContentType` function to the `IRequestService` interface to retrieve the content type used by the request
+
+### Improved
+
+- Made `RequiredRequestMethod` and `RequiredContentType` attributes repeatable
+
+### Fixed
+
+- Extraneous invalid parameter when throwing an exception
+- Wrong variable used within the `RequiredRequestMethod` constructor
+
 ## [2.0.0] - 2024-10-02
 
 ### Added
