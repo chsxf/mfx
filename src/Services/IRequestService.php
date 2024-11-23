@@ -22,9 +22,17 @@ interface IRequestService
     /**
      * Get the method used by the request
      * (ex: GET, POST...)
-     * @return RequestMethod 
+     * @return RequestMethod
      */
     public function getRequestMethod(): RequestMethod;
+
+    /**
+     * Get the content-type used by the request
+     * (ex: application/json)
+     * @since 2.0.1
+     * @return null|string
+     */
+    public function getRequestContentType(): ?string;
 
     /**
      * Sets the attachment headers to use in response to the request

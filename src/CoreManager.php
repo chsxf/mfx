@@ -491,6 +491,21 @@ final class CoreManager implements IRequestService, ITemplateService
     }
 
     /**
+     * Get the content-type used by the request
+     * (ex: application/json)
+     * @since 2.0.1
+     * @return null|string
+     */
+    public function getRequestContentType(): ?string
+    {
+        $regs = array();
+        if (preg_match('/^([^;]+);?/', $_SERVER['CONTENT_TYPE'], $regs)) {
+            return $regs[1];
+        }
+        return null;
+    }
+
+    /**
      * Redirects the user to the specified URL, the HTTP referer if defined and same host, or the website root
      *
      * @since 2.0

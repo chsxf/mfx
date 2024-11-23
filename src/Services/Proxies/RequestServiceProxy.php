@@ -25,6 +25,11 @@ final class RequestServiceProxy implements IRequestService
         return $this->requestService->getRequestMethod();
     }
 
+    public function getRequestContentType(): ?string
+    {
+        return $this->requestService->getRequestContentType();
+    }
+
     public function setAttachmentHeaders(string $filename, string $mimeType, string $charset = 'UTF-8', bool $addContentType = true): void
     {
         $this->requestService->setAttachmentHeaders($filename, $mimeType, $charset, $addContentType);
