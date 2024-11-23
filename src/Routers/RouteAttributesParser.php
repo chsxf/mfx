@@ -68,4 +68,23 @@ class RouteAttributesParser
         }
         return $defaultValue;
     }
+
+    /**
+     * @param string $class
+     * @param string $value
+     * @return bool
+     */
+    public function hasAttributeWithValue(string $class, string $value): bool
+    {
+        if (!is_subclass_of($class, AbstractRouteStringAttribute::class)) {
+            throw new DataValidatorException("Class '{$class}' is not a valid subclass of " . AbstractRouteStringAttribute::class);
+        }
+
+        foreach ($this->attributes as $attr) {
+            if (($attr instanceof $class || is_subclass_of($attr, $class, false)) && $attr->getValue() == $value) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

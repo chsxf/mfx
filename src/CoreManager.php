@@ -299,18 +299,12 @@ final class CoreManager implements IRequestService, ITemplateService
             throw new MFXException(HttpStatusCodes::forbidden);
         }
         // -- Request method
-        $requiredRequestMethod = $routerData->routeAttributes->getAttributeValue(RequiredRequestMethod::class);
-        if (!empty($requiredRequestMethod) && $_SERVER['REQUEST_METHOD'] !== $requiredRequestMethod) {
+        if ($routerData->routeAttributes->hasAttribute(RequiredRequestMethod::class) && !$routerData->routeAttributes->hasAttributeWithValue(RequiredRequestMethod::class, $this->getRequestMethod()->value)) {
             throw new MFXException(HttpStatusCodes::methodNotAllowed);
         }
         // -- Content-Type
-        $requiredContentType = $routerData->routeAttributes->getAttributeValue(RequiredContentType::class);
-        if (!empty($requiredContentType)) {
-            $regs = array();
-            preg_match('/^([^;]+);?/', $_SERVER['CONTENT_TYPE'], $regs);
-            if ($regs[1] !== $requiredContentType) {
-                throw new MFXException(HttpStatusCodes::unsupportedMediaType);
-            }
+        if ($routerData->routeAttributes->hasAttribute(RequiredContentType::class) && !$routerData->routeAttributes->hasAttributeWithValue(RequiredContentType::class, $this->getRequestContentType())) {
+            throw new MFXException(HttpStatusCodes::unsupportedMediaType);
         }
 
         ob_start($this->convertFakeProtocols(...));

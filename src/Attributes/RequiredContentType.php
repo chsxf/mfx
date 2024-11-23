@@ -9,7 +9,5 @@ use Attribute;
 /**
  * @since 1.0
  */
-#[Attribute(Attribute::TARGET_METHOD)]
-class RequiredContentType extends AbstractRouteStringAttribute
-{
-}
+#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
+class RequiredContentType extends AbstractRouteStringAttribute {}
