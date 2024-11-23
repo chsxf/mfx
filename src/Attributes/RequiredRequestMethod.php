@@ -18,6 +18,6 @@ class RequiredRequestMethod extends AbstractRouteStringAttribute
      */
     public function __construct(RequestMethod $_requestMethod)
     {
-        parent::__construct($_requestMethod->name);
+        parent::__construct($_requestMethod->value);
     }
 }
