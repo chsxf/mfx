@@ -29,7 +29,7 @@ final class PaginationManager
     /**
      * @var int Number of items per page
      */
-    private int $pageCount;
+    private int $itemsPerPage;
     /**
      * @var array Extra parameters for pagination requests
      */
@@ -64,7 +64,7 @@ final class PaginationManager
         } else {
             $reqCount = $this->provider->defaultPageCount();
         }
-        $this->pageCount = $reqCount;
+        $this->itemsPerPage = $reqCount;
 
         if (isset($_REQUEST['page_start'])) {
             $reqStart = intval($_REQUEST['page_start']);
@@ -72,7 +72,7 @@ final class PaginationManager
             $reqStart = 0;
         }
         if ($reqStart > $this->totalItemCount) {
-            $reqStart = max(0, $this->totalItemCount - $this->pageCount);
+            $reqStart = max(0, $this->totalItemCount - $this->itemsPerPage);
         }
         $this->currentPageStart = max(0, $reqStart);
 
@@ -103,7 +103,7 @@ final class PaginationManager
      */
     public function sqlLimit(): string
     {
-        return sprintf(" LIMIT %d, %d", $this->currentPageStart, $this->pageCount);
+        return sprintf(" LIMIT %d, %d", $this->currentPageStart, $this->itemsPerPage);
     }
 
     /**
@@ -111,9 +111,9 @@ final class PaginationManager
      * @since 1.0
      * @return int
      */
-    public function getPagesCount(): int
+    public function getPageCount(): int
     {
-        return ($this->pageCount == 0) ? 1 : max(1, ceil($this->totalItemCount / $this->pageCount));
+        return ($this->itemsPerPage == 0) ? 1 : intval(max(1, ceil($this->totalItemCount / $this->itemsPerPage)));
     }
 
     /**
@@ -123,7 +123,7 @@ final class PaginationManager
      */
     public function getItemCountPerPage(): int
     {
-        return $this->pageCount;
+        return $this->itemsPerPage;
     }
 
     /**
@@ -133,7 +133,7 @@ final class PaginationManager
      */
     public function getCurrentPageIndex(): int
     {
-        return ($this->pageCount == 0) ? 0 : floor($this->currentPageStart / $this->pageCount);
+        return ($this->itemsPerPage == 0) ? 0 : intval(floor($this->currentPageStart / $this->itemsPerPage));
     }
 
     /**
@@ -184,7 +184,7 @@ final class PaginationManager
      */
     public function prevPageStart(): int
     {
-        return max(0, $this->currentPageStart - $this->pageCount);
+        return max(0, $this->currentPageStart - $this->itemsPerPage);
     }
 
     /**
@@ -195,14 +195,7 @@ final class PaginationManager
      */
     public function prevPageURLParams(bool $includeExtraParameters = true): string
     {
-        $args = array(
-            'page_start' => $this->prevPageStart(),
-            'page_count' => $this->pageCount
-        );
-        if ($includeExtraParameters) {
-            $args = array_merge($this->extraParameters, $args);
-        }
-        return http_build_query($args);
+        return $this->pageURLParams($this->getCurrentPageIndex() - 1, $includeExtraParameters);
     }
 
     /**
@@ -212,7 +205,7 @@ final class PaginationManager
      */
     public function hasNextPage(): bool
     {
-        return ($this->currentPageStart < $this->totalItemCount - $this->pageCount);
+        return ($this->currentPageStart < $this->totalItemCount - $this->itemsPerPage);
     }
 
     /**
@@ -222,7 +215,7 @@ final class PaginationManager
      */
     public function nextPageStart(): int
     {
-        return max(0, min($this->totalItemCount - 1, $this->currentPageStart + $this->pageCount));
+        return max(0, min($this->totalItemCount - 1, $this->currentPageStart + $this->itemsPerPage));
     }
 
     /**
@@ -233,14 +226,7 @@ final class PaginationManager
      */
     public function nextPageURLParams(bool $includeExtraParameters = true): string
     {
-        $args = array(
-            'page_start' => $this->nextPageStart(),
-            'page_count' => $this->pageCount
-        );
-        if ($includeExtraParameters) {
-            $args = array_merge($this->extraParameters, $args);
-        }
-        return http_build_query($args);
+        return $this->pageURLParams($this->getCurrentPageIndex() + 1, $includeExtraParameters);
     }
 
     /**
@@ -252,7 +238,7 @@ final class PaginationManager
     public function pageStart(int $pageIndex): int
     {
         $pageIndex = max(0, intval($pageIndex));
-        return min($this->totalItemCount - 1, $pageIndex * $this->pageCount);
+        return min($this->totalItemCount - 1, $pageIndex * $this->itemsPerPage);
     }
 
     /**
@@ -266,7 +252,7 @@ final class PaginationManager
     {
         $args = array(
             'page_start' => $this->pageStart($pageIndex),
-            'page_count' => $this->pageCount
+            'page_count' => $this->itemsPerPage
         );
         if ($includeExtraParameters) {
             $args = array_merge($this->extraParameters, $args);
@@ -282,6 +268,6 @@ final class PaginationManager
     public function addCurrentPageDataValidatorFields(DataValidator $validator)
     {
         $validator->createField('page_start', FieldType::POSITIVEZERO_INTEGER, $this->pageStart($this->getCurrentPageIndex()), false);
-        $validator->createField('page_count', FieldType::POSITIVEZERO_INTEGER, $this->pageCount, false);
+        $validator->createField('page_count', FieldType::POSITIVEZERO_INTEGER, $this->itemsPerPage, false);
     }
 }

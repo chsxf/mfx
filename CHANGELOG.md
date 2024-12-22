@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Incompatible type errors in the `PaginationManager::getCurrentPageIndex()` and `PaginationManager::getPageCount()` methods
 - Database connections are not properly released by the close function
 
 ## [2.0.1] - 2024-11-23
