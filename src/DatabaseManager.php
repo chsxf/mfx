@@ -53,11 +53,13 @@ final class DatabaseManager implements IDatabaseService
             throw new DatabaseManagerException("No server can be found for the '{$server}' key.");
         }
 
-        foreach (array(
-            'dsn',
-            'username',
-            'password'
-        ) as $p) {
+        foreach (
+            array(
+                'dsn',
+                'username',
+                'password'
+            ) as $p
+        ) {
             if (empty($serverConfig[$p])) {
                 throw new DatabaseManagerException("Unable to find the '{$p}' parameter for database server '{$server}'.");
             }
@@ -79,6 +81,6 @@ final class DatabaseManager implements IDatabaseService
     public function close(DatabaseConnectionInstance &$connectionInstance)
     {
         unset($this->openConnections[$connectionInstance->getServerConfigurationKey()]);
-        $_manager = null;
+        $connectionInstance = null;
     }
 }
