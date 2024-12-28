@@ -208,7 +208,7 @@ class User
      */
     protected function getFetchDataQuery(): string
     {
-        return sprintf("SELECT * FROM `%s` WHERE `%s` = ?", $this->authenticationService->getTableName(), $this->authenticationService->getIdField());
+        return sprintf("SELECT `%s`, `user_name`, `user_created` FROM `%s` WHERE `%1\$s` = ?", $this->authenticationService->getIdField(), $this->authenticationService->getTableName());
     }
 
     /**
