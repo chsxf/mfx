@@ -313,7 +313,7 @@ class DataValidator_FieldNode extends Node
     {
         if ($this->getAttribute('typeOverride') !== null) {
             $code1 = sprintf(
-                "\$fieldResult = \$context['%s']->generate('%s', new \\CheeseBurgames\\MFX\\DataValidator\\FieldType('%s'))",
+                "\$fieldResult = \$context['%s']->generate('%s', \\chsxf\\MFX\\DataValidator\\FieldType::from('%s'))",
                 $this->getAttribute('validatorName'),
                 $this->getAttribute('fieldName'),
                 $this->getAttribute('typeOverride')
