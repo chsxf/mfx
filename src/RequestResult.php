@@ -154,11 +154,16 @@ final class RequestResult
     /**
      * Helper function to build RequestResult instances for REDIRECT request results
      * @param string $redirectURL Target URL to which redirect the user (Defaults to NULL)
+     * @param array $queryParameters Query parameters to be added to a non-empty/non-NULL redirect URL. If empty, the `$redirectURL` is used as-is. Since 2.1.0.
      * @return RequestResult
      */
-    public static function buildRedirectRequestResult(?string $redirectURL = null): RequestResult
+    public static function buildRedirectRequestResult(?string $redirectURL = null, array $queryParameters = array()): RequestResult
     {
-        return new RequestResult(RequestResultType::REDIRECT, null, null, $redirectURL);
+        $computedRedirectURL = $redirectURL;
+        if (!empty($computedRedirectURL) && !empty($queryParameters)) {
+            $computedRedirectURL .= '?' . http_build_query($queryParameters);
+        }
+        return new RequestResult(RequestResultType::REDIRECT, null, null, $computedRedirectURL);
     }
 
     /**

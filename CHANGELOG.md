@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The `RequestResult::buildRedirectRequestResult` method now accepts a second parameter to easily add query parameters to the URL
+
 ### Improved
 
 - The `mfx_users.user_created` SQL table field has now a `CURRENT_TIMESTAMP` default value to simplify user creation
