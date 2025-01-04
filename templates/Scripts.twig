@@ -6,6 +6,6 @@
 			/* ]]> */
 		</script>
 	{% else %}
-		<script type="{{ script.type }}" src="{{ script.url|e('html_attr') }}" {% for extra_key, extra_value in script.extras %} {{ extra_key }}="{{ extra_value|e('html_attr') }}" {% endfor %}></script>
+		<script type="{{ script.type }}" src="{{ script.url|raw }}" {% for extra_key, extra_value in script.extras %} {{ extra_key }}="{{ extra_value|e('html_attr') }}" {% endfor %}></script>
 	{% endif %}
 {% endfor %}

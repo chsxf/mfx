@@ -4,6 +4,6 @@
 			{{ sheet.content }}
 		</style>
 	{% else %}
-		<link rel="stylesheet" type="{{ sheet.type }}" href="{{ sheet.url|e('html_attr') }}" media="{{ sheet.media }}" {% for extra_key, extra_value in sheet.extras %} {{ extra_key }}="{{ extra_value|e('html_attr') }}" {% endfor %}>
+		<link rel="stylesheet" type="{{ sheet.type }}" href="{{ sheet.url|raw }}" media="{{ sheet.media }}" {% for extra_key, extra_value in sheet.extras %} {{ extra_key }}="{{ extra_value|e('html_attr') }}" {% endfor %}>
 	{% endif %}
 {% endfor %}
