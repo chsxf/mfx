@@ -14,19 +14,19 @@ use chsxf\MFX\DatabaseConnectionInstance;
 
 /**
  * Description of a filter validating if the specified value exists in a database table
- * @since 1.0
+ * @since 2.1
  */
-class DoNotExistInDB extends ExistsInDB
+class DoesNotExistInDB extends ExistsInDB
 {
     /**
      * Constructor
-     * @since 1.0
+     * @since 2.1
      * @param string $table Database table name
      * @param string $field Database field name
      * @param string $message Error message (Defaults to NULL)
      * @param DatabaseConnectionInstance $connection Database connection instance
      */
-    public function __construct(string $table, string $field, ?string $message = null, DatabaseConnectionInstance $connection)
+    public function __construct(string $table, string $field, DatabaseConnectionInstance $connection, ?string $message = null)
     {
         if (empty($message)) {
             $message = sprintf(dgettext('mfx', "The '%%s' field must reprensent a non-existing entry in the '%s' table (matched on the '%s' field)."), $table, $field);

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The `RequestResult::buildRedirectRequestResult` method now accepts a second parameter to easily add query parameters to the URL
+- Renamed the `DoNotExistInDB` class in `DoesNotExistInDB`
 
 ### Improved
 
@@ -20,7 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Incompatible type errors in the `PaginationManager::getCurrentPageIndex()` and `PaginationManager::getPageCount()` methods
 - Database connections are not properly released by the close function
 - Avoid returning sensitive information in the User instance
-- Fixed a legacy bug in the DataValidator Twig extension
+- Fixed a legacy bug in the `DataValidator` Twig extension
+- Fixed an issue with extra parameters and some `DataValidator`'s field types
+- Fixed a compilation error within the `ExistsInDB` and `DoesNotExistInDB` filter classes
 
 ## [2.0.1] - 2024-11-23
 

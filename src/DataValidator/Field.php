@@ -415,9 +415,9 @@ class Field
      * Adds extra option to field
      * @since 1.0
      * @param string $name Option name
-     * @param string $value Option value
+     * @param string|int|float $value Option value
      */
-    final public function addExtra(string $key, string $value)
+    final public function addExtra(string $key, string|int|float $value)
     {
         $this->extras[$key] = $value;
     }
