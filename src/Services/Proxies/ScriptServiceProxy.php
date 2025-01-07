@@ -12,13 +12,10 @@ use chsxf\MFX\Services\IScriptService;
  */
 final class ScriptServiceProxy implements IScriptService
 {
-    public function __construct(private readonly IScriptService $scriptService)
-    {
-    }
+    public function __construct(private readonly IScriptService $scriptService) {}
 
-
-    public function add(string $url, bool $inline = false, bool $prepend = false, string $type = 'text/javascript'): void
+    public function add(string $url, bool $inline = false, bool $prepend = false, string $type = 'text/javascript', bool $defer = false): void
     {
-        $this->scriptService->add($url, $inline, $prepend, $type);
+        $this->scriptService->add($url, $inline, $prepend, $type, $defer);
     }
 }

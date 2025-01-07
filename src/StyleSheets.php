@@ -38,10 +38,9 @@ final class StyleSheets implements IStyleSheetService
      * @param bool $inline If set, the style sheet is included inline in the response (Defaults to false).
      * @param bool $prepend If set, the style sheet is added before any other (Defaults to false).
      * @param string $type Style sheet type (Defaults to text/css).
-     * @param array $extras Extra arguments
      * @throws StyleSheetException If the URL is empty, or if the file does not exists or is not readable for inline sheets.
      */
-    public function add(string $url, string $media = self::DEFAULT_MEDIA, bool $inline = false, bool $prepend = false, string $type = self::DEFAULT_TYPE, array $extras = []): void
+    public function add(string $url, string $media = self::DEFAULT_MEDIA, bool $inline = false, bool $prepend = false, string $type = self::DEFAULT_TYPE): void
     {
         if (empty($url)) {
             throw new StyleSheetException(HttpStatusCodes::internalServerError, "'{$url} is not a valid style sheet URL.");
@@ -69,8 +68,7 @@ final class StyleSheets implements IStyleSheetService
             'media' => $media,
             'inline' => !empty($inline),
             'type' => $type,
-            'content' => empty($inline) ? null : file_get_contents($url),
-            'extras' => $extras
+            'content' => empty($inline) ? null : file_get_contents($url)
         );
         if ($prepend) {
             array_unshift($this->styleSheets, $obj);

@@ -159,17 +159,15 @@ final class CoreManager implements IRequestService, ITemplateService
                         'inline' => false,
                         'prepend' => false,
                         'type' => Scripts::DEFAULT_TYPE,
-                        'extras' => []
+                        'defer' => false
                     ];
                     foreach ($script as $key => $value) {
-                        if ($key != 'extras' && array_key_exists($key, $args)) {
+                        if (array_key_exists($key, $args)) {
                             $args[$key] = $value;
-                        } else {
-                            $args['extras'][$key] = $value;
                         }
                     }
 
-                    $this->scripts->add($args['url'], $args['inline'], $args['prepend'], $args['type'], $args['extras']);
+                    $this->scripts->add($args['url'], $args['inline'], $args['prepend'], $args['type'], $args['defer']);
                 }
             }
         }
@@ -191,8 +189,7 @@ final class CoreManager implements IRequestService, ITemplateService
                         'media' => StyleSheets::DEFAULT_MEDIA,
                         'inline' => false,
                         'prepend' => false,
-                        'type' => StyleSheets::DEFAULT_TYPE,
-                        'extras' => []
+                        'type' => StyleSheets::DEFAULT_TYPE
                     ];
                     foreach ($sheet as $key => $value) {
                         if ($key != 'extras' && array_key_exists($key, $args)) {
@@ -202,7 +199,7 @@ final class CoreManager implements IRequestService, ITemplateService
                         }
                     }
 
-                    $this->styleSheets->add($args['url'], $args['media'], $args['inline'], $args['prepend'], $args['type'], $args['extras']);
+                    $this->styleSheets->add($args['url'], $args['media'], $args['inline'], $args['prepend'], $args['type']);
                 }
             }
         }

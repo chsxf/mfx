@@ -30,13 +30,13 @@ final class Scripts implements IScriptService
     /**
      * Adds a script to the document
      * @param string $url Script URL or path for inline scripts
-     * @param string $inline If set, the script is included inline in the response (Defaults to false).
-     * @param string $prepend If set, the script is added before any other (Defaults to false).
+     * @param bool $inline If set, the script is included inline in the response (Defaults to false).
+     * @param bool $prepend If set, the script is added before any other (Defaults to false).
      * @param string $type Script type (Defaults to text/javascript).
-     * @param array $extras Extra arguments to add to the script tag
+     * @param bool $defer If set and not inlined, the `defer` attribute will be added to the `<script>` tag. Since 2.1
      * @throws ScriptException If the URL is empty, or if the file does not exists or is not readable for inline scripts.
      */
-    public function add(string $url, bool $inline = false, bool $prepend = false, string $type = self::DEFAULT_TYPE, array $extras = []): void
+    public function add(string $url, bool $inline = false, bool $prepend = false, string $type = self::DEFAULT_TYPE, bool $defer = false): void
     {
         if (empty($url)) {
             throw new ScriptException(HttpStatusCodes::internalServerError, "'{$url} is not a valid script URL.");
@@ -64,7 +64,7 @@ final class Scripts implements IScriptService
             'inline' => !empty($inline),
             'type' => $type,
             'content' => empty($inline) ? null : file_get_contents($url),
-            'extras' => $extras
+            'defer' => $defer
         );
         if ($prepend) {
             array_unshift($this->scripts, $obj);

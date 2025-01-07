@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added support for defer scripts
+
 ### Changed
 
 - The `RequestResult::buildRedirectRequestResult` method now accepts a second parameter to easily add query parameters to the URL
