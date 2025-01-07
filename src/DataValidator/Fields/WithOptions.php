@@ -71,7 +71,7 @@ class WithOptions extends Field
             return true;
         }
 
-        $value = $this->getValue();
+        $value = $this->getValue(!$this->isRequired());
 
         // Checks value against required status
         if ($this->isRequired() && empty($value)) {

@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a legacy bug in the `DataValidator` Twig extension
 - Fixed an issue with extra parameters and some `DataValidator`'s field types
 - Fixed a compilation error within the `ExistsInDB` and `DoesNotExistInDB` filter classes
+- Fixed an issue preventing `DataValidator`'s optional `WithOptions` fields to validate their value properly
 - Script and stylesheets URLs were incorrectly espaced
 
 ## [2.0.1] - 2024-11-23
