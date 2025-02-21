@@ -52,10 +52,12 @@ final class SessionManager implements ISessionService
         ini_set('session.use_trans_id', '0');
         ini_set('session.cookie_samesite', 'Strict');
         ini_set('session.cache_limiter', 'nocache');
-        ini_set('session.sid_length', '48');
-        ini_set('session.sid_bit_per_character', '6');
         ini_set('session.hash_function', 'sha256');
         ini_set('session.gc_maxlifetime', '900'); // 15 minutes
+        if (version_compare(PHP_VERSION, '8.4') < 0) {
+            ini_set('session.sid_length', '48');
+            ini_set('session.sid_bit_per_character', '6');
+        }
 
         // Setting additional session options
         ini_set('session.serialize_handler', 'php_serialize');

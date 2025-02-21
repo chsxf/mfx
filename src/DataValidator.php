@@ -32,7 +32,7 @@ final class DataValidator implements \ArrayAccess
      * @since 1.0
      * @param array $fields Pre-allocated data validation fields
      */
-    public function __construct(array $fields = null)
+    public function __construct(?array $fields = null)
     {
         $this->fields = array();
 
@@ -227,7 +227,7 @@ final class DataValidator implements \ArrayAccess
      * @param \chsxf\MFX\DataValidator\FieldType $typeOverride Type to use to override original field type. If NULL, no override. (Defaults to NULL)
      * @throws \chsxf\MFX\DataValidator\DataValidatorException If no field exists with this name
      */
-    public function generate(string $name, FieldType $typeOverride = null)
+    public function generate(string $name, ?FieldType $typeOverride = null)
     {
         if (!array_key_exists($name, $this->fields)) {
             throw new DataValidatorException(dgettext('mfx', "Unknown '{$name}' field."));

@@ -412,7 +412,7 @@ final class CoreManager implements IRequestService, ITemplateService
     /**
      * @since 2.0
      */
-    private function outputJSON(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = null, Environment $twig = null)
+    private function outputJSON(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = null, ?Environment $twig = null)
     {
         $this->setStatusCode($reqResult->statusCode());
         $this->setResponseContentType($routeAttributes, 'application/json', $this->configService->getValue(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
@@ -430,7 +430,7 @@ final class CoreManager implements IRequestService, ITemplateService
     /**
      * @since 2.0
      */
-    private function outputXML(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = null, Environment $twig = null)
+    private function outputXML(RequestResult $reqResult, ?RouteAttributesParser $routeAttributes = null, ?Environment $twig = null)
     {
         $this->setStatusCode($reqResult->statusCode());
         $this->setResponseContentType($routeAttributes, 'application/xml', $this->configService->getValue(ConfigConstants::RESPONSE_DEFAULT_CHARSET, 'UTF-8'));
@@ -502,7 +502,7 @@ final class CoreManager implements IRequestService, ITemplateService
      * @since 2.0
      * @param string $redirectURL Target redirection URL (Defaults to NULL)
      */
-    private function redirect(string $redirectURL = null): never
+    private function redirect(?string $redirectURL = null): never
     {
         if (empty($redirectURL) && !empty($_SERVER['HTTP_REFERER']) && preg_match("#https?://{$_SERVER['HTTP_HOST']}#", $_SERVER['HTTP_REFERER'])) {
             $redirectURL = $_SERVER['HTTP_REFERER'];

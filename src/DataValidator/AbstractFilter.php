@@ -29,7 +29,7 @@ abstract class AbstractFilter
      * @since 1.0
      * @param string $message Error message
      */
-    public function __construct(string $message = null)
+    public function __construct(?string $message = null)
     {
         $this->setMessage($message);
     }
