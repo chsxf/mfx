@@ -171,7 +171,14 @@ class DataValidator_FieldTokenParser extends AbstractTokenParser
         $stream = $this->parser->getStream();
 
         $validatorName = $stream->expect(Token::NAME_TYPE)->getValue();
-        $fieldName = $stream->expect(Token::STRING_TYPE)->getValue();
+
+        $fieldNameIsString = false;
+        if ($stream->test(Token::NAME_TYPE)) {
+            $fieldName = $stream->expect(Token::NAME_TYPE)->getValue();
+        } else {
+            $fieldName = $stream->expect(Token::STRING_TYPE)->getValue();
+            $fieldNameIsString = true;
+        }
 
         $idIsString = true;
         $typeOverride = null;
@@ -200,7 +207,7 @@ class DataValidator_FieldTokenParser extends AbstractTokenParser
             $id = $fieldName;
         }
 
-        return new DataValidator_FieldNode($validatorName, $fieldName, $id, $idIsString, $typeOverride, $token->getLine(), $this->getTag());
+        return new DataValidator_FieldNode($validatorName, $fieldName, $fieldNameIsString, $id, $idIsString, $typeOverride, $token->getLine());
     }
 
     /**
@@ -287,21 +294,22 @@ class DataValidator_FieldNode extends Node
      * @since 1.0
      * @param string $validatorName Validator's name in Twig context
      * @param string $fieldName Field's name
+     * @param bool $fieldNameIsString If set, the field name is stored as a raw string
      * @param string $id Field's ID for the HTML output
      * @param bool $idIsString If set, the field's ID is stored as a raw string
      * @param string $typeOverride Field type to use to override the initial field type. If NULL, no override.
      * @param int $line Line number of this node
-     * @param string $tag Tag for this node
      */
-    public function __construct($validatorName, $fieldName, $id, $idIsString, $typeOverride, $line, $tag)
+    public function __construct(string $validatorName, string $fieldName, bool $fieldNameIsString, string $id, bool $idIsString, ?string $typeOverride, int $line)
     {
-        parent::__construct(array(), array(
+        parent::__construct([], [
             'validatorName' => $validatorName,
             'fieldName' => $fieldName,
+            'fieldNameIsString' => !empty($fieldNameIsString),
             'id' => $id,
             'idIsString' => !empty($idIsString),
             'typeOverride' => $typeOverride
-        ), $line, $tag);
+        ], $line);
     }
 
     /**
@@ -311,34 +319,38 @@ class DataValidator_FieldNode extends Node
      */
     public function compile(Compiler $compiler)
     {
+        if ($this->getAttribute('fieldNameIsString')) {
+            $code1 = sprintf("\$fieldName = '%s'", $this->getAttribute('fieldName'));
+        } else {
+            $code1 = sprintf("\$fieldName = \$context['%s']", $this->getAttribute('fieldName'));
+        }
+
         if ($this->getAttribute('typeOverride') !== null) {
-            $code1 = sprintf(
-                "\$fieldResult = \$context['%s']->generate('%s', \\chsxf\\MFX\\DataValidator\\FieldType::from('%s'))",
+            $code2 = sprintf(
+                "\$fieldResult = \$context['%s']->generate(\$fieldName, \\chsxf\\MFX\\DataValidator\\FieldType::from('%s'))",
                 $this->getAttribute('validatorName'),
-                $this->getAttribute('fieldName'),
                 $this->getAttribute('typeOverride')
             );
         } else {
-            $code1 = sprintf(
-                "\$fieldResult = \$context['%s']->generate('%s')",
-                $this->getAttribute('validatorName'),
-                $this->getAttribute('fieldName')
+            $code2 = sprintf(
+                "\$fieldResult = \$context['%s']->generate(\$fieldName)",
+                $this->getAttribute('validatorName')
             );
         }
 
         if ($this->getAttribute('idIsString')) {
-            $code2 = sprintf(
+            $code3 = sprintf(
                 "\$fieldResult[1] = array_merge(array( 'id' => '%s' ), \$fieldResult[1])",
                 $this->getAttribute('id')
             );
         } else {
-            $code2 = sprintf(
+            $code3 = sprintf(
                 "\$fieldResult[1] = array_merge(array( 'id' => \$context['%s'] ), \$fieldResult[1])",
                 $this->getAttribute('id')
             );
         }
 
-        $code3 = sprintf('$this->env->display($fieldResult[0], $fieldResult[1])');
+        $code4 = sprintf('$this->env->display($fieldResult[0], $fieldResult[1])');
 
         $compiler
             ->addDebugInfo($this)
@@ -347,6 +359,8 @@ class DataValidator_FieldNode extends Node
             ->write($code2)
             ->raw(";\n")
             ->write($code3)
+            ->raw(";\n")
+            ->write($code4)
             ->raw(";\n");
     }
 }
