@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added support for defer scripts
+- Support in the `DataValidator` Twig extension for field names using a variable
 
 ### Changed
 
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Improved
 
 - The `mfx_users.user_created` SQL table field has now a `CURRENT_TIMESTAMP` default value to simplify user creation
+- Modernized the `DataValidator` Twig extension
 
 ### Fixed
 
@@ -30,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a compilation error within the `ExistsInDB` and `DoesNotExistInDB` filter classes
 - Fixed an issue preventing `DataValidator`'s optional `WithOptions` fields to validate their value properly
 - Script and stylesheets URLs were incorrectly espaced
+- Fixed PHP 8.4 deprecation warnings
+- Fixed an issue with the `DataValidator` integer field types
 
 ## [2.0.1] - 2024-11-23
 

@@ -65,6 +65,7 @@ class Integer extends Field
             for ($i = 0; $i <= $maxIndex; $i++) {
                 $val = $this->getIndexedValue($i, true);
                 if ($val !== null) {
+                    $val = strval($val);
                     switch ($this->getType()) {
                         case FieldType::INTEGER:
                             if (!StringTools::isInteger($val)) {
@@ -116,6 +117,7 @@ class Integer extends Field
         } else {
             $val = $this->getValue(true);
             if ($val !== null) {
+                $val = strval($val);
                 switch ($this->getType()) {
                     case FieldType::INTEGER:
                         if (!StringTools::isInteger($val)) {
