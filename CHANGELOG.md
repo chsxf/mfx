@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Incorrect behavior with long lasting sessions
 - Incompatible type errors in the `PaginationManager::getCurrentPageIndex()` and `PaginationManager::getPageCount()` methods
 - Database connections are not properly released by the close function
 - Avoid returning sensitive information in the User instance

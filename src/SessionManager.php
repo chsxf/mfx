@@ -66,13 +66,18 @@ final class SessionManager implements ISessionService
         session_name($this->configService->getValue(ConfigConstants::SESSION_NAME, 'MFXSESSION'));
         session_set_cookie_params(
             $this->configService->getValue(ConfigConstants::SESSION_LIFETIME, 0),
-            $this->configService->getValue(ConfigConstants::SESSION_PATH, ''),
+            $this->configService->getValue(ConfigConstants::SESSION_PATH, '/'),
             $this->configService->getValue(ConfigConstants::SESSION_DOMAIN, '')
         );
     }
 
     private function validateSession()
     {
+        $currentTime = time();
+        $migratedDeletionTime = $currentTime - 30;
+        $activeDeletionTime = $currentTime - 930;
+        $activeMigrationTime = $currentTime - 900;
+
         session_start();
         if (empty($_SESSION[self::STATUS])) {
             $this->setSessionActive();
@@ -81,7 +86,7 @@ final class SessionManager implements ISessionService
             $this->initializeNewSession(false);
             session_commit();
         } elseif ($_SESSION[self::STATUS] == SessionStatus::migrated->value) {
-            if ($_SESSION[self::LAST_UPDATE] < time() - 30) {
+            if ($_SESSION[self::LAST_UPDATE] < $migratedDeletionTime) {
                 $this->markSessionAsDeleted();
                 $this->initializeNewSession(true);
                 session_commit();
@@ -95,7 +100,10 @@ final class SessionManager implements ISessionService
                 session_commit();
             }
         } elseif ($_SESSION[self::STATUS] == SessionStatus::active->value) {
-            if ($_SESSION[self::LAST_UPDATE] < time() - 900) {
+            if ($_SESSION[self::LAST_UPDATE] < $activeDeletionTime) {
+                $this->markSessionAsDeleted();
+                $this->initializeNewSession(true);
+            } else if ($_SESSION[self::LAST_UPDATE] < $activeMigrationTime) {
                 $sessionCopy = $_SESSION;
 
                 $migratedId = session_create_id();
@@ -108,9 +116,9 @@ final class SessionManager implements ISessionService
                 session_start();
                 $_SESSION = $sessionCopy;
                 $_SESSION[self::LAST_UPDATE] = time();
+            } else {
+                $_SESSION[self::LAST_UPDATE] = time();
             }
-
-            $_SESSION[self::LAST_UPDATE] = time();
             session_commit();
         } else {
             $this->initializeNewSession(false);
