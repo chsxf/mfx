@@ -126,7 +126,7 @@ final class CoreManager implements IRequestService, ITemplateService
         if ($this->configService->getValue(ConfigConstants::RESPONSE_DEFAULT_CONTENT_TYPE, self::HTML_CONTENT_TYPE) == self::HTML_CONTENT_TYPE) {
             // Adding scripts
             $this->scripts = new Scripts($this);
-            $this->scripts->add('https://code.jquery.com/jquery-3.7.1.slim.min.js');
+            $this->scripts->add('https://code.jquery.com/jquery-4.0.0.slim.min.js');
             $this->scripts->add('mfxjs://layout.min.js');
             $this->scripts->add('mfxjs://ui.min.js');
             $this->scripts->add('mfxjs://mainObserver.min.js');
@@ -336,7 +336,7 @@ final class CoreManager implements IRequestService, ITemplateService
             $reqResult = $routerData->getResult();
         }
         switch ($reqResult->type()) {
-                // Views
+            // Views
             case RequestResultType::VIEW:
                 if (!in_array($reqResult->statusCode(), [HttpStatusCodes::ok, HttpStatusCodes::created, HttpStatusCodes::accepted])) {
                     $this->dieWithStatusCode($reqResult->statusCode(), $reqResult->statusCode()->getStatusMessage());
@@ -359,7 +359,7 @@ final class CoreManager implements IRequestService, ITemplateService
                 $this->getTwig()->display($template, $context);
                 break;
 
-                // Edit requests - Mostly requests with POST data
+            // Edit requests - Mostly requests with POST data
             case RequestResultType::REDIRECT:
                 $redirectionURL = $reqResult->redirectURL();
                 if (empty($redirectionURL) && $routerData->routeAttributes->hasAttribute(RedirectURL::class)) {
@@ -368,17 +368,17 @@ final class CoreManager implements IRequestService, ITemplateService
                 $this->redirect($redirectionURL);
                 break;
 
-                // Asynchronous requests expecting JSON data
+            // Asynchronous requests expecting JSON data
             case RequestResultType::JSON:
                 $this->outputJSON($reqResult, $routerData->routeAttributes, $this->getTwig());
                 break;
 
-                // Asynchronous requests expecting XML data
+            // Asynchronous requests expecting XML data
             case RequestResultType::XML:
                 $this->outputXML($reqResult, $routerData->routeAttributes, $this->getTwig());
                 break;
 
-                // Status
+            // Status
             case RequestResultType::STATUS:
                 $this->outputStatusCode($reqResult->statusCode(), $reqResult->data());
                 break;
